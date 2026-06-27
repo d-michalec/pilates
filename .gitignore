@@ -1,0 +1,32 @@
+.embedded-git-backups/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# Backend
+backend/build/
+backend/.gradle/
+backend/out/
+
+# Local environment
+.env
+infra/.env
+backend/.env
+frontend/.env
+
+# Runtime uploads: keep the directory, ignore uploaded files
+uploads/*
+!uploads/.gitkeep
