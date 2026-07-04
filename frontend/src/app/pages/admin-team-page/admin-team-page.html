@@ -1,0 +1,125 @@
+<main class="admin-shell">
+  <header class="admin-header">
+    <div>
+      <span class="eyebrow">Panel admina</span>
+      <h1>Kadra</h1>
+      <p>Dodawanie osob widocznych pozniej w publicznej zakladce kadra.</p>
+    </div>
+
+    <p-button
+      label="Podglad strony"
+      icon="pi pi-external-link"
+      severity="secondary"
+      [outlined]="true"
+      routerLink="/kadra"
+    />
+  </header>
+
+  <section class="admin-grid" aria-label="Zarzadzanie kadra">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>Nowa osoba</ng-template>
+      <ng-template #subtitle>Zdjecie, imie i nazwisko oraz opis instruktorki.</ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label for="fullName">Imie i nazwisko</label>
+          <input id="fullName" pInputText type="text" formControlName="fullName" autocomplete="name" />
+          @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+            <small class="field-error">Imie i nazwisko jest wymagane.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="description">Opis</label>
+          <textarea id="description" pTextarea formControlName="description" rows="8"></textarea>
+          @if (form.controls.description.touched && form.controls.description.invalid) {
+            <small class="field-error">Opis jest wymagany.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label>Zdjecie</label>
+          <input
+            #photoInput
+            class="native-file-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onPhotoSelected($event)"
+          />
+
+          <div class="upload-control">
+            <p-button
+              type="button"
+              label="Wybierz zdjecie"
+              icon="pi pi-image"
+              severity="secondary"
+              [outlined]="true"
+              (click)="photoInput.click()"
+            />
+
+            @if (selectedPhoto()) {
+              <p-tag severity="info" [value]="selectedPhoto()?.name ?? 'Wybrano plik'" />
+              <p-button
+                type="button"
+                icon="pi pi-times"
+                severity="secondary"
+                [text]="true"
+                ariaLabel="Usun wybrane zdjecie"
+                (click)="clearPhoto(photoInput)"
+              />
+            }
+          </div>
+        </div>
+
+        @if (previewUrl()) {
+          <figure class="photo-preview">
+            <img [src]="previewUrl()" alt="" />
+          </figure>
+        }
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <p-button
+          type="submit"
+          label="Dodaj osobe"
+          icon="pi pi-plus"
+          [loading]="isSaving()"
+          [disabled]="isSaving()"
+        />
+      </form>
+    </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>
+        <div class="card-title-row">
+          <span>Dodane osoby</span>
+          <p-tag severity="secondary" [value]="team().length.toString()" />
+        </div>
+      </ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ladowanie...</p>
+      } @else if (team().length === 0) {
+        <p class="empty-state">Brak dodanych osob.</p>
+      } @else {
+        <div class="team-list">
+          @for (member of team(); track member.id) {
+            <article class="team-list-item">
+              <img [src]="member.photoUrl" [alt]="member.fullName" />
+              <div>
+                <h3>{{ member.fullName }}</h3>
+                <p>{{ member.description }}</p>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </p-card>
+  </section>
+</main>

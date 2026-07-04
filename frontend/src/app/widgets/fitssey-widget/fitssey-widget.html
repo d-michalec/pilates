@@ -1,0 +1,27 @@
+@if (!isConfigured()) {
+  <p-message
+    severity="warn"
+    text="Widget Fitssey jest przygotowany, ale brakuje UUID studia w konfiguracji frontendu."
+  />
+} @else if (errorMessage()) {
+  <p-message severity="error" [text]="errorMessage() ?? ''" />
+} @else {
+  @if (isLoading()) {
+    <p class="fitssey-loading">Ladowanie grafiku...</p>
+  }
+  <div class="fitssey-widget-host">
+    @if (widget === 'course') {
+      <lb-course-widget
+        [attr.uuid]="studioUuid"
+        [attr.base-url]="baseUrl"
+        [attr.hide-header]="hideHeader ? 'true' : null"
+      ></lb-course-widget>
+    } @else {
+      <lb-schedule-widget
+        [attr.uuid]="studioUuid"
+        [attr.base-url]="baseUrl"
+        [attr.hide-header]="hideHeader ? 'true' : null"
+      ></lb-schedule-widget>
+    }
+  </div>
+}

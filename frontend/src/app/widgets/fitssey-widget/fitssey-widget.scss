@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.fitssey-widget-host {
+  display: block;
+  min-height: 520px;
+}
+
+.fitssey-widget-host iframe {
+  display: block;
+  width: 100%;
+  min-height: 560px;
+  border: 0;
+}
+
+.fitssey-loading {
+  margin: 0 0 14px;
+  color: #6f6258;
+  line-height: 1.5;
+}

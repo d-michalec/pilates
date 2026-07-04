@@ -1,0 +1,31 @@
+<main class="site-shell">
+  <header class="site-header">
+    <a class="brand" routerLink="/kadra">Babastudio</a>
+    <a routerLink="/admin/kadra">Admin</a>
+  </header>
+
+  <section class="team-hero">
+    <span>Kadra</span>
+    <h1>Osoby, ktore prowadza zajecia</h1>
+  </section>
+
+  @if (isLoading()) {
+    <p class="state">Ladowanie...</p>
+  } @else if (errorMessage()) {
+    <p class="state state-error">{{ errorMessage() }}</p>
+  } @else if (team().length === 0) {
+    <p class="state">Kadra pojawi sie wkrotce.</p>
+  } @else {
+    <section class="team-grid" aria-label="Kadra">
+      @for (member of team(); track member.id) {
+        <article class="team-card">
+          <img [src]="member.photoUrl" [alt]="member.fullName" />
+          <div>
+            <h2>{{ member.fullName }}</h2>
+            <p>{{ member.description }}</p>
+          </div>
+        </article>
+      }
+    </section>
+  }
+</main>

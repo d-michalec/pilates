@@ -1,0 +1,28 @@
+<main class="home-shell">
+  <header class="site-header">
+    <a class="brand" routerLink="/">Babastudio</a>
+    <nav>
+      <a routerLink="/kadra">Kadra</a>
+      <a routerLink="/admin/kadra">Admin</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span>Pilates studio</span>
+      <h1>Ruch, oddech i spokojny rytm zajec</h1>
+      <p>Na stronie glownej bedzie widoczny grafik Fitssey, dzieki czemu zapis na zajecia zostanie po stronie sprawdzonego widgetu.</p>
+    </div>
+
+    <p-button label="Zobacz kadre" icon="pi pi-users" routerLink="/kadra" />
+  </section>
+
+  <section class="schedule-section" aria-label="Grafik zajec">
+    <div class="section-heading">
+      <span>Grafik</span>
+      <h2>Najblizsze zajecia</h2>
+    </div>
+
+    <app-fitssey-widget widget="schedule" />
+  </section>
+</main>

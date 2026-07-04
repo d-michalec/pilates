@@ -19,6 +19,12 @@ Monorepo dla strony Babastudio / pilates.
 
 ## Uruchamianie lokalnie
 
+PostgreSQL:
+
+```bash
+docker compose -f infra/docker-compose.yml up -d postgres
+```
+
 Frontend:
 
 ```bash
