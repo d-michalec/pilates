@@ -1,0 +1,56 @@
+<footer
+  class="site-footer"
+  id="newsletter"
+  [class.site-footer-red]="tone === 'red'"
+  [class.site-footer-olive]="tone === 'olive'"
+>
+  @if (hasSocials()) {
+    <div class="footer-socials" aria-label="Social media">
+      @if (settings()?.instagramUrl; as instagramUrl) {
+        <a [href]="instagramUrl" target="_blank" rel="noreferrer noopener" aria-label="Instagram">
+          <i class="pi pi-instagram"></i>
+        </a>
+      }
+      @if (settings()?.facebookUrl; as facebookUrl) {
+        <a [href]="facebookUrl" target="_blank" rel="noreferrer noopener" aria-label="Facebook">
+          <i class="pi pi-facebook"></i>
+        </a>
+      }
+    </div>
+  }
+
+  <div class="footer-brand">
+    <a [routerLink]="'/' | localizePath">BABA</a>
+    <p>{{ 'footer.contactLabel' | t }} biuro@babapilates.pl</p>
+    <p>123 456 789</p>
+    <p>ul. Polskiej Organizacji Wojskowej 25<br />90-248 Łódź</p>
+  </div>
+
+  <form class="footer-newsletter" [formGroup]="form" (ngSubmit)="submit()">
+    <span>{{ 'newsletter.title' | t }}</span>
+    <p>{{ 'newsletter.lead' | t }}</p>
+
+    <div class="newsletter-row">
+      <label>
+        <span class="sr-only">{{ 'contact.email' | t }}</span>
+        <input pInputText type="email" formControlName="email" [placeholder]="'newsletter.emailPlaceholder' | t" autocomplete="email" />
+      </label>
+      <button pButton type="submit" [label]="'newsletter.submit' | t" [loading]="isSubscribing()" [disabled]="isSubscribing()"></button>
+    </div>
+
+    <div class="honeypot" aria-hidden="true">
+      <label>
+        {{ 'contact.website' | t }}
+        <input pInputText type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
+
+    @if (errorMessage()) {
+      <p-message severity="error" [text]="errorMessage() ?? ''" />
+    }
+
+    @if (successMessage()) {
+      <p-message severity="success" [text]="successMessage() ?? ''" />
+    }
+  </form>
+</footer>

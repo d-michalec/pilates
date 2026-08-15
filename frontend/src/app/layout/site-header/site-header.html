@@ -1,0 +1,74 @@
+<header
+  class="site-header"
+  [class.site-header-floating]="floating"
+  [class.site-header-light]="tone === 'light'"
+  [class.site-header-red]="tone === 'red'"
+  [class.site-header-brown]="tone === 'brown'"
+>
+  <button
+    class="menu-button"
+    type="button"
+    [attr.aria-label]="'menu.openAria' | t"
+    [attr.aria-expanded]="isMenuOpen()"
+    aria-controls="site-menu"
+    (click)="toggleMenu()"
+  >
+    <span class="menu-icon" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <span>{{ 'menu.open' | t }}</span>
+  </button>
+
+  <a class="brand-link" [routerLink]="'/' | localizePath" (click)="closeMenu()">BABA</a>
+
+  <!-- Przełącznik prowadzi do tej samej strony w drugim języku, nie na stronę główną. -->
+  <a
+    class="language-switch"
+    [routerLink]="otherLanguagePath()"
+    [attr.aria-label]="'language.switchAria' | t"
+    [attr.hreflang]="otherLanguage()"
+  >
+    <i class="pi pi-globe" aria-hidden="true"></i>
+    <span>{{ 'language.other' | t }}</span>
+  </a>
+</header>
+
+<div
+  id="site-menu"
+  class="menu-overlay"
+  [class.menu-overlay-open]="isMenuOpen()"
+  [attr.aria-hidden]="!isMenuOpen()"
+  [attr.inert]="!isMenuOpen() ? '' : null"
+  (click)="closeMenu()"
+>
+  <nav class="menu-panel" [attr.aria-label]="'menu.label' | t" (click)="$event.stopPropagation()">
+    <div class="menu-panel-header">
+      <span>BABA</span>
+      <button class="menu-close-button" type="button" [attr.aria-label]="'menu.closeAria' | t" (click)="closeMenu()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <a [routerLink]="'/' | localizePath" (click)="closeMenu()">{{ 'menu.home' | t }}</a>
+    <a [routerLink]="'/pilates' | localizePath" (click)="closeMenu()">{{ 'menu.pilates' | t }}</a>
+    <a [routerLink]="'/sauna' | localizePath" (click)="closeMenu()">{{ 'menu.sauna' | t }}</a>
+    <a [routerLink]="'/wydarzenia' | localizePath" (click)="closeMenu()">{{ 'menu.events' | t }}</a>
+    <a [routerLink]="'/bar' | localizePath" (click)="closeMenu()">{{ 'menu.bar' | t }}</a>
+    <a [routerLink]="'/grafik' | localizePath" (mouseenter)="warmSchedule()" (click)="closeMenu()">
+      {{ 'menu.schedule' | t }}
+    </a>
+    <a [routerLink]="'/kadra' | localizePath" (click)="closeMenu()">{{ 'menu.team' | t }}</a>
+    <a [routerLink]="'/faq' | localizePath" (click)="closeMenu()">{{ 'menu.faq' | t }}</a>
+    <a [routerLink]="'/kontakt' | localizePath" (click)="closeMenu()">{{ 'menu.contact' | t }}</a>
+    <a
+      class="menu-signup"
+      [routerLink]="'/grafik' | localizePath"
+      (mouseenter)="warmSchedule()"
+      (click)="closeMenu()"
+    >
+      {{ 'menu.signUp' | t }}
+    </a>
+  </nav>
+</div>

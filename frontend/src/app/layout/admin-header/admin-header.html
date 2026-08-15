@@ -1,0 +1,46 @@
+<header class="admin-header">
+  <div class="admin-header-top">
+    <a class="admin-brand" routerLink="/admin/landing">BABA</a>
+
+    <div class="admin-session">
+      @if (username()) {
+        <span class="admin-user">Zalogowano jako {{ username() }}</span>
+      }
+      <button class="admin-logout" type="button" (click)="logOut()">
+        <i class="pi pi-sign-out" aria-hidden="true"></i>
+        <span>Wyloguj</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="admin-nav" aria-label="Sekcje panelu">
+    @for (item of navItems; track item.path) {
+      <a
+        class="admin-nav-link"
+        [routerLink]="item.path"
+        routerLinkActive="admin-nav-link-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="pi {{ item.icon }}" aria-hidden="true"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+
+  <div class="admin-heading">
+    <div>
+      <span class="eyebrow">Panel admina</span>
+      <h1>{{ heading }}</h1>
+      @if (description) {
+        <p>{{ description }}</p>
+      }
+    </div>
+
+    @if (previewLink) {
+      <a class="admin-preview" [routerLink]="previewLink">
+        <i class="pi pi-external-link" aria-hidden="true"></i>
+        <span>Zobacz na stronie</span>
+      </a>
+    }
+  </div>
+</header>
