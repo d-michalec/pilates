@@ -1,110 +1,115 @@
 :host {
   display: block;
+  background: var(--baba-white);
+  color: var(--baba-red);
+}
+
+.team-page {
   min-height: 100dvh;
-  background: #fbf7f0;
-  color: #292522;
+  background: var(--baba-white);
 }
 
-.site-shell {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 26px 0 64px;
-}
-
-.site-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 64px;
-}
-
-a {
-  color: #514236;
-  font-weight: 800;
-  text-decoration: none;
-}
-
-.brand {
-  color: #292522;
-  font-size: 1.15rem;
-}
-
-.team-hero {
-  max-width: 760px;
-  margin-bottom: 34px;
-}
-
-.team-hero span {
-  display: block;
-  margin-bottom: 12px;
-  color: #74665a;
-  font-size: 0.84rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-h1,
-h2,
-p {
-  margin: 0;
-}
-
-h1 {
-  font-size: clamp(2.5rem, 7vw, 6.6rem);
-  line-height: 0.98;
-}
-
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 22px;
-}
-
-.team-card {
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
   overflow: hidden;
-  border: 1px solid #e3d7c8;
-  border-radius: 8px;
-  background: #fffdf8;
-}
-
-.team-card img {
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-}
-
-.team-card div {
-  padding: 18px;
-}
-
-.team-card h2 {
-  margin-bottom: 10px;
-  font-size: 1.35rem;
-}
-
-.team-card p,
-.state {
-  color: #6f6258;
-  line-height: 1.58;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .state {
-  max-width: 620px;
-  border-top: 1px solid #e3d7c8;
-  padding-top: 18px;
+  margin: 0;
+  padding: clamp(56px, 10vw, 120px) max(24px, calc((100vw - 1240px) / 2));
+  font-size: 1rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
 }
 
 .state-error {
-  color: #9f2f2f;
+  color: var(--baba-red);
 }
 
-@media (max-width: 560px) {
-  .site-shell {
-    width: min(100% - 20px, 1180px);
+/*
+ * Makieta: każda osoba zajmuje pas na pełną szerokość ekranu, podzielony na pół.
+ * Strony zamieniają się miejscami co osobę, a zdjęcie dochodzi do samej krawędzi.
+ */
+.team-list {
+  display: grid;
+}
+
+.team-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+}
+
+.team-copy {
+  padding: clamp(40px, 6vw, 96px) clamp(28px, 5vw, 88px);
+}
+
+.team-copy h2 {
+  margin: 0 0 clamp(18px, 2.5vw, 30px);
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--baba-red);
+}
+
+.team-copy p {
+  margin: 0 0 18px;
+  font-size: clamp(0.92rem, 1.05vw, 1rem);
+  line-height: 1.7;
+  text-align: justify;
+  color: color-mix(in srgb, var(--baba-red) 88%, transparent);
+}
+
+.team-copy p:last-child {
+  margin-bottom: 0;
+}
+
+.team-photo {
+  align-self: stretch;
+}
+
+.team-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: clamp(360px, 44vw, 700px);
+  object-fit: cover;
+  background: color-mix(in srgb, var(--baba-red) 8%, var(--baba-white));
+}
+
+/* Co druga osoba ma zdjęcie po lewej stronie. */
+.team-row-reversed .team-photo {
+  order: -1;
+}
+
+@media (max-width: 900px) {
+  .team-row,
+  .team-row-reversed {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .site-header {
-    margin-bottom: 42px;
+  /* Na wąskim ekranie zdjęcie zawsze idzie nad tekstem, żeby rytm był przewidywalny. */
+  .team-row .team-photo,
+  .team-row-reversed .team-photo {
+    order: -1;
+  }
+
+  /* Kwadrat zamiast 3:4 - przy 3:4 zdjęcie zajmowało cały ekran telefonu
+     i nazwisko było widoczne dopiero po przewinięciu. */
+  .team-photo img {
+    min-height: 0;
+    aspect-ratio: 1;
+  }
+
+  .team-copy p {
+    text-align: left;
   }
 }

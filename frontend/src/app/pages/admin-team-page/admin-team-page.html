@@ -1,31 +1,27 @@
 <main class="admin-shell">
-  <header class="admin-header">
-    <div>
-      <span class="eyebrow">Panel admina</span>
-      <h1>Kadra</h1>
-      <p>Dodawanie osob widocznych pozniej w publicznej zakladce kadra.</p>
-    </div>
+  <app-admin-header
+    heading="Kadra"
+    description="Osoby widoczne w publicznej zakładce kadra. Kolejność na liście odpowiada kolejności na stronie."
+    previewLink="/kadra"
+  />
 
-    <p-button
-      label="Podglad strony"
-      icon="pi pi-external-link"
-      severity="secondary"
-      [outlined]="true"
-      routerLink="/kadra"
-    />
-  </header>
-
-  <section class="admin-grid" aria-label="Zarzadzanie kadra">
+  <section class="admin-grid" aria-label="Zarządzanie kadrą">
     <p-card styleClass="admin-card editor-card">
-      <ng-template #title>Nowa osoba</ng-template>
-      <ng-template #subtitle>Zdjecie, imie i nazwisko oraz opis instruktorki.</ng-template>
+      <ng-template #title>{{ isEditing() ? 'Edycja osoby' : 'Nowa osoba' }}</ng-template>
+      <ng-template #subtitle>
+        {{
+          isEditing()
+            ? 'Zmieniasz dane osoby ' + (editedMember()?.fullName ?? '') + '.'
+            : 'Zdjęcie, imię i nazwisko oraz opis instruktorki.'
+        }}
+      </ng-template>
 
-      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(photoInput)">
         <div class="field">
-          <label for="fullName">Imie i nazwisko</label>
+          <label for="fullName">Imię i nazwisko</label>
           <input id="fullName" pInputText type="text" formControlName="fullName" autocomplete="name" />
           @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
-            <small class="field-error">Imie i nazwisko jest wymagane.</small>
+            <small class="field-error">Imię i nazwisko jest wymagane.</small>
           }
         </div>
 
@@ -37,8 +33,21 @@
           }
         </div>
 
+        <fieldset class="field-group-en">
+          <legend>Wersja angielska</legend>
+          <p class="field-hint">Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.</p>
+
+          <div class="field">
+            <label for="descriptionEn">Opis (EN)</label>
+            <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="8"></textarea>
+            @if (form.controls.descriptionEn.touched && form.controls.descriptionEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 4000 znaków.</small>
+            }
+          </div>
+        </fieldset>
+
         <div class="field">
-          <label>Zdjecie</label>
+          <label>Zdjęcie</label>
           <input
             #photoInput
             class="native-file-input"
@@ -50,7 +59,7 @@
           <div class="upload-control">
             <p-button
               type="button"
-              label="Wybierz zdjecie"
+              [label]="isEditing() ? 'Podmień zdjęcie' : 'Wybierz zdjęcie'"
               icon="pi pi-image"
               severity="secondary"
               [outlined]="true"
@@ -64,16 +73,26 @@
                 icon="pi pi-times"
                 severity="secondary"
                 [text]="true"
-                ariaLabel="Usun wybrane zdjecie"
+                ariaLabel="Usuń wybrane zdjęcie"
                 (click)="clearPhoto(photoInput)"
               />
             }
           </div>
+
+          @if (isEditing() && !selectedPhoto()) {
+            <small class="field-hint">Zostaw puste, żeby zachować dotychczasowe zdjęcie.</small>
+          }
         </div>
 
         @if (previewUrl()) {
           <figure class="photo-preview">
             <img [src]="previewUrl()" alt="" />
+            <figcaption>Nowe zdjęcie</figcaption>
+          </figure>
+        } @else if (isEditing() && editedMember(); as member) {
+          <figure class="photo-preview">
+            <img [src]="photoUrl(member)" [alt]="member.fullName" />
+            <figcaption>Obecne zdjęcie</figcaption>
           </figure>
         }
 
@@ -85,13 +104,26 @@
           <p-message severity="success" [text]="successMessage() ?? ''" />
         }
 
-        <p-button
-          type="submit"
-          label="Dodaj osobe"
-          icon="pi pi-plus"
-          [loading]="isSaving()"
-          [disabled]="isSaving()"
-        />
+        <div class="form-actions">
+          <p-button
+            type="submit"
+            [label]="isEditing() ? 'Zapisz zmiany' : 'Dodaj osobę'"
+            [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+
+          @if (isEditing()) {
+            <p-button
+              type="button"
+              label="Anuluj"
+              severity="secondary"
+              [text]="true"
+              [disabled]="isSaving()"
+              (click)="cancelEditing(photoInput)"
+            />
+          }
+        </div>
       </form>
     </p-card>
 
@@ -104,17 +136,63 @@
       </ng-template>
 
       @if (isLoading()) {
-        <p class="empty-state">Ladowanie...</p>
+        <p class="empty-state">Ładowanie...</p>
       } @else if (team().length === 0) {
-        <p class="empty-state">Brak dodanych osob.</p>
+        <p class="empty-state">Brak dodanych osób.</p>
       } @else {
         <div class="team-list">
           @for (member of team(); track member.id) {
-            <article class="team-list-item">
-              <img [src]="member.photoUrl" [alt]="member.fullName" />
-              <div>
+            <article class="team-list-item" [class.team-list-item-editing]="editedMemberId() === member.id">
+              <img [src]="photoUrl(member)" [alt]="member.fullName" />
+
+              <div class="team-list-item-body">
                 <h3>{{ member.fullName }}</h3>
                 <p>{{ member.description }}</p>
+                @if (!member.descriptionEn) {
+                  <span class="missing-en" title="Brak tłumaczenia - na /en pokaże się tekst polski">brak EN</span>
+                }
+              </div>
+
+              <div class="team-list-item-actions">
+                <div class="order-actions">
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-up"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń wyżej"
+                    [disabled]="isFirst(member) || reorderingId() !== null"
+                    (click)="move(member, -1)"
+                  />
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-down"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń niżej"
+                    [disabled]="isLast(member) || reorderingId() !== null"
+                    (click)="move(member, 1)"
+                  />
+                </div>
+
+                <p-button
+                  type="button"
+                  label="Edytuj"
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="startEditing(member)"
+                />
+                <p-button
+                  type="button"
+                  label="Usuń"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="askForDeletion(member)"
+                />
               </div>
             </article>
           }
@@ -122,4 +200,39 @@
       }
     </p-card>
   </section>
+
+  @if (memberPendingDeletion(); as member) {
+    <div class="confirm-backdrop" role="presentation" (click)="cancelDeletion()">
+      <div
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <h2 id="confirm-title">Usunąć osobę {{ member.fullName }}?</h2>
+        <p>Zdjęcie zostanie skasowane z dysku, a osoba zniknie z publicznej zakładki kadra. Tej operacji nie da się cofnąć.</p>
+
+        <div class="confirm-actions">
+          <p-button
+            type="button"
+            label="Anuluj"
+            severity="secondary"
+            [text]="true"
+            [disabled]="isSaving()"
+            (click)="cancelDeletion()"
+          />
+          <p-button
+            type="button"
+            label="Usuń"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+            (click)="confirmDeletion()"
+          />
+        </div>
+      </div>
+    </div>
+  }
 </main>

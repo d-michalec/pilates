@@ -5,12 +5,17 @@ import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+
+import pl.babastudiobe.media.MediaAsset;
 
 @Entity
 @Table(name = "team_members")
@@ -26,14 +31,16 @@ class TeamMember {
 	@Column(nullable = false, columnDefinition = "text")
 	private String description;
 
-	@Column(name = "photo_path", nullable = false)
-	private String photoPath;
+	@Column(name = "sort_order", nullable = false)
+	private Integer sortOrder;
 
-	@Column(name = "photo_content_type", nullable = false, length = 80)
-	private String photoContentType;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "image_id", nullable = false)
+	private MediaAsset image;
 
-	@Column(name = "photo_size", nullable = false)
-	private long photoSize;
+
+	@Column(name = "description_en", columnDefinition = "text")
+	private String descriptionEn;
 
 	@Column(name = "created_at", nullable = false)
 	private OffsetDateTime createdAt;
@@ -44,12 +51,12 @@ class TeamMember {
 	protected TeamMember() {
 	}
 
-	TeamMember(String fullName, String description, String photoPath, String photoContentType, long photoSize) {
+	TeamMember(String fullName, String description, String descriptionEn, Integer sortOrder, MediaAsset image) {
 		this.fullName = fullName;
 		this.description = description;
-		this.photoPath = photoPath;
-		this.photoContentType = photoContentType;
-		this.photoSize = photoSize;
+		this.descriptionEn = descriptionEn;
+		this.sortOrder = sortOrder;
+		this.image = image;
 	}
 
 	@PrePersist
@@ -64,6 +71,23 @@ class TeamMember {
 		this.updatedAt = OffsetDateTime.now();
 	}
 
+	void updateDetails(String fullName, String description, String descriptionEn) {
+		this.fullName = fullName;
+		this.description = description;
+		this.descriptionEn = descriptionEn;
+	}
+
+	/** Zwraca poprzednie zdjęcie, żeby wywołujący mógł posprzątać plik po podmianie. */
+	MediaAsset replaceImage(MediaAsset newImage) {
+		MediaAsset previousImage = this.image;
+		this.image = newImage;
+		return previousImage;
+	}
+
+	void assignSortOrder(int sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
 	UUID getId() {
 		return id;
 	}
@@ -76,16 +100,12 @@ class TeamMember {
 		return description;
 	}
 
-	String getPhotoPath() {
-		return photoPath;
+	Integer getSortOrder() {
+		return sortOrder;
 	}
 
-	String getPhotoContentType() {
-		return photoContentType;
-	}
-
-	long getPhotoSize() {
-		return photoSize;
+	MediaAsset getImage() {
+		return image;
 	}
 
 	OffsetDateTime getCreatedAt() {
@@ -94,5 +114,9 @@ class TeamMember {
 
 	OffsetDateTime getUpdatedAt() {
 		return updatedAt;
+	}
+
+	String getDescriptionEn() {
+		return descriptionEn;
 	}
 }

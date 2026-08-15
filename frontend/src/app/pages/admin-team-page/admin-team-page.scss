@@ -21,6 +21,13 @@
   margin-bottom: 28px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .admin-header p {
   max-width: 560px;
   margin: 12px 0 0;
@@ -140,7 +147,7 @@ textarea[pTextarea] {
 
 .team-list-item {
   display: grid;
-  grid-template-columns: 112px 1fr;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
   gap: 16px;
   align-items: start;
   border-top: 1px solid #eadfce;
@@ -195,4 +202,142 @@ textarea[pTextarea] {
   .team-list-item img {
     width: 82px;
   }
+}
+
+.field-hint {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.photo-preview figcaption {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--baba-red) 55%, transparent);
+}
+
+
+.team-list-item-editing {
+  outline: 2px solid var(--baba-red);
+  outline-offset: 4px;
+}
+
+.team-list-item-body {
+  min-width: 0;
+}
+
+.team-list-item-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-actions {
+  display: flex;
+  flex-direction: column;
+  grid-row: span 2;
+}
+
+.team-list-item-actions p-button {
+  display: block;
+}
+
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(59, 29, 23, 0.5);
+}
+
+.confirm-dialog {
+  width: min(100%, 480px);
+  padding: 28px;
+  background: var(--baba-white);
+  border: 1px solid color-mix(in srgb, var(--baba-red) 20%, transparent);
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 12px;
+  font-family: var(--baba-serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--baba-red);
+}
+
+.confirm-dialog p {
+  margin: 0 0 22px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--baba-red) 74%, transparent);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .team-list-item {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .team-list-item-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: auto auto auto;
+    justify-content: start;
+  }
+
+  .order-actions {
+    flex-direction: row;
+    grid-row: auto;
+  }
+}
+
+/* Blok tłumaczeń wydzielamy wizualnie, żeby był czytelnie oddzielony od treści polskiej. */
+.field-group-en {
+  margin: 0;
+  padding: 18px 18px 4px;
+  border: 1px dashed color-mix(in srgb, var(--baba-red) 35%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--baba-red) 4%, transparent);
+
+  legend {
+    padding: 0 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--baba-red);
+  }
+
+  > .field-hint {
+    margin: 0 0 14px;
+  }
+}
+
+/* Sygnalizuje wpisy bez tłumaczenia, żeby było widać, co zostało do uzupełnienia. */
+.missing-en {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--baba-red) 30%, transparent);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--baba-red) 75%, transparent);
 }

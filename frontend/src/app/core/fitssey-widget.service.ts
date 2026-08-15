@@ -25,6 +25,10 @@ export class FitsseyWidgetService {
   constructor(@Inject(DOCUMENT) private readonly document: Document) {}
 
   init(studioUuid: string) {
+    if (typeof window === 'undefined') {
+      return Promise.resolve(false);
+    }
+
     const normalizedStudioUuid = studioUuid.trim();
 
     if (!normalizedStudioUuid) {
@@ -41,7 +45,15 @@ export class FitsseyWidgetService {
     return this.loadScript().then(() => true);
   }
 
+  preload(studioUuid: string) {
+    return this.init(studioUuid).catch(() => false);
+  }
+
   mounted() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     window.lb?.('mounted');
   }
 
@@ -54,7 +66,16 @@ export class FitsseyWidgetService {
       const existingScript = this.document.getElementById('fitssey-widget-script') as HTMLScriptElement | null;
 
       if (existingScript) {
-        existingScript.remove();
+        if (existingScript.dataset['loaded'] === 'true') {
+          resolve();
+          return;
+        }
+
+        existingScript.addEventListener('load', () => resolve(), { once: true });
+        existingScript.addEventListener('error', () => reject(new Error('Nie udało się załadować widgetu Fitssey.')), {
+          once: true
+        });
+        return;
       }
 
       const script = this.document.createElement('script');
@@ -65,7 +86,7 @@ export class FitsseyWidgetService {
         script.dataset['loaded'] = 'true';
         resolve();
       };
-      script.onerror = () => reject(new Error('Nie udalo sie zaladowac widgetu Fitssey.'));
+      script.onerror = () => reject(new Error('Nie udało się załadować widgetu Fitssey.'));
       this.document.head.appendChild(script);
     });
 
@@ -73,6 +94,12 @@ export class FitsseyWidgetService {
   }
 
   private installCommandQueue() {
+    if (window.lb) {
+      window.FitsseyWidget = 'lb';
+      window.lb.l = window.lb.l ?? Date.now();
+      return;
+    }
+
     const command = ((...args: unknown[]) => {
       command.q = command.q ?? [];
       command.q.push(args);

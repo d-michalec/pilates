@@ -13,9 +13,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 class WebConfig implements WebMvcConfigurer {
 
 	private final Path uploadsRoot;
+	private final String[] allowedOrigins;
 
-	WebConfig(@Value("${app.uploads-dir:../uploads}") String uploadsDir) {
+	WebConfig(
+			@Value("${app.uploads-dir:../uploads}") String uploadsDir,
+			@Value("${app.cors.allowed-origins:http://localhost:4200}") String[] allowedOrigins
+	) {
 		this.uploadsRoot = Paths.get(uploadsDir).toAbsolutePath().normalize();
+		this.allowedOrigins = allowedOrigins;
 	}
 
 	@Override
@@ -29,7 +34,7 @@ class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry
 				.addMapping("/**")
-				.allowedOrigins("http://localhost:4200")
+				.allowedOrigins(allowedOrigins)
 				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 				.allowedHeaders("*");
 	}

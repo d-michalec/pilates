@@ -1,4 +1,5 @@
 .embedded-git-backups/
+.tmp-makieta-pages/
 
 # OS / editors
 .DS_Store

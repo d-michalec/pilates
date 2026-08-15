@@ -1,31 +1,33 @@
-<main class="site-shell">
-  <header class="site-header">
-    <a class="brand" routerLink="/kadra">Babastudio</a>
-    <a routerLink="/admin/kadra">Admin</a>
-  </header>
+<main class="team-page">
+  <app-site-header tone="red" />
 
-  <section class="team-hero">
-    <span>Kadra</span>
-    <h1>Osoby, ktore prowadza zajecia</h1>
-  </section>
+  <h1 class="sr-only">{{ 'team.srHeading' | t }}</h1>
 
   @if (isLoading()) {
-    <p class="state">Ladowanie...</p>
+    <p class="state">{{ 'state.loading' | t }}</p>
   } @else if (errorMessage()) {
     <p class="state state-error">{{ errorMessage() }}</p>
   } @else if (team().length === 0) {
-    <p class="state">Kadra pojawi sie wkrotce.</p>
+    <p class="state">{{ 'team.empty' | t }}</p>
   } @else {
-    <section class="team-grid" aria-label="Kadra">
-      @for (member of team(); track member.id) {
-        <article class="team-card">
-          <img [src]="member.photoUrl" [alt]="member.fullName" />
-          <div>
+    <section class="team-list" aria-label="Kadra">
+      @for (member of team(); track member.id; let index = $index) {
+        <article class="team-row" [class.team-row-reversed]="index % 2 === 1">
+          <div class="team-copy">
             <h2>{{ member.fullName }}</h2>
-            <p>{{ member.description }}</p>
+
+            @for (paragraph of paragraphs(content(member.description, member.descriptionEn)); track $index) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
+
+          <div class="team-photo">
+            <img [src]="member.image.url" [alt]="member.fullName" loading="lazy" decoding="async" />
           </div>
         </article>
       }
     </section>
   }
+
+  <app-site-footer />
 </main>

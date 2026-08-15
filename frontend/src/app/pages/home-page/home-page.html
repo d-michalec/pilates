@@ -1,28 +1,173 @@
-<main class="home-shell">
-  <header class="site-header">
-    <a class="brand" routerLink="/">Babastudio</a>
-    <nav>
-      <a routerLink="/kadra">Kadra</a>
-      <a routerLink="/admin/kadra">Admin</a>
-    </nav>
-  </header>
+<main class="landing-page">
+  <section id="start" class="hero" [class.hero-empty]="!landing()?.heroImage">
+    @if (landing()?.heroImage?.url) {
+      <img
+        class="hero-image"
+        [src]="landing()?.heroImage?.url"
+        [alt]="content(landing()?.imageAlt, landing()?.imageAltEn)"
+        decoding="async"
+        fetchpriority="high"
+      />
+    }
 
-  <section class="hero">
+    <app-site-header tone="light" [floating]="true" />
+
+    <div class="hero-content">
+      <h1>{{ content(landing()?.title, landing()?.titleEn) || 'BABA' }}</h1>
+      @if (isExternalCta()) {
+        <a class="hero-cta" [href]="ctaUrl()" rel="noopener" (mouseenter)="warmSchedule()" (focus)="warmSchedule()">
+          {{ content(landing()?.ctaLabel, landing()?.ctaLabelEn) || ('landing.ctaFallback' | t) }}
+        </a>
+      } @else {
+        <a class="hero-cta" [routerLink]="ctaUrl()" (mouseenter)="warmSchedule()" (focus)="warmSchedule()">
+          {{ content(landing()?.ctaLabel, landing()?.ctaLabelEn) || ('landing.ctaFallback' | t) }}
+        </a>
+      }
+    </div>
+
+  </section>
+
+  @if (galleryImages().length > 0) {
+    <section id="galeria" class="gallery-section" aria-label="Galeria Babastudio">
+      <div class="gallery-viewport" #galleryViewport>
+        <div class="gallery-track">
+          @for (galleryImage of carouselImages(); track galleryImage.key) {
+          <figure class="gallery-item">
+            <img
+              [src]="galleryImageUrl(galleryImage.image)"
+              [alt]="'Zdjęcie Babastudio ' + ($index + 1)"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          }
+        </div>
+      </div>
+
+      <div class="gallery-controls" aria-label="Sterowanie karuzelą">
+        <button type="button" title="Poprzednie zdjęcia" (click)="scrollGallery(-1)">
+          <i class="pi pi-arrow-left"></i>
+        </button>
+        <button type="button" title="Następne zdjęcia" (click)="scrollGallery(1)">
+          <i class="pi pi-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+  }
+
+  <section id="o-marce" class="brand-story" aria-label="O marce">
+    <div class="story-intro">
+      <span>{{ 'landing.about.label' | t }}</span>
+      <p>{{ 'landing.about.intro' | t }}</p>
+    </div>
+
+    <div class="story-columns">
+      <p>{{ 'landing.about.first' | t }}</p>
+      <p>{{ 'landing.about.second' | t }}</p>
+    </div>
+  </section>
+
+  <section id="oferta" class="offer-section" aria-label="Co przygotowaliśmy">
+    @if (offerImageUrl(); as backgroundUrl) {
+      <img class="offer-background" [src]="backgroundUrl" [alt]="offer()?.imageAlt ?? ''" loading="lazy" decoding="async" />
+    }
+
+    <div class="offer-inner">
+      <span class="offer-label">{{ 'landing.offer.label' | t }}</span>
+
+      <div class="offer-grid">
+        <article>
+          <h3>{{ 'landing.offer.pilates.title' | t }}</h3>
+          <p>{{ 'landing.offer.pilates.text' | t }}</p>
+        </article>
+
+        <article>
+          <h3>{{ 'landing.offer.sauna.title' | t }}</h3>
+          <p>{{ 'landing.offer.sauna.text' | t }}</p>
+        </article>
+
+        <article>
+          <h3>{{ 'landing.offer.community.title' | t }}</h3>
+          <p>{{ 'landing.offer.community.text' | t }}</p>
+        </article>
+
+        <article>
+          <h3>{{ 'landing.offer.bar.title' | t }}</h3>
+          <p>{{ 'landing.offer.bar.text' | t }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontakt" class="questions-section" aria-label="Kontakt">
     <div>
-      <span>Pilates studio</span>
-      <h1>Ruch, oddech i spokojny rytm zajec</h1>
-      <p>Na stronie glownej bedzie widoczny grafik Fitssey, dzieki czemu zapis na zajecia zostanie po stronie sprawdzonego widgetu.</p>
+      <span>{{ 'landing.questions.label' | t }}</span>
+      <h2>{{ 'landing.questions.heading' | t }}</h2>
     </div>
 
-    <p-button label="Zobacz kadre" icon="pi pi-users" routerLink="/kadra" />
-  </section>
-
-  <section class="schedule-section" aria-label="Grafik zajec">
-    <div class="section-heading">
-      <span>Grafik</span>
-      <h2>Najblizsze zajecia</h2>
+    <div class="question-actions">
+      <a class="outline-link" [routerLink]="'/faq' | localizePath">{{ 'landing.questions.faq' | t }}</a>
+      <a class="outline-link" [routerLink]="'/kontakt' | localizePath">{{ 'menu.contact' | t }}</a>
+      @if (isExternalCta()) {
+        <a class="solid-link" [href]="ctaUrl()" rel="noopener" (mouseenter)="warmSchedule()">{{ 'landing.questions.schedule' | t }}</a>
+      } @else {
+        <a class="solid-link" [routerLink]="ctaUrl()" (mouseenter)="warmSchedule()">{{ 'landing.questions.schedule' | t }}</a>
+      }
     </div>
 
-    <app-fitssey-widget widget="schedule" />
+    <form class="contact-form" [formGroup]="contactForm" (ngSubmit)="submitContact()">
+      <div class="contact-grid">
+        <label>
+          <span>{{ 'contact.name' | t }}</span>
+          <input pInputText type="text" formControlName="name" autocomplete="name" />
+        </label>
+
+        <label>
+          <span>{{ 'contact.email' | t }}</span>
+          <input pInputText type="email" formControlName="email" autocomplete="email" />
+        </label>
+
+        <label>
+          <span>{{ 'contact.phone' | t }}</span>
+          <input pInputText type="tel" formControlName="phone" autocomplete="tel" />
+        </label>
+
+        <label>
+          <span>{{ 'contact.subject' | t }}</span>
+          <input pInputText type="text" formControlName="subject" />
+        </label>
+      </div>
+
+      <label>
+        <span>{{ 'contact.message' | t }}</span>
+        <textarea pTextarea formControlName="message" rows="6"></textarea>
+      </label>
+
+      <div class="honeypot" aria-hidden="true">
+        <label>
+          {{ 'contact.website' | t }}
+          <input pInputText type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      @if (contactErrorMessage()) {
+        <p-message severity="error" [text]="contactErrorMessage() ?? ''" />
+      }
+
+      @if (contactSuccessMessage()) {
+        <p-message severity="success" [text]="contactSuccessMessage() ?? ''" />
+      }
+
+      <button
+        pButton
+        type="submit"
+        [label]="'contact.send' | t"
+        icon="pi pi-send"
+        [loading]="isSendingContact()"
+        [disabled]="isSendingContact()"
+      ></button>
+    </form>
   </section>
+
+  <app-site-footer />
 </main>

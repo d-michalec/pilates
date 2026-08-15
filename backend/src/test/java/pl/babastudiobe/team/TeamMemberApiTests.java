@@ -36,7 +36,7 @@ class TeamMemberApiTests {
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.fullName").value("Anna Kowalska"))
 				.andExpect(jsonPath("$.description").value("Instruktorka pilatesu"))
-				.andExpect(jsonPath("$.photoUrl").value(startsWith("/uploads/team/")));
+				.andExpect(jsonPath("$.image.url").value(startsWith("/uploads/team/")));
 
 		mockMvc.perform(get("/api/team"))
 				.andExpect(status().isOk())

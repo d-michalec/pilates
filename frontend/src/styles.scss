@@ -1,9 +1,17 @@
 @import 'primeicons/primeicons.css';
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 
 :root {
   color-scheme: light;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f6f2eb;
+  --baba-brown: #3b1d17;
+  --baba-red: #942319;
+  --baba-blue: #b7cfe6;
+  --baba-olive: #949474;
+  --baba-white: #ffffff;
+  --baba-serif: "Instrument Serif", Georgia, serif;
+  --baba-sans: "Neue Plak", "Arial Black", Arial, sans-serif;
+  font-family: var(--baba-sans);
+  background: var(--baba-white);
 }
 
 * {

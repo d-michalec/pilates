@@ -34,10 +34,10 @@ export class FitsseyWidget implements AfterViewInit {
       .init(FITSSEY_STUDIO_UUID)
       .then(() => {
         this.fitsseyWidgetService.mounted();
-        window.setTimeout(() => this.isLoading.set(false), 900);
+        this.isLoading.set(false);
       })
       .catch(() => {
-        this.errorMessage.set('Nie udalo sie zaladowac widgetu Fitssey.');
+        this.errorMessage.set('Nie udało się załadować widgetu Fitssey.');
         this.isLoading.set(false);
       });
   }
