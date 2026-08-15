@@ -1,0 +1,120 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Kontakt"
+    description="Zdjęcie na stronie kontaktu. Dane teleadresowe są stałe i nie zmieniają się z panelu."
+    previewLink="/kontakt"
+  />
+
+  <section class="admin-grid" aria-label="Zarządzanie stroną kontaktu">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>Zdjęcie</ng-template>
+      <ng-template #subtitle>Na stronie wyświetla się w odcieniach szarości, zgodnie z projektem.</ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else {
+        <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput)">
+          <div class="field">
+            <label for="imageAlt">Opis zdjęcia</label>
+            <input id="imageAlt" pInputText type="text" formControlName="imageAlt" />
+            <small class="field-hint">Czyta go czytnik ekranu, gdy zdjęcie się nie wczyta.</small>
+            @if (form.controls.imageAlt.touched && form.controls.imageAlt.invalid) {
+              <small class="field-error">Opis jest wymagany i może mieć do 180 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label>Plik</label>
+            <input
+              #imageInput
+              class="native-file-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onImageSelected($event)"
+            />
+
+            <div class="upload-control">
+              <p-button
+                type="button"
+                label="Wybierz zdjęcie"
+                icon="pi pi-image"
+                severity="secondary"
+                [outlined]="true"
+                (click)="imageInput.click()"
+              />
+              @if (selectedImage()) {
+                <span class="file-name">{{ selectedImage()?.name }}</span>
+                <p-button
+                  type="button"
+                  icon="pi pi-times"
+                  severity="secondary"
+                  [text]="true"
+                  ariaLabel="Usuń wybrane zdjęcie"
+                  (click)="clearImage(imageInput)"
+                />
+              }
+            </div>
+
+            @if (shouldRemoveImage()) {
+              <small class="field-hint">Zdjęcie zostanie usunięte po zapisaniu zmian.</small>
+              <p-button
+                type="button"
+                label="Cofnij usunięcie"
+                severity="secondary"
+                [text]="true"
+                (click)="cancelImageRemoval()"
+              />
+            } @else if (!selectedImage()) {
+              <small class="field-hint">Zostaw puste, żeby zachować dotychczasowe zdjęcie.</small>
+              @if (currentImageUrl()) {
+                <p-button
+                  type="button"
+                  label="Usuń zdjęcie"
+                  severity="danger"
+                  [text]="true"
+                  (click)="markImageForRemoval(imageInput)"
+                />
+              }
+            }
+          </div>
+
+          <fieldset class="field-group-en">
+            <legend>Wersja angielska</legend>
+            <p class="field-hint">Pole opcjonalne. Puste oznacza, że na stronie /en pokaże się tekst polski.</p>
+
+            <div class="field">
+              <label for="imageAltEn">Opis zdjęcia (EN)</label>
+              <input id="imageAltEn" pInputText type="text" formControlName="imageAltEn" />
+            </div>
+          </fieldset>
+
+          @if (previewUrl()) {
+            <figure class="photo-preview">
+              <img [src]="previewUrl()" alt="" />
+              <figcaption>Nowe zdjęcie</figcaption>
+            </figure>
+          } @else if (currentImageUrl(); as url) {
+            <figure class="photo-preview">
+              <img [src]="url" alt="" />
+              <figcaption>Obecne zdjęcie</figcaption>
+            </figure>
+          } @else {
+            <p class="empty-state">Strona kontaktu nie ma jeszcze zdjęcia.</p>
+          }
+
+          @if (errorMessage()) {
+            <p-message severity="error" [text]="errorMessage() ?? ''" />
+          }
+
+          @if (successMessage()) {
+            <p-message severity="success" [text]="successMessage() ?? ''" />
+          }
+
+          <div class="form-actions">
+            <p-button type="submit" label="Zapisz zmiany" [loading]="isSaving()" [disabled]="isSaving()" />
+          </div>
+        </form>
+      }
+    </p-card>
+  </section>
+</main>

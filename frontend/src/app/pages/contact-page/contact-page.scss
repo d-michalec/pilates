@@ -1,71 +1,95 @@
 :host {
   display: block;
   min-height: 100dvh;
-  background: var(--baba-white);
-  color: var(--baba-red);
-}
-
-.contact-page {
-  min-height: 100dvh;
-  background: var(--baba-white);
-}
-
-.contact-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1fr);
-  min-height: clamp(420px, 52vw, 640px);
   background: var(--baba-olive);
   color: var(--baba-white);
 }
 
+/*
+ * Oliwka sięga samej góry strony, bo nagłówek w wariancie jasnym ma biały tekst
+ * na przezroczystym tle - na białym tle byłby niewidoczny.
+ */
+.contact-page {
+  min-height: 100dvh;
+  background: var(--baba-olive);
+}
+
+.contact-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(320px, 1fr);
+  gap: clamp(32px, 6vw, 90px);
+  align-items: start;
+  padding: clamp(40px, 7vw, 96px) max(24px, calc((100vw - 1320px) / 2)) clamp(64px, 9vw, 128px);
+  color: var(--baba-white);
+}
+
 .contact-image {
-  min-height: 420px;
+  overflow: hidden;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1.22;
+    object-fit: cover;
+    /* Makieta pokazuje zdjęcie czarno-białe. */
+    filter: grayscale(1);
+  }
+}
+
+.contact-image-placeholder {
+  display: block;
+  aspect-ratio: 1 / 1.22;
   background:
     linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
-    radial-gradient(circle at 48% 42%, color-mix(in srgb, var(--baba-white) 38%, transparent) 0 8%, transparent 9%),
     linear-gradient(135deg, var(--baba-brown), var(--baba-olive));
 }
 
+/* Cała kolumna z danymi jest wyrównana do prawej krawędzi, tak jak w makiecie. */
 .contact-copy {
   display: grid;
-  align-content: center;
-  gap: clamp(34px, 5vw, 62px);
-  padding: clamp(44px, 8vw, 104px);
+  gap: clamp(38px, 5vw, 64px);
+  padding-top: clamp(24px, 4vw, 56px);
+  text-align: right;
 }
 
 h1,
-h2,
 p,
 dl,
 dd {
   margin: 0;
 }
 
+/* W makiecie "KONTAKT" to drobna etykieta, a nie wielki napis. */
 h1 {
-  font-family: var(--baba-serif);
-  font-size: clamp(5rem, 15vw, 13rem);
-  font-weight: 400;
-  line-height: 0.78;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 dl {
   display: grid;
-  gap: 28px;
+  gap: clamp(26px, 3vw, 40px);
 }
 
 dt {
-  margin-bottom: 9px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: var(--baba-serif);
+  font-size: clamp(0.95rem, 1.3vw, 1.12rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  /* Etykiety sekcji idą małą literą, szeryfowo - inaczej niż same dane. */
+  text-transform: none;
+  opacity: 0.85;
 }
 
 dd,
 dd a {
   color: inherit;
-  font-size: clamp(1.2rem, 2.4vw, 2rem);
-  line-height: 1.1;
+  font-size: clamp(1.02rem, 1.5vw, 1.28rem);
+  font-weight: 700;
+  line-height: 1.45;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -74,95 +98,13 @@ dd a:hover {
   text-decoration: underline;
 }
 
-.contact-form-section {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(360px, 1fr);
-  gap: clamp(34px, 7vw, 96px);
-  align-items: start;
-  padding: clamp(64px, 9vw, 124px) max(24px, calc((100vw - 1180px) / 2));
-}
-
-.contact-form-section > div > span {
-  display: block;
-  margin-bottom: 16px;
-  font-size: 0.84rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-h2 {
+/* Adres jest lżejszy i wyraźnie oddzielony od reszty. */
+address {
+  margin-top: clamp(40px, 8vw, 120px);
   font-family: var(--baba-serif);
-  font-size: clamp(3.2rem, 9vw, 8rem);
-  font-weight: 400;
-  line-height: 0.86;
-  text-transform: uppercase;
-}
-
-.contact-form-section p {
-  max-width: 420px;
-  margin-top: 24px;
-  color: var(--baba-brown);
-  line-height: 1.62;
-}
-
-.contact-form {
-  position: relative;
-  display: grid;
-  gap: 16px;
-}
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.contact-form label {
-  display: grid;
-  gap: 8px;
-}
-
-.contact-form label > span {
-  font-size: 0.76rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  border: 1px solid var(--baba-red);
-  border-radius: 0;
-  background: transparent;
-  color: var(--baba-brown);
-  font: inherit;
-}
-
-.contact-form input {
-  min-height: 46px;
-}
-
-.contact-form textarea {
-  min-height: 150px;
-  resize: vertical;
-}
-
-.contact-form button {
-  justify-self: start;
-  border-radius: 0;
-  background: var(--baba-red);
-  border-color: var(--baba-red);
-  color: var(--baba-white);
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.honeypot {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+  font-size: clamp(1.15rem, 1.9vw, 1.62rem);
+  font-style: normal;
+  line-height: 1.45;
 }
 
 @media (max-width: 820px) {
@@ -170,18 +112,18 @@ h2 {
    * minmax(0, 1fr) zamiast 1fr, bo samo 1fr nie zejdzie poniżej szerokości
    * min-content, a długie adresy e-mail są nierozrywalne i rozpychały kolumnę.
    */
-  .contact-hero,
-  .contact-form-section,
-  .contact-grid {
+  .contact-hero {
     grid-template-columns: minmax(0, 1fr);
+    padding-bottom: clamp(48px, 12vw, 80px);
   }
 
-  /* Dodatkowo pozwalamy łamać długie adresy, żeby nie wystawały z kolumny. */
   .contact-copy {
+    /* Na wąskim ekranie wyrównanie do prawej jest męczące w czytaniu. */
+    text-align: left;
     overflow-wrap: anywhere;
   }
 
-  .contact-image {
-    min-height: 260px;
+  address {
+    margin-top: 8px;
   }
 }

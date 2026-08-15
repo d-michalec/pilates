@@ -1,0 +1,119 @@
+/* Style panelu kontaktu - ten sam język wizualny co pozostałe strony panelu. */
+
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: color-mix(in srgb, var(--baba-blue) 18%, var(--baba-white));
+  color: var(--baba-red);
+}
+
+.admin-shell {
+  width: min(100% - 48px, 1240px);
+  margin: 0 auto;
+  padding: 34px 0 72px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.field-hint {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.native-file-input {
+  display: none;
+}
+
+.upload-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.file-name {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+}
+
+.photo-preview {
+  margin: 0;
+}
+
+.photo-preview img {
+  display: block;
+  width: 180px;
+  border-radius: 8px;
+}
+
+.photo-preview figcaption {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--baba-red) 55%, transparent);
+}
+
+.empty-state {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--baba-red) 66%, transparent);
+}
+
+.admin-grid {
+  display: grid;
+  /* Jedno pole do wypełnienia, więc karta nie musi zajmować całej szerokości. */
+  grid-template-columns: minmax(0, 680px);
+  gap: 24px;
+  align-items: start;
+}
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field-error {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--baba-red);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Blok tłumaczeń wydzielamy wizualnie, tak jak w pozostałych formularzach panelu. */
+.field-group-en {
+  margin: 0;
+  padding: 18px 18px 4px;
+  border: 1px dashed color-mix(in srgb, var(--baba-red) 35%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--baba-red) 4%, transparent);
+
+  legend {
+    padding: 0 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--baba-red);
+  }
+
+  > .field-hint {
+    margin: 0 0 14px;
+  }
+}

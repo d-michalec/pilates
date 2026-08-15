@@ -2,7 +2,14 @@
   <app-site-header tone="light" />
 
   <section class="contact-hero" aria-label="Kontakt">
-    <div class="contact-image" aria-hidden="true"></div>
+    <div class="contact-image">
+      @if (imageUrl(); as url) {
+        <img [src]="url" [alt]="imageAlt()" decoding="async" fetchpriority="high" />
+      } @else {
+        <span class="contact-image-placeholder" aria-hidden="true"></span>
+      }
+    </div>
+
     <div class="contact-copy">
       <h1>{{ 'contactPage.title' | t }}</h1>
 
@@ -10,79 +17,16 @@
         <div>
           <dt>{{ 'contactPage.general' | t }}</dt>
           <dd><a [href]="'mailto:' + kontakt.email">{{ kontakt.email }}</a></dd>
-          <dd><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phone }}</a></dd>
+          <dd><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phoneDisplay }}</a></dd>
         </div>
         <div>
           <dt>{{ 'contactPage.media' | t }}</dt>
           <dd><a [href]="'mailto:' + kontakt.mediaEmail">{{ kontakt.mediaEmail }}</a></dd>
         </div>
-        <div>
-          <dt>{{ 'contactPage.address' | t }}</dt>
-          <dd>{{ kontakt.street }},<br />{{ kontakt.city }}</dd>
-        </div>
       </dl>
+
+      <address>{{ kontakt.street }},<br />{{ kontakt.city }}</address>
     </div>
-  </section>
-
-  <section class="contact-form-section" aria-label="Formularz kontaktowy">
-    <div>
-      <span>{{ 'contactPage.formLead' | t }}</span>
-      <h2>{{ 'contactPage.formHeading' | t }}</h2>
-      <p>{{ 'contactPage.formText' | t }}</p>
-    </div>
-
-    <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()">
-      <div class="contact-grid">
-        <label>
-          <span>{{ 'contact.name' | t }}</span>
-          <input pInputText type="text" formControlName="name" autocomplete="name" />
-        </label>
-
-        <label>
-          <span>{{ 'contact.phone' | t }}</span>
-          <input pInputText type="tel" formControlName="phone" autocomplete="tel" />
-        </label>
-      </div>
-
-      <label>
-        <span>{{ 'contact.email' | t }}</span>
-        <input pInputText type="email" formControlName="email" autocomplete="email" />
-      </label>
-
-      <label>
-        <span>{{ 'contact.subject' | t }}</span>
-        <input pInputText type="text" formControlName="subject" />
-      </label>
-
-      <label>
-        <span>{{ 'contact.message' | t }}</span>
-        <textarea pTextarea formControlName="message" rows="6"></textarea>
-      </label>
-
-      <div class="honeypot" aria-hidden="true">
-        <label>
-          Strona internetowa
-          <input pInputText type="text" formControlName="website" tabindex="-1" autocomplete="off" />
-        </label>
-      </div>
-
-      @if (errorMessage()) {
-        <p-message severity="error" [text]="errorMessage() ?? ''" />
-      }
-
-      @if (successMessage()) {
-        <p-message severity="success" [text]="successMessage() ?? ''" />
-      }
-
-      <button
-        pButton
-        type="submit"
-        [label]="'contact.send' | t"
-        icon="pi pi-send"
-        [loading]="isSending()"
-        [disabled]="isSending()"
-      ></button>
-    </form>
   </section>
 
   <app-site-footer />

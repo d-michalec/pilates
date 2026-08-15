@@ -13,8 +13,11 @@ export const CONTACT_DETAILS = {
 	email: 'biuro@babapilates.pl',
 	mediaEmail: 'management@babapilates.pl',
 
-	/** Wersja do pokazania człowiekowi. */
+	/** Wersja ze stopki - makieta pokazuje tam numer bez kierunkowego. */
 	phone: '123 456 789',
+
+	/** Wersja ze strony kontaktu - makieta pokazuje tam numer z kierunkowym. */
+	phoneDisplay: '+48 123 456 789',
 
 	/** Wersja do odnośnika tel: - bez spacji, z numerem kierunkowym kraju. */
 	phoneLink: '+48123456789',

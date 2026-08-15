@@ -30,6 +30,7 @@ export class AdminHeader {
     { path: '/admin/sauna', label: 'Sauna', icon: 'pi-sun' },
     { path: '/admin/bar', label: 'Bar', icon: 'pi-shopping-bag' },
     { path: '/admin/faq', label: 'FAQ', icon: 'pi-question-circle' },
+    { path: '/admin/kontakt', label: 'Kontakt', icon: 'pi-map-marker' },
     { path: '/admin/newsletter', label: 'Newsletter', icon: 'pi-envelope' }
   ];
 

@@ -4,6 +4,7 @@ import { adminGuard } from './core/admin.guard';
 import { AdminEventsPage } from './pages/admin-events-page/admin-events-page';
 import { AdminClassesPage } from './pages/admin-classes-page/admin-classes-page';
 import { AdminLoginPage } from './pages/admin-login-page/admin-login-page';
+import { AdminContactPage } from './pages/admin-contact-page/admin-contact-page';
 import { AdminFaqPage } from './pages/admin-faq-page/admin-faq-page';
 import { AdminSaunaPage } from './pages/admin-sauna-page/admin-sauna-page';
 import { AdminBarPage } from './pages/admin-bar-page/admin-bar-page';
@@ -117,6 +118,11 @@ export const routes: Routes = [
   {
     path: 'admin/faq',
     component: AdminFaqPage,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/kontakt',
+    component: AdminContactPage,
     canActivate: [adminGuard]
   }
 ];
