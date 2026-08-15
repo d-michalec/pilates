@@ -49,6 +49,13 @@ class ContactMessage {
 	@Column(name = "sent_at")
 	private OffsetDateTime sentAt;
 
+	/**
+	 * Kiedy właścicielka uznała zgłoszenie za załatwione. Świadomie osobno od pola
+	 * status: tamto mówi o dostarczeniu powiadomienia, to o obsłudze sprawy.
+	 */
+	@Column(name = "handled_at")
+	private OffsetDateTime handledAt;
+
 	protected ContactMessage() {
 	}
 
@@ -78,6 +85,11 @@ class ContactMessage {
 	void markFailed(String failureReason) {
 		this.status = ContactMessageStatus.FAILED;
 		this.failureReason = failureReason;
+	}
+
+	/** Przełącza obsłużenie w obie strony - pomyłka nie może być nieodwracalna. */
+	void setHandled(boolean handled) {
+		this.handledAt = handled ? OffsetDateTime.now() : null;
 	}
 
 	UUID getId() {
@@ -110,5 +122,21 @@ class ContactMessage {
 
 	OffsetDateTime getCreatedAt() {
 		return createdAt;
+	}
+
+	OffsetDateTime getSentAt() {
+		return sentAt;
+	}
+
+	String getFailureReason() {
+		return failureReason;
+	}
+
+	OffsetDateTime getHandledAt() {
+		return handledAt;
+	}
+
+	boolean isHandled() {
+		return handledAt != null;
 	}
 }

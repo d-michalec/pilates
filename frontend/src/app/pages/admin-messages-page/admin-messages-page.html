@@ -1,0 +1,102 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Wiadomości"
+    description="Zgłoszenia z formularza kontaktowego. Nieobsłużone są na górze listy."
+    previewLink="/kontakt"
+  />
+
+  <section class="admin-grid" aria-label="Skrzynka wiadomości">
+    <p-card styleClass="admin-card">
+      <ng-template #title>
+        Skrzynka
+        @if (unhandledCount() > 0) {
+          <span class="unhandled-badge">{{ unhandledCount() }} do obsłużenia</span>
+        }
+      </ng-template>
+      <ng-template #subtitle>
+        Wiadomości znikają automatycznie po roku od otrzymania.
+      </ng-template>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage() ?? ''" />
+      }
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (!hasMessages()) {
+        <p class="empty-state">Nie ma jeszcze żadnych wiadomości.</p>
+      } @else {
+        <ul class="message-list">
+          @for (wiadomosc of messages(); track wiadomosc.id) {
+            <li class="message-item" [class.message-item-handled]="wiadomosc.handled">
+              <button
+                type="button"
+                class="message-summary"
+                [attr.aria-expanded]="isExpanded(wiadomosc)"
+                (click)="toggleExpanded(wiadomosc)"
+              >
+                <span class="message-who">
+                  <strong>{{ wiadomosc.name }}</strong>
+                  <span class="message-subject">{{ wiadomosc.subject || 'bez tematu' }}</span>
+                </span>
+
+                <span class="message-meta">
+                  <span class="message-date">{{ receivedAt(wiadomosc) }}</span>
+                  @if (wiadomosc.status === 'FAILED') {
+                    <span class="delivery delivery-failed">{{ deliveryLabel(wiadomosc) }}</span>
+                  }
+                  @if (!wiadomosc.handled) {
+                    <span class="dot" aria-label="nieobsłużona"></span>
+                  }
+                </span>
+              </button>
+
+              @if (isExpanded(wiadomosc)) {
+                <div class="message-body">
+                  <dl>
+                    <div>
+                      <dt>E-mail</dt>
+                      <dd><a [href]="'mailto:' + wiadomosc.email">{{ wiadomosc.email }}</a></dd>
+                    </div>
+                    @if (wiadomosc.phone) {
+                      <div>
+                        <dt>Telefon</dt>
+                        <dd><a [href]="'tel:' + wiadomosc.phone">{{ wiadomosc.phone }}</a></dd>
+                      </div>
+                    }
+                    <div>
+                      <dt>Powiadomienie</dt>
+                      <dd>{{ deliveryLabel(wiadomosc) }}</dd>
+                    </div>
+                  </dl>
+
+                  <p class="message-text">{{ wiadomosc.message }}</p>
+
+                  @if (wiadomosc.failureReason) {
+                    <p-message
+                      severity="warn"
+                      [text]="'Powiadomienie e-mail nie wyszło: ' + wiadomosc.failureReason + '. Wiadomość jest zapisana, można odpowiedzieć ręcznie.'"
+                    />
+                  }
+
+                  <div class="message-actions">
+                    <p-button
+                      type="button"
+                      [label]="wiadomosc.handled ? 'Cofnij obsłużenie' : 'Oznacz jako obsłużone'"
+                      [severity]="wiadomosc.handled ? 'secondary' : 'primary'"
+                      [outlined]="wiadomosc.handled"
+                      [loading]="savingId() === wiadomosc.id"
+                      [disabled]="savingId() === wiadomosc.id"
+                      (click)="toggleHandled(wiadomosc, $event)"
+                    />
+                    <a class="reply-link" [href]="mailtoLink(wiadomosc)">Odpisz</a>
+                  </div>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </p-card>
+  </section>
+</main>

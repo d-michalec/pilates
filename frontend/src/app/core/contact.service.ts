@@ -25,6 +25,28 @@ export interface ContactPageContent {
   image: MediaAsset | null;
 }
 
+/** Wiadomość z formularza kontaktowego, widziana z panelu. */
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string | null;
+  message: string;
+  /** Dotyczy wysyłki powiadomienia e-mail, nie obsługi sprawy. */
+  status: 'NEW' | 'SENT' | 'FAILED';
+  failureReason: string | null;
+  createdAt: string;
+  sentAt: string | null;
+  handledAt: string | null;
+  handled: boolean;
+}
+
+export interface ContactInbox {
+  messages: ContactMessage[];
+  unhandledCount: number;
+}
+
 export interface UpdateContactPageInput {
   imageAlt: string;
   imageAltEn?: string;
@@ -68,5 +90,16 @@ export class ContactService {
     }
 
     return this.http.put<ContactPageContent>(`${this.apiUrl}/admin/contact-page`, formData);
+  }
+
+  listMessages() {
+    return this.http.get<ContactInbox>(`${this.apiUrl}/admin/contact-messages`);
+  }
+
+  setMessageHandled(id: string, handled: boolean) {
+    return this.http.patch<ContactMessage>(
+      `${this.apiUrl}/admin/contact-messages/${id}/handled?handled=${handled}`,
+      null
+    );
   }
 }

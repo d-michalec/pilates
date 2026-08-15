@@ -1,0 +1,168 @@
+/* Style skrzynki wiadomości - ten sam język wizualny co pozostałe strony panelu. */
+
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: color-mix(in srgb, var(--baba-blue) 18%, var(--baba-white));
+  color: var(--baba-red);
+}
+
+.admin-shell {
+  width: min(100% - 48px, 1240px);
+  margin: 0 auto;
+  padding: 34px 0 72px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 900px);
+  gap: 24px;
+}
+
+.empty-state {
+  margin: 18px 0;
+  color: color-mix(in srgb, var(--baba-red) 65%, transparent);
+}
+
+.unhandled-badge {
+  margin-left: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--baba-red);
+  color: var(--baba-white);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.message-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.message-item {
+  border: 1px solid color-mix(in srgb, var(--baba-red) 16%, transparent);
+  border-radius: 14px;
+  background: var(--baba-white);
+  overflow: hidden;
+}
+
+/* Obsłużone przygaszamy, ale zostają czytelne - to nadal archiwum. */
+.message-item-handled {
+  opacity: 0.62;
+}
+
+.message-summary {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: color-mix(in srgb, var(--baba-red) 4%, transparent);
+  }
+}
+
+.message-who {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.message-subject {
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--baba-red) 68%, transparent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--baba-red) 68%, transparent);
+}
+
+.delivery-failed {
+  color: #b23c17;
+  font-weight: 700;
+}
+
+/* Kropka przy nieobsłużonych - sam kolor nie wystarczy, dlatego ma etykietę. */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--baba-red);
+}
+
+.message-body {
+  padding: 4px 18px 18px;
+  border-top: 1px solid color-mix(in srgb, var(--baba-red) 12%, transparent);
+}
+
+.message-body dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 14px 0;
+}
+
+.message-body dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.message-body dd {
+  margin: 2px 0 0;
+}
+
+.message-body dd a {
+  color: inherit;
+}
+
+/* Zachowujemy łamanie linii z formularza - wiadomości bywają wieloakapitowe. */
+.message-text {
+  margin: 6px 0 18px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.message-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.reply-link {
+  color: var(--baba-red);
+  font-weight: 700;
+}
+
+@media (max-width: 620px) {
+  .message-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
