@@ -49,13 +49,17 @@ record EventResponse(
 				event.getLocation(),
 				event.getCapacity(),
 				event.getPrice(),
+				// Kolejność musi odpowiadać deklaracji rekordu. Wszystkie te pola są
+				// typu String, więc przestawienie ich kompiluje się bez ostrzeżenia -
+				// wcześniej signupUrl dostawał tu tytuł angielski, a reszta pól
+				// angielskich była przesunięta o jedną pozycję.
+				event.getSignupUrl(),
 				event.getTitleEn(),
 				event.getShortDescriptionEn(),
 				event.getDescriptionEn(),
 				event.getHostDescriptionEn(),
 				event.getLocationEn(),
 				event.getPriceEn(),
-				event.getSignupUrl(),
 				optimizedImage ? MediaAssetResponse.optimized(event.getImage()) : MediaAssetResponse.from(event.getImage()),
 				event.getHostImage() == null ? null : MediaAssetResponse.from(event.getHostImage())
 		);
