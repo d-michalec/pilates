@@ -28,6 +28,8 @@ export class AdminMessagesPage implements OnInit {
   protected readonly isLoading = signal(true);
   protected readonly savingId = signal<string | null>(null);
   protected readonly expandedId = signal<string | null>(null);
+  /** Kasowanie jest nieodwracalne, więc wymaga potwierdzenia w drugim kroku. */
+  protected readonly confirmingDeleteId = signal<string | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly hasMessages = computed(() => this.messages().length > 0);
@@ -60,6 +62,41 @@ export class AdminMessagesPage implements OnInit {
           this.unhandledCount.update((ile) => (saved.handled ? ile - 1 : ile + 1));
         },
         error: () => this.errorMessage.set('Nie udało się zmienić oznaczenia wiadomości.')
+      });
+  }
+
+  protected askDelete(message: ContactMessage, event: Event) {
+    event.stopPropagation();
+    this.confirmingDeleteId.set(message.id);
+  }
+
+  protected cancelDelete(event: Event) {
+    event.stopPropagation();
+    this.confirmingDeleteId.set(null);
+  }
+
+  protected isConfirmingDelete(message: ContactMessage) {
+    return this.confirmingDeleteId() === message.id;
+  }
+
+  protected confirmDelete(message: ContactMessage, event: Event) {
+    event.stopPropagation();
+
+    this.errorMessage.set(null);
+    this.savingId.set(message.id);
+
+    this.contactService
+      .deleteMessage(message.id)
+      .pipe(finalize(() => this.savingId.set(null)))
+      .subscribe({
+        next: () => {
+          this.messages.update((lista) => lista.filter((pozycja) => pozycja.id !== message.id));
+          if (!message.handled) {
+            this.unhandledCount.update((ile) => ile - 1);
+          }
+          this.confirmingDeleteId.set(null);
+        },
+        error: () => this.errorMessage.set('Nie udało się usunąć wiadomości.')
       });
   }
 

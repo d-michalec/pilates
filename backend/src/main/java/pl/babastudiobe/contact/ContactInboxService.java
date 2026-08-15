@@ -43,6 +43,20 @@ class ContactInboxService {
 		return toResponse(repository.save(message));
 	}
 
+	/**
+	 * Kasowanie pojedynczej wiadomości. Zadanie sprzątające i tak usuwa zgłoszenia
+	 * po roku, ale bez tej operacji spam albo wpis testowy zostawałby w skrzynce
+	 * przez cały ten czas i zaciemniał listę.
+	 */
+	@Transactional
+	void delete(UUID id) {
+		if (!repository.existsById(id)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie ma wiadomości o tym identyfikatorze.");
+		}
+
+		repository.deleteById(id);
+	}
+
 	private static ContactMessageResponse toResponse(ContactMessage message) {
 		return new ContactMessageResponse(
 				message.getId(),

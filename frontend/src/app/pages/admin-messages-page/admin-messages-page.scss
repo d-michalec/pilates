@@ -160,6 +160,16 @@
   font-weight: 700;
 }
 
+/* Potwierdzenie kasowania wchodzi w miejsce przycisku, bez okna modalnego. */
+.delete-confirm {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
 @media (max-width: 620px) {
   .message-summary {
     flex-direction: column;

@@ -90,6 +90,29 @@
                       (click)="toggleHandled(wiadomosc, $event)"
                     />
                     <a class="reply-link" [href]="mailtoLink(wiadomosc)">Odpisz</a>
+
+                    @if (isConfirmingDelete(wiadomosc)) {
+                      <span class="delete-confirm">
+                        Usunąć bezpowrotnie?
+                        <p-button
+                          type="button"
+                          label="Tak, usuń"
+                          severity="danger"
+                          [loading]="savingId() === wiadomosc.id"
+                          [disabled]="savingId() === wiadomosc.id"
+                          (click)="confirmDelete(wiadomosc, $event)"
+                        />
+                        <p-button type="button" label="Anuluj" severity="secondary" [text]="true" (click)="cancelDelete($event)" />
+                      </span>
+                    } @else {
+                      <p-button
+                        type="button"
+                        label="Usuń"
+                        severity="danger"
+                        [text]="true"
+                        (click)="askDelete(wiadomosc, $event)"
+                      />
+                    }
                   </div>
                 </div>
               }

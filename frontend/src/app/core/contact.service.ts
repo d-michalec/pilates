@@ -102,4 +102,8 @@ export class ContactService {
       null
     );
   }
+
+  deleteMessage(id: string) {
+    return this.http.delete<void>(`${this.apiUrl}/admin/contact-messages/${id}`);
+  }
 }
