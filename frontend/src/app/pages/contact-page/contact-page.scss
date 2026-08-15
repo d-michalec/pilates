@@ -80,7 +80,7 @@ dt {
   font-weight: 400;
   letter-spacing: 0.01em;
   /* Etykiety sekcji idą małą literą, szeryfowo - inaczej niż same dane. */
-  text-transform: none;
+  text-transform: lowercase;
   opacity: 0.85;
 }
 
