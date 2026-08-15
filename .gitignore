@@ -31,3 +31,6 @@ frontend/.env
 # Runtime uploads: keep the directory, ignore uploaded files
 uploads/*
 !uploads/.gitkeep
+
+# Sklonowany przykład integracji Fitssey - materiał referencyjny z własnym repozytorium
+fitssey-widget-next-js-example/
