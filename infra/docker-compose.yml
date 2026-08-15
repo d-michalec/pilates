@@ -10,7 +10,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-babastudio}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-babastudio}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      # Adres 127.0.0.1 z przodu ma znaczenie: port jest dostępny z maszyny, więc
+      # backend uruchamiany lokalnie podczas pracy nad projektem się połączy, ale
+      # nie jest wystawiony na świat. Bez tego przedrostka Docker otwiera port na
+      # wszystkich interfejsach, omijając zaporę systemową.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -19,5 +23,62 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ../backend
+    container_name: babastudio-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-babastudio}
+      DB_USERNAME: ${POSTGRES_USER:-babastudio}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-babastudio}
+
+      ADMIN_USERNAME: ${ADMIN_USERNAME:?ustaw ADMIN_USERNAME w pliku .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ustaw ADMIN_PASSWORD w pliku .env}
+
+      # Front i backend stoją pod tym samym adresem, więc przeglądarka nie wykonuje
+      # zapytań międzydomenowych. Lista zostaje na wypadek podglądu z innego adresu.
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://${SITE_DOMAIN}}
+
+      CONTACT_TO_EMAIL: ${CONTACT_TO_EMAIL:?ustaw CONTACT_TO_EMAIL w pliku .env}
+      MAIL_FROM: ${MAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+
+      GETRESPONSE_API_KEY: ${GETRESPONSE_API_KEY:-}
+      GETRESPONSE_CAMPAIGN_ID: ${GETRESPONSE_CAMPAIGN_ID:-}
+    volumes:
+      # Zdjęcia wgrane z panelu muszą przeżyć odtworzenie kontenera.
+      - uploads:/app/uploads
+
+  web:
+    build:
+      context: ../frontend
+    container_name: babastudio-web
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-localhost}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+      ROBOTS_TAG: ${ROBOTS_TAG:-noindex, nofollow}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certyfikaty przeżywają restart - bez tego Let's Encrypt szybko odetnie nas
+      # za zbyt częste prośby o nowy certyfikat.
+      - caddy-data:/data
+      - caddy-config:/config
+
 volumes:
   postgres-data:
+  uploads:
+  caddy-data:
+  caddy-config:

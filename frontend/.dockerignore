@@ -1,0 +1,13 @@
+# node_modules z maszyny deweloperskiej zawiera binaria pod konkretny system.
+# Skopiowane do obrazu linuksowego zepsułyby build - zależności instaluje npm ci
+# wewnątrz kontenera.
+node_modules
+dist
+.angular
+
+# Pliki lokalne i wynikowe, których obraz nie potrzebuje
+.env
+*.log
+coverage
+Dockerfile
+.dockerignore

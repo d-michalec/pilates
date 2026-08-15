@@ -1,0 +1,10 @@
+# Strona nie jest jeszcze otwarta - do dnia premiery trzymamy ją poza wynikami
+# wyszukiwania. Wtedy zamień treść na wersję z dołu i przebuduj usługę web,
+# a w pliku infra/.env ustaw ROBOTS_TAG=all.
+User-agent: *
+Disallow: /
+
+# Wersja docelowa, po otwarciu studia:
+# User-agent: *
+# Allow: /
+# Sitemap: https://babapilates.pl/sitemap.xml

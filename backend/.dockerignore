@@ -1,0 +1,10 @@
+# Wyniki lokalnych buildów i pamięć podręczna Gradle'a. W obrazie i tak powstają
+# od nowa, a skopiowane potrafią zaciemnić obraz albo wnieść cudze artefakty.
+build
+.gradle
+out
+
+.env
+*.log
+Dockerfile
+.dockerignore

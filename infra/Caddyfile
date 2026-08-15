@@ -1,0 +1,66 @@
+# Konfiguracja serwera WWW dla BABA Studio.
+#
+# Caddy sam pobiera i odnawia certyfikat Let's Encrypt, o ile domena wskazuje na
+# ten serwer i porty 80 oraz 443 są otwarte. Do prób lokalnych wystarczy ustawić
+# SITE_DOMAIN na localhost - wtedy Caddy użyje certyfikatu samopodpisanego.
+
+{
+	# Adres do powiadomień o certyfikacie. Pusty jest dopuszczalny, ale wtedy nie
+	# przyjdzie ostrzeżenie, gdyby odnowienie zaczęło się nie udawać.
+	email {$ACME_EMAIL:}
+}
+
+{$SITE_DOMAIN:localhost} {
+	encode zstd gzip
+
+	log {
+		output stdout
+		format console
+	}
+
+	# --- Backend ---------------------------------------------------------------
+	# API oraz pliki wgrane z panelu obsługuje aplikacja Spring Boot. Reszta adresów
+	# to statyczna strona, dlatego te dwie ścieżki wydzielamy jako pierwsze.
+	handle /api/* {
+		reverse_proxy backend:8080
+	}
+
+	handle /uploads/* {
+		reverse_proxy backend:8080 {
+			# Zdjęcia się nie zmieniają w miejscu - po podmianie dostają nową nazwę.
+			header_down Cache-Control "public, max-age=2592000"
+		}
+	}
+
+	# --- Strona ----------------------------------------------------------------
+	handle {
+		root * /srv
+
+		# Pliki z odciskiem treści w nazwie mogą leżeć w pamięci podręcznej długo,
+		# bo każda zmiana daje nową nazwę.
+		@zHaszem path_regexp \-[A-Z0-9]{8,}\.(js|css|woff2|png|jpg|webp|svg)$
+		header @zHaszem Cache-Control "public, max-age=31536000, immutable"
+
+		# Trasy są prerenderowane do osobnych plików index.html. Ostatni człon łapie
+		# adresy generowane po stronie klienta, na przykład /event/<id>.
+		try_files {path} {path}/index.html {path}.html /index.html
+		file_server
+	}
+
+	# --- Nagłówki --------------------------------------------------------------
+	header {
+		# Przed premierą trzyma stronę poza wynikami wyszukiwania. Po otwarciu studia
+		# ustaw ROBOTS_TAG na "all" i podmień frontend/public/robots.txt.
+		X-Robots-Tag "{$ROBOTS_TAG:noindex, nofollow}"
+
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+
+		# Grafik jest osadzany z Fitssey w ramce, więc nie możemy zabronić ramek
+		# całkowicie - blokujemy tylko osadzanie naszej strony przez obcych.
+		Content-Security-Policy "frame-ancestors 'self'"
+
+		-Server
+	}
+}
