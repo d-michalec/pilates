@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.admin-login-page {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 32px;
+  background: color-mix(in srgb, var(--baba-blue) 22%, var(--baba-white));
+}
+
+.login-card {
+  width: min(100%, 420px);
+  padding: clamp(28px, 5vw, 44px);
+  background: var(--baba-white);
+  border: 1px solid color-mix(in srgb, var(--baba-red) 16%, transparent);
+}
+
+header {
+  margin-bottom: 28px;
+  color: var(--baba-red);
+}
+
+header span {
+  display: block;
+  margin-bottom: 18px;
+  font-family: var(--baba-serif);
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+header p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.9rem;
+  color: var(--baba-red);
+}
+
+input {
+  width: 100%;
+}

@@ -1,0 +1,34 @@
+<main class="admin-login-page">
+  <section class="login-card">
+    <header>
+      <span>BABA</span>
+      <h1>Panel administracyjny</h1>
+      <p>Zaloguj się, żeby zarządzać treścią strony.</p>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        <span>Nazwa użytkownika</span>
+        <input pInputText type="text" formControlName="username" autocomplete="username" autofocus />
+      </label>
+
+      <label>
+        <span>Hasło</span>
+        <input pInputText type="password" formControlName="password" autocomplete="current-password" />
+      </label>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage() ?? ''" />
+      }
+
+      <button
+        pButton
+        type="submit"
+        label="Zaloguj się"
+        icon="pi pi-sign-in"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting()"
+      ></button>
+    </form>
+  </section>
+</main>

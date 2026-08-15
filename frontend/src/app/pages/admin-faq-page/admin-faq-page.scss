@@ -1,0 +1,338 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: color-mix(in srgb, var(--baba-blue) 18%, var(--baba-white));
+  color: var(--baba-red);
+}
+
+.admin-shell {
+  width: min(100% - 48px, 1240px);
+  margin: 0 auto;
+  padding: 34px 0 72px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.editor-form,
+.session-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.session-form {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--baba-red) 14%, transparent);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.field-hint {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.native-file-input {
+  display: none;
+}
+
+.upload-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.file-name {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+}
+
+.photo-preview {
+  margin: 0;
+}
+
+.photo-preview img {
+  display: block;
+  width: 180px;
+  border-radius: 8px;
+}
+
+.photo-preview figcaption {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--baba-red) 55%, transparent);
+}
+
+select,
+input[type='time'] {
+  padding: 9px 12px;
+  font: inherit;
+  color: inherit;
+  background: var(--baba-white);
+  border: 1px solid color-mix(in srgb, var(--baba-red) 26%, transparent);
+  border-radius: 6px;
+}
+
+.empty-state {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--baba-red) 66%, transparent);
+}
+
+.session-list {
+  display: grid;
+  gap: 16px;
+}
+
+.session-day h3 {
+  margin: 0 0 8px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.session-day h3::first-letter {
+  text-transform: uppercase;
+}
+
+.session-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.session-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 14px;
+  font-size: 0.9rem;
+  background: var(--baba-white);
+  border: 1px solid color-mix(in srgb, var(--baba-red) 22%, transparent);
+  border-radius: 999px;
+}
+
+.session-chip button {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font-size: 0.72rem;
+  color: var(--baba-red);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.session-chip button:hover:not(:disabled) {
+  color: var(--baba-white);
+  background: var(--baba-red);
+}
+
+@media (max-width: 900px) {
+  .admin-grid,
+  .form-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: var(--baba-red);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.faq-admin-list {
+  display: grid;
+  gap: 14px;
+}
+
+.faq-admin-item {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--baba-red) 14%, transparent);
+}
+
+.faq-admin-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.faq-admin-item-editing {
+  outline: 2px solid var(--baba-red);
+  outline-offset: 4px;
+}
+
+.faq-position {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--baba-red) 55%, transparent);
+}
+
+.faq-admin-body h3 {
+  margin: 0 0 6px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Odpowiedzi bywają długie - na liście pokazujemy trzy linijki. */
+.faq-admin-body p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+}
+
+.faq-admin-actions {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-actions {
+  display: flex;
+  flex-direction: column;
+  grid-row: span 2;
+}
+
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(59, 29, 23, 0.5);
+}
+
+.confirm-dialog {
+  width: min(100%, 520px);
+  padding: 28px;
+  background: var(--baba-white);
+  border: 1px solid color-mix(in srgb, var(--baba-red) 20%, transparent);
+}
+
+.confirm-dialog h2 {
+  margin: 0 0 12px;
+  font-family: var(--baba-serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--baba-red);
+}
+
+.confirm-question {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.5;
+  background: color-mix(in srgb, var(--baba-blue) 20%, var(--baba-white));
+}
+
+.confirm-dialog p {
+  margin: 0 0 22px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--baba-red) 74%, transparent);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .faq-admin-item {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
+
+  .faq-admin-actions {
+    grid-column: 1 / -1;
+    grid-template-columns: auto auto auto;
+    justify-content: start;
+  }
+
+  .order-actions {
+    flex-direction: row;
+    grid-row: auto;
+  }
+}
+
+/* Sekcje z tłumaczeniami wizualnie oddzielone od pól polskich. */
+.translation-block {
+  padding-top: 18px;
+  border-top: 1px dashed color-mix(in srgb, var(--baba-red) 26%, transparent);
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.translation-warning {
+  padding: 3px 10px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--baba-white);
+  background: var(--baba-red);
+  border-radius: 999px;
+}
+
+.translation-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+  color: var(--baba-white);
+  background: color-mix(in srgb, var(--baba-red) 72%, transparent);
+  border-radius: 999px;
+}

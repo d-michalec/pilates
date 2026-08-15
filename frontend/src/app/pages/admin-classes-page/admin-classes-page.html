@@ -1,0 +1,275 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Zajęcia Pilates"
+    description="Karty zajęć widoczne na publicznej stronie Pilates. Kolejność na liście odpowiada kolejności na stronie."
+    previewLink="/pilates"
+  />
+
+  <section class="admin-grid" aria-label="Zarządzanie zajęciami">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>{{ isEditing() ? 'Edycja zajęć' : 'Nowe zajęcia' }}</ng-template>
+      <ng-template #subtitle>
+        {{
+          isEditing()
+            ? 'Zmieniasz zajęcia ' + (editedClass()?.title ?? '') + '.'
+            : 'Nazwa, poziom, opis i opcjonalne zdjęcie.'
+        }}
+      </ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput)">
+        <div class="field">
+          <label for="title">Nazwa zajęć</label>
+          <input id="title" pInputText type="text" formControlName="title" />
+          @if (form.controls.title.touched && form.controls.title.invalid) {
+            <small class="field-error">Nazwa jest wymagana.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="levelLabel">Poziom / etykieta</label>
+          <input id="levelLabel" pInputText type="text" formControlName="levelLabel" placeholder="np. Początkujący" />
+          @if (form.controls.levelLabel.touched && form.controls.levelLabel.invalid) {
+            <small class="field-error">Poziom jest wymagany.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="description">Opis</label>
+          <textarea id="description" pTextarea formControlName="description" rows="6"></textarea>
+          @if (form.controls.description.touched && form.controls.description.invalid) {
+            <small class="field-error">Opis jest wymagany i może mieć do 1800 znaków.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="signupUrl">Link zapisu</label>
+          <input id="signupUrl" pInputText type="text" formControlName="signupUrl" placeholder="/grafik albo link Fitssey" />
+        </div>
+
+        <fieldset class="field-group-en">
+          <legend>Wersja angielska</legend>
+          <p class="field-hint">Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.</p>
+
+          <div class="field">
+            <label for="titleEn">Nazwa zajęć (EN)</label>
+            <input id="titleEn" pInputText type="text" formControlName="titleEn" />
+            @if (form.controls.titleEn.touched && form.controls.titleEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 180 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="levelLabelEn">Poziom / etykieta (EN)</label>
+            <input id="levelLabelEn" pInputText type="text" formControlName="levelLabelEn" />
+            @if (form.controls.levelLabelEn.touched && form.controls.levelLabelEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 120 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="descriptionEn">Opis (EN)</label>
+            <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="6"></textarea>
+            @if (form.controls.descriptionEn.touched && form.controls.descriptionEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 1800 znaków.</small>
+            }
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label>Zdjęcie</label>
+          <input
+            #imageInput
+            class="native-file-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageSelected($event)"
+          />
+          <div class="upload-control">
+            <p-button
+              type="button"
+              [label]="isEditing() ? 'Podmień zdjęcie' : 'Wybierz zdjęcie'"
+              icon="pi pi-image"
+              severity="secondary"
+              [outlined]="true"
+              (click)="imageInput.click()"
+            />
+            @if (selectedImage()) {
+              <span class="file-name">{{ selectedImage()?.name }}</span>
+              <p-button
+                type="button"
+                icon="pi pi-times"
+                severity="secondary"
+                [text]="true"
+                ariaLabel="Usuń wybrane zdjęcie"
+                (click)="clearImage(imageInput)"
+              />
+            }
+          </div>
+
+          @if (isEditing() && !selectedImage()) {
+            @if (shouldRemoveImage()) {
+              <small class="field-hint">Zdjęcie zostanie usunięte po zapisaniu zmian.</small>
+            } @else if (editedClass()?.image) {
+              <small class="field-hint">Zostaw puste, żeby zachować dotychczasowe zdjęcie.</small>
+            } @else {
+              <small class="field-hint">Te zajęcia nie mają jeszcze zdjęcia.</small>
+            }
+          }
+        </div>
+
+        @if (previewUrl()) {
+          <figure class="photo-preview">
+            <img class="preview-image" [src]="previewUrl()" alt="" />
+            <figcaption>Nowe zdjęcie</figcaption>
+          </figure>
+        } @else if (isEditing() && !shouldRemoveImage() && editedClass(); as edited) {
+          @if (imageUrl(edited); as currentImageUrl) {
+            <figure class="photo-preview">
+              <img class="preview-image" [src]="currentImageUrl" [alt]="edited.title" />
+              <figcaption>
+                Obecne zdjęcie
+                <button type="button" class="link-button" (click)="markImageForRemoval()">Usuń zdjęcie</button>
+              </figcaption>
+            </figure>
+          }
+        }
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <div class="form-actions">
+          <p-button
+            type="submit"
+            [label]="isEditing() ? 'Zapisz zmiany' : 'Dodaj zajęcia'"
+            [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+
+          @if (isEditing()) {
+            <p-button
+              type="button"
+              label="Anuluj"
+              severity="secondary"
+              [text]="true"
+              [disabled]="isSaving()"
+              (click)="cancelEditing(imageInput)"
+            />
+          }
+        </div>
+      </form>
+    </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>Dodane zajęcia</ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (classes().length === 0) {
+        <p class="empty-state">Brak dodanych zajęć.</p>
+      } @else {
+        <div class="class-list">
+          @for (pilatesClass of classes(); track pilatesClass.id) {
+            <article class="class-list-item" [class.class-list-item-editing]="editedClassId() === pilatesClass.id">
+              @if (imageUrl(pilatesClass); as thumbnailUrl) {
+                <img [src]="thumbnailUrl" [alt]="pilatesClass.title" />
+              } @else {
+                <span class="image-placeholder"><i class="pi pi-align-left"></i></span>
+              }
+
+              <div class="class-list-item-body">
+                <h3>{{ pilatesClass.title }}</h3>
+                <p>{{ pilatesClass.levelLabel }}</p>
+                @if (!pilatesClass.titleEn && !pilatesClass.descriptionEn) {
+                  <span class="missing-en" title="Brak tłumaczenia - na /en pokaże się tekst polski">brak EN</span>
+                }
+              </div>
+
+              <div class="class-list-item-actions">
+                <div class="order-actions">
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-up"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń wyżej"
+                    [disabled]="isFirst(pilatesClass) || reorderingId() !== null"
+                    (click)="move(pilatesClass, -1)"
+                  />
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-down"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń niżej"
+                    [disabled]="isLast(pilatesClass) || reorderingId() !== null"
+                    (click)="move(pilatesClass, 1)"
+                  />
+                </div>
+
+                <p-button
+                  type="button"
+                  label="Edytuj"
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="startEditing(pilatesClass, imageInput)"
+                />
+                <p-button
+                  type="button"
+                  label="Usuń"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="askForDeletion(pilatesClass)"
+                />
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </p-card>
+  </section>
+
+  @if (classPendingDeletion(); as pilatesClass) {
+    <div class="confirm-backdrop" role="presentation" (click)="cancelDeletion()">
+      <div
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <h2 id="confirm-title">Usunąć zajęcia {{ pilatesClass.title }}?</h2>
+        <p>Karta zniknie ze strony Pilates, a jej zdjęcie zostanie skasowane z dysku. Tej operacji nie da się cofnąć.</p>
+
+        <div class="confirm-actions">
+          <p-button
+            type="button"
+            label="Anuluj"
+            severity="secondary"
+            [text]="true"
+            [disabled]="isSaving()"
+            (click)="cancelDeletion()"
+          />
+          <p-button
+            type="button"
+            label="Usuń"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+            (click)="confirmDeletion(imageInput)"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</main>

@@ -1,0 +1,371 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Landing page"
+    description="Edytuj główny ekran strony, zdjęcie hero i karuzelę zdjęć."
+    previewLink="/"
+  />
+
+  <section class="admin-grid" aria-label="Edycja landing page">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>Hero</ng-template>
+      <ng-template #subtitle>Docelowo to zdjęcie jest pierwszym mocnym sygnałem marki na stronie.</ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else {
+        <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+          <div class="field">
+            <label for="title">Główny napis</label>
+            <input id="title" pInputText type="text" formControlName="title" />
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="ctaLabel">Tekst przycisku</label>
+              <input id="ctaLabel" pInputText type="text" formControlName="ctaLabel" />
+            </div>
+
+            <div class="field">
+              <label for="ctaUrl">Link przycisku</label>
+              <input id="ctaUrl" pInputText type="text" formControlName="ctaUrl" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="imageAlt">Opis zdjęcia</label>
+            <input id="imageAlt" pInputText type="text" formControlName="imageAlt" />
+          </div>
+
+          <fieldset class="field-group-en">
+            <legend>Wersja angielska</legend>
+            <p class="field-hint">Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.</p>
+
+            <div class="field">
+              <label for="titleEn">Główny napis (EN)</label>
+              <input id="titleEn" pInputText type="text" formControlName="titleEn" />
+              @if (form.controls.titleEn.touched && form.controls.titleEn.invalid) {
+                <small class="field-error">Tłumaczenie może mieć do 120 znaków.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="ctaLabelEn">Tekst przycisku (EN)</label>
+              <input id="ctaLabelEn" pInputText type="text" formControlName="ctaLabelEn" />
+              @if (form.controls.ctaLabelEn.touched && form.controls.ctaLabelEn.invalid) {
+                <small class="field-error">Tłumaczenie może mieć do 80 znaków.</small>
+              }
+            </div>
+
+            <div class="field">
+              <label for="imageAltEn">Opis zdjęcia (EN)</label>
+              <input id="imageAltEn" pInputText type="text" formControlName="imageAltEn" />
+              @if (form.controls.imageAltEn.touched && form.controls.imageAltEn.invalid) {
+                <small class="field-error">Tłumaczenie może mieć do 180 znaków.</small>
+              }
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label>Zdjęcie hero</label>
+            <input
+              #imageInput
+              class="native-file-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onImageSelected($event)"
+            />
+
+            <div class="upload-control">
+              <p-button
+                type="button"
+                label="Wybierz zdjęcie"
+                icon="pi pi-image"
+                severity="secondary"
+                [outlined]="true"
+                (click)="imageInput.click()"
+              />
+
+              @if (selectedImage()) {
+                <span class="file-name">{{ selectedImage()?.name }}</span>
+                <p-button
+                  type="button"
+                  icon="pi pi-times"
+                  severity="secondary"
+                  [text]="true"
+                  ariaLabel="Usuń wybrane zdjęcie"
+                  (click)="clearImage(imageInput)"
+                />
+              }
+            </div>
+          </div>
+
+          @if (errorMessage()) {
+            <p-message severity="error" [text]="errorMessage() ?? ''" />
+          }
+
+          @if (successMessage()) {
+            <p-message severity="success" [text]="successMessage() ?? ''" />
+          }
+
+          <p-button
+            type="submit"
+            label="Zapisz landing"
+            icon="pi pi-save"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+        </form>
+      }
+    </p-card>
+
+    <p-card styleClass="admin-card preview-card">
+      <ng-template #title>Podgląd zdjęcia</ng-template>
+
+      <figure class="hero-preview">
+        @if (previewUrl()) {
+          <img [src]="previewUrl()" [alt]="form.controls.imageAlt.value" decoding="async" />
+        } @else if (landing()?.heroImage?.url) {
+          <img [src]="landing()?.heroImage?.url" [alt]="landing()?.imageAlt" decoding="async" />
+        } @else {
+          <div class="empty-preview">
+            <i class="pi pi-image"></i>
+            <span>Brak zdjęcia hero</span>
+          </div>
+        }
+      </figure>
+
+      <div class="content-preview">
+        <h2>{{ form.controls.title.value || 'BABA' }}</h2>
+      </div>
+    </p-card>
+  </section>
+
+  <section class="gallery-admin-section" aria-label="Zarządzanie karuzelą">
+    <p-card styleClass="admin-card gallery-card">
+      <ng-template #title>Karuzela zdjęć</ng-template>
+      <ng-template #subtitle>Wrzuć jedno lub kilka pionowych zdjęć. Pojawią się na stronie głównej w kolejności dodania.</ng-template>
+
+      <div class="gallery-admin-grid">
+        <div class="gallery-upload-panel">
+          <input
+            #galleryInput
+            class="native-file-input"
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onGalleryImagesSelected($event)"
+          />
+
+          <div class="upload-control">
+            <p-button
+              type="button"
+              label="Wybierz zdjęcia"
+              icon="pi pi-images"
+              severity="secondary"
+              [outlined]="true"
+              (click)="galleryInput.click()"
+            />
+
+            @if (selectedGalleryImages().length > 0) {
+              <span class="file-name">Wybrano: {{ selectedGalleryImages().length }}</span>
+              <p-button
+                type="button"
+                icon="pi pi-times"
+                severity="secondary"
+                [text]="true"
+                ariaLabel="Usuń wybrane zdjęcia"
+                (click)="clearGalleryImages(galleryInput)"
+              />
+            }
+          </div>
+
+          @if (galleryPreviewUrls().length > 0) {
+            <div class="gallery-preview-list" aria-label="Podgląd wybranych zdjęć">
+              @for (previewUrl of galleryPreviewUrls(); track previewUrl) {
+                <img [src]="previewUrl" alt="" loading="lazy" decoding="async" />
+              }
+            </div>
+          }
+
+          @if (galleryErrorMessage()) {
+            <p-message severity="error" [text]="galleryErrorMessage() ?? ''" />
+          }
+
+          @if (gallerySuccessMessage()) {
+            <p-message severity="success" [text]="gallerySuccessMessage() ?? ''" />
+          }
+
+          <p-button
+            type="button"
+            label="Dodaj do karuzeli"
+            icon="pi pi-upload"
+            [loading]="isUploadingGallery()"
+            [disabled]="isUploadingGallery()"
+            (click)="uploadGallery(galleryInput)"
+          />
+        </div>
+
+        <div class="gallery-current-panel">
+          @if (galleryImages().length === 0) {
+            <p class="empty-state">Brak zdjęć w karuzeli.</p>
+          } @else {
+            <div class="gallery-current-list" aria-label="Zdjęcia w karuzeli">
+              @for (galleryImage of galleryImages(); track galleryImage.id; let index = $index) {
+                <figure class="gallery-current-item">
+                  <img [src]="galleryImage.image.thumbnailUrl || galleryImage.image.url" alt="" loading="lazy" decoding="async" />
+
+                  <figcaption>
+                    <span class="gallery-position">{{ index + 1 }}</span>
+
+                    <span class="gallery-item-actions">
+                      <p-button
+                        type="button"
+                        icon="pi pi-arrow-left"
+                        severity="secondary"
+                        [text]="true"
+                        ariaLabel="Przesuń wcześniej"
+                        [disabled]="index === 0 || isReorderingGallery()"
+                        (click)="moveGalleryImage(galleryImage, -1)"
+                      />
+                      <p-button
+                        type="button"
+                        icon="pi pi-arrow-right"
+                        severity="secondary"
+                        [text]="true"
+                        ariaLabel="Przesuń później"
+                        [disabled]="index === galleryImages().length - 1 || isReorderingGallery()"
+                        (click)="moveGalleryImage(galleryImage, 1)"
+                      />
+                      <p-button
+                        type="button"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [text]="true"
+                        ariaLabel="Usuń zdjęcie z karuzeli"
+                        [disabled]="isDeletingGalleryImage()"
+                        (click)="askForGalleryImageDeletion(galleryImage)"
+                      />
+                    </span>
+                  </figcaption>
+                </figure>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </p-card>
+  </section>
+
+  <section class="offer-admin-section" aria-label="Tło sekcji oferty">
+    <p-card styleClass="admin-card">
+      <ng-template #title>Tło sekcji „Co przygotowaliśmy”</ng-template>
+      <ng-template #subtitle>Zdjęcie pojawi się pod czterema białymi kartami, przyciemnione. Bez zdjęcia zostaje jednolite tło.</ng-template>
+
+      <input
+        #offerInput
+        class="native-file-input"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        (change)="onOfferImageSelected($event)"
+      />
+
+      <div class="upload-control">
+        <p-button
+          type="button"
+          [label]="offerImageUrl() ? 'Podmień tło' : 'Wybierz zdjęcie'"
+          icon="pi pi-image"
+          severity="secondary"
+          [outlined]="true"
+          (click)="offerInput.click()"
+        />
+
+        @if (selectedOfferImage()) {
+          <span class="file-name">{{ selectedOfferImage()?.name }}</span>
+        }
+
+        <p-button
+          type="button"
+          label="Zapisz tło"
+          icon="pi pi-check"
+          [loading]="isSavingOffer()"
+          [disabled]="isSavingOffer() || !selectedOfferImage()"
+          (click)="saveOffer(offerInput)"
+        />
+
+        @if (offerImageUrl() && !selectedOfferImage()) {
+          <p-button
+            type="button"
+            label="Usuń tło"
+            icon="pi pi-trash"
+            severity="danger"
+            [outlined]="true"
+            [disabled]="isSavingOffer()"
+            (click)="saveOffer(offerInput, true)"
+          />
+        }
+      </div>
+
+      @if (offerPreviewUrl()) {
+        <figure class="offer-preview">
+          <img [src]="offerPreviewUrl()" alt="" />
+          <figcaption>Nowe tło</figcaption>
+        </figure>
+      } @else if (offerImageUrl(); as url) {
+        <figure class="offer-preview">
+          <img [src]="url" alt="" />
+          <figcaption>Obecne tło</figcaption>
+        </figure>
+      }
+
+      @if (offerErrorMessage()) {
+        <p-message severity="error" [text]="offerErrorMessage() ?? ''" />
+      }
+
+      @if (offerMessage()) {
+        <p-message severity="success" [text]="offerMessage() ?? ''" />
+      }
+    </p-card>
+  </section>
+
+  @if (galleryImagePendingDeletion(); as pendingImage) {
+    <div class="confirm-backdrop" role="presentation" (click)="cancelGalleryImageDeletion()">
+      <div
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <h2 id="confirm-title">Usunąć zdjęcie z karuzeli?</h2>
+
+        <img
+          class="confirm-preview"
+          [src]="pendingImage.image.thumbnailUrl || pendingImage.image.url"
+          alt=""
+        />
+
+        <p>Zdjęcie zniknie z karuzeli na stronie głównej i zostanie skasowane z dysku. Tej operacji nie da się cofnąć.</p>
+
+        <div class="confirm-actions">
+          <p-button
+            type="button"
+            label="Anuluj"
+            severity="secondary"
+            [text]="true"
+            [disabled]="isDeletingGalleryImage()"
+            (click)="cancelGalleryImageDeletion()"
+          />
+          <p-button
+            type="button"
+            label="Usuń"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isDeletingGalleryImage()"
+            [disabled]="isDeletingGalleryImage()"
+            (click)="confirmGalleryImageDeletion()"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</main>

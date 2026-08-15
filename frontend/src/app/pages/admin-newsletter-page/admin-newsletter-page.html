@@ -1,0 +1,70 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Newsletter"
+    description="Status integracji z GetResponse i szybki link do panelu wysyłki newsletterów."
+  />
+
+  <section class="admin-grid" aria-label="Newsletter">
+    <p-card styleClass="admin-card status-card">
+      <ng-template #title>Status integracji</ng-template>
+      <ng-template #subtitle>Po uzupełnieniu danych GetResponse nowe zapisy będą wysyłane do listy automatycznie.</ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (status()) {
+        <div class="status-row">
+          <span>GetResponse</span>
+          <p-tag
+            [severity]="status()?.getResponseConfigured ? 'success' : 'warn'"
+            [value]="status()?.getResponseConfigured ? 'Skonfigurowany' : 'Brak konfiguracji'"
+          />
+        </div>
+
+        <dl class="stats-grid">
+          <div>
+            <dt>Zapisy lokalne</dt>
+            <dd>{{ status()?.totalSubscriptions }}</dd>
+          </div>
+          <div>
+            <dt>Oczekujące lokalnie</dt>
+            <dd>{{ status()?.localOnlySubscriptions }}</dd>
+          </div>
+          <div>
+            <dt>Przyjęte przez GetResponse</dt>
+            <dd>{{ status()?.acceptedByGetResponse }}</dd>
+          </div>
+          <div>
+            <dt>Błędy integracji</dt>
+            <dd>{{ status()?.failedSubscriptions }}</dd>
+          </div>
+        </dl>
+
+        @if (status()?.lastFailureReason) {
+          <p-message severity="error" [text]="status()?.lastFailureReason ?? ''" />
+        }
+
+        <a class="external-link" [href]="status()?.getResponseAdminUrl" target="_blank" rel="noreferrer">
+          <i class="pi pi-external-link"></i>
+          Przejdź do GetResponse
+        </a>
+      } @else {
+        <p class="empty-state">Brak danych statusu.</p>
+      }
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage() ?? ''" />
+      }
+    </p-card>
+
+    <p-card styleClass="admin-card setup-card">
+      <ng-template #title>Co trzeba uzupełnić</ng-template>
+      <ng-template #subtitle>Bez tych wartości formularz działa tylko lokalnie.</ng-template>
+
+      <ul class="setup-list">
+        <li><code>GETRESPONSE_API_KEY</code></li>
+        <li><code>GETRESPONSE_CAMPAIGN_ID</code></li>
+        <li><code>GETRESPONSE_ADMIN_URL</code></li>
+      </ul>
+    </p-card>
+  </section>
+</main>

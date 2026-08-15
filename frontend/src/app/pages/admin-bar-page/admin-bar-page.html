@@ -1,0 +1,195 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Bar"
+    description="Treść strony baru, godziny otwarcia kawiarni oraz linki do social mediów widoczne w stopce całej strony."
+    previewLink="/bar"
+  />
+
+  <section class="admin-grid" aria-label="Zarządzanie barem">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>Treść strony</ng-template>
+      <ng-template #subtitle>Opis i zdjęcie kawiarni.</ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput)">
+        <div class="field">
+          <label for="description">Opis</label>
+          <textarea id="description" pTextarea formControlName="description" rows="10"></textarea>
+          <small class="field-hint">Pusta linia rozdziela akapity na stronie.</small>
+        </div>
+
+        <div class="field">
+          <label for="imageAlt">Opis zdjęcia</label>
+          <input id="imageAlt" pInputText type="text" formControlName="imageAlt" />
+        </div>
+
+        <div class="field">
+          <label>Zdjęcie</label>
+          <input
+            #imageInput
+            class="native-file-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageSelected($event)"
+          />
+
+          <div class="upload-control">
+            <p-button
+              type="button"
+              label="Wybierz zdjęcie"
+              icon="pi pi-image"
+              severity="secondary"
+              [outlined]="true"
+              (click)="imageInput.click()"
+            />
+            @if (selectedImage()) {
+              <span class="file-name">{{ selectedImage()?.name }}</span>
+              <p-button
+                type="button"
+                icon="pi pi-times"
+                severity="secondary"
+                [text]="true"
+                ariaLabel="Usuń wybrane zdjęcie"
+                (click)="clearImage(imageInput)"
+              />
+            }
+          </div>
+
+          @if (!selectedImage()) {
+            <small class="field-hint">Zostaw puste, żeby zachować dotychczasowe zdjęcie.</small>
+          }
+        </div>
+
+        <div class="field translation-block">
+          <label for="descriptionEn">Opis po angielsku</label>
+          <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="8"></textarea>
+          <small class="field-hint">Puste pola oznaczają, że na stronie angielskiej pokaże się wersja polska.</small>
+        </div>
+
+        <div class="field">
+          <label for="imageAltEn">Opis zdjęcia po angielsku</label>
+          <input id="imageAltEn" pInputText type="text" formControlName="imageAltEn" />
+        </div>
+
+        @if (previewUrl()) {
+          <figure class="photo-preview">
+            <img [src]="previewUrl()" alt="" />
+            <figcaption>Nowe zdjęcie</figcaption>
+          </figure>
+        } @else if (currentImageUrl(); as url) {
+          <figure class="photo-preview">
+            <img [src]="url" alt="" />
+            <figcaption>Obecne zdjęcie</figcaption>
+          </figure>
+        }
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <p-button
+          type="submit"
+          label="Zapisz treść"
+          icon="pi pi-check"
+          [loading]="isSaving()"
+          [disabled]="isSaving()"
+        />
+      </form>
+    </p-card>
+
+    <div class="admin-column">
+      <p-card styleClass="admin-card">
+        <ng-template #title>Godziny otwarcia kawiarni</ng-template>
+        <ng-template #subtitle>Kolejne dni o tych samych godzinach łączą się na stronie w zakres.</ng-template>
+
+        @if (isLoading()) {
+          <p class="empty-state">Ładowanie...</p>
+        } @else {
+          <div class="hours-list">
+            @for (day of hoursForm.controls; track $index; let index = $index) {
+              <div class="hours-row" [formGroup]="day">
+                <span class="hours-day">{{ dayLabel(index) }}</span>
+
+                <input type="time" formControlName="opensAt" [disabled]="day.controls.closed.value" />
+                <span class="hours-separator" aria-hidden="true">–</span>
+                <input type="time" formControlName="closesAt" [disabled]="day.controls.closed.value" />
+
+                <label class="hours-closed">
+                  <input type="checkbox" formControlName="closed" />
+                  <span>zamknięte</span>
+                </label>
+              </div>
+            }
+          </div>
+
+          @if (hoursErrorMessage()) {
+            <p-message severity="error" [text]="hoursErrorMessage() ?? ''" />
+          }
+
+          @if (hoursMessage()) {
+            <p-message severity="success" [text]="hoursMessage() ?? ''" />
+          }
+
+          <p-button
+            type="button"
+            label="Zapisz godziny"
+            icon="pi pi-clock"
+            [loading]="isSavingHours()"
+            [disabled]="isSavingHours()"
+            (click)="saveHours()"
+          />
+        }
+      </p-card>
+
+      <p-card styleClass="admin-card">
+        <ng-template #title>Linki do social mediów</ng-template>
+        <ng-template #subtitle>Ikony pojawią się w stopce na całej stronie. Puste pole ukrywa ikonę.</ng-template>
+
+        <form class="editor-form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+          <div class="field">
+            <label for="instagramUrl">Instagram</label>
+            <input
+              id="instagramUrl"
+              pInputText
+              type="url"
+              formControlName="instagramUrl"
+              placeholder="https://www.instagram.com/nazwa"
+            />
+          </div>
+
+          <div class="field">
+            <label for="facebookUrl">Facebook</label>
+            <input
+              id="facebookUrl"
+              pInputText
+              type="url"
+              formControlName="facebookUrl"
+              placeholder="https://www.facebook.com/nazwa"
+            />
+          </div>
+
+          <small class="field-hint">Adres musi zaczynać się od https:// albo http://.</small>
+
+          @if (settingsErrorMessage()) {
+            <p-message severity="error" [text]="settingsErrorMessage() ?? ''" />
+          }
+
+          @if (settingsMessage()) {
+            <p-message severity="success" [text]="settingsMessage() ?? ''" />
+          }
+
+          <p-button
+            type="submit"
+            label="Zapisz linki"
+            icon="pi pi-link"
+            [loading]="isSavingSettings()"
+            [disabled]="isSavingSettings()"
+          />
+        </form>
+      </p-card>
+    </div>
+  </section>
+</main>

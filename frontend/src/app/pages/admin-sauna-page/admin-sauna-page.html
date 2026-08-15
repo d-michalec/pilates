@@ -1,0 +1,186 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Sauna"
+    description="Treść strony sauny oraz tygodniowy plan seansów. Przycisk rezerwacji prowadzi domyślnie do grafiku."
+    previewLink="/sauna"
+  />
+
+  <section class="admin-grid" aria-label="Zarządzanie sauną">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>Treść strony</ng-template>
+      <ng-template #subtitle>Opis, przycisk rezerwacji i zdjęcie.</ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput)">
+        <div class="field">
+          <label for="description">Opis</label>
+          <textarea id="description" pTextarea formControlName="description" rows="10"></textarea>
+          <small class="field-hint">Pusta linia rozdziela akapity na stronie.</small>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="ctaLabel">Tekst przycisku</label>
+            <input id="ctaLabel" pInputText type="text" formControlName="ctaLabel" />
+          </div>
+
+          <div class="field">
+            <label for="ctaUrl">Link przycisku</label>
+            <input id="ctaUrl" pInputText type="text" formControlName="ctaUrl" placeholder="/grafik" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="imageAlt">Opis zdjęcia</label>
+          <input id="imageAlt" pInputText type="text" formControlName="imageAlt" />
+          <small class="field-hint">Czytany przez czytniki ekranu i widoczny, gdy zdjęcie się nie wczyta.</small>
+        </div>
+
+        <div class="field">
+          <label>Zdjęcie</label>
+          <input
+            #imageInput
+            class="native-file-input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="onImageSelected($event)"
+          />
+
+          <div class="upload-control">
+            <p-button
+              type="button"
+              label="Wybierz zdjęcie"
+              icon="pi pi-image"
+              severity="secondary"
+              [outlined]="true"
+              (click)="imageInput.click()"
+            />
+            @if (selectedImage()) {
+              <span class="file-name">{{ selectedImage()?.name }}</span>
+              <p-button
+                type="button"
+                icon="pi pi-times"
+                severity="secondary"
+                [text]="true"
+                ariaLabel="Usuń wybrane zdjęcie"
+                (click)="clearImage(imageInput)"
+              />
+            }
+          </div>
+
+          @if (!selectedImage()) {
+            <small class="field-hint">Zostaw puste, żeby zachować dotychczasowe zdjęcie.</small>
+          }
+        </div>
+
+        <div class="field translation-block">
+          <label for="descriptionEn">Opis po angielsku</label>
+          <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="8"></textarea>
+          <small class="field-hint">Puste pola oznaczają, że na stronie angielskiej pokaże się wersja polska.</small>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="ctaLabelEn">Tekst przycisku po angielsku</label>
+            <input id="ctaLabelEn" pInputText type="text" formControlName="ctaLabelEn" />
+          </div>
+
+          <div class="field">
+            <label for="imageAltEn">Opis zdjęcia po angielsku</label>
+            <input id="imageAltEn" pInputText type="text" formControlName="imageAltEn" />
+          </div>
+        </div>
+
+        @if (previewUrl()) {
+          <figure class="photo-preview">
+            <img [src]="previewUrl()" alt="" />
+            <figcaption>Nowe zdjęcie</figcaption>
+          </figure>
+        } @else if (currentImageUrl(); as url) {
+          <figure class="photo-preview">
+            <img [src]="url" alt="" />
+            <figcaption>Obecne zdjęcie</figcaption>
+          </figure>
+        }
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <p-button
+          type="submit"
+          label="Zapisz treść"
+          icon="pi pi-check"
+          [loading]="isSaving()"
+          [disabled]="isSaving()"
+        />
+      </form>
+    </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>Plan seansów</ng-template>
+      <ng-template #subtitle>Powtarza się co tydzień. Dni o tych samych godzinach łączą się na stronie w jeden wiersz.</ng-template>
+
+      <form class="session-form" [formGroup]="sessionForm" (ngSubmit)="addSession()">
+        <div class="field">
+          <label for="dayOfWeek">Dzień</label>
+          <select id="dayOfWeek" formControlName="dayOfWeek">
+            @for (name of dayNames; track name; let index = $index) {
+              <option [value]="index + 1">{{ name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="time">Godzina</label>
+          <input id="time" type="time" formControlName="time" />
+        </div>
+
+        <p-button
+          type="submit"
+          label="Dodaj"
+          icon="pi pi-plus"
+          [loading]="isSavingSession()"
+          [disabled]="isSavingSession()"
+        />
+      </form>
+
+      @if (sessionErrorMessage()) {
+        <p-message severity="error" [text]="sessionErrorMessage() ?? ''" />
+      }
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (sessionsByDay().length === 0) {
+        <p class="empty-state">Brak seansów w planie. Sekcja godzin nie pojawi się na stronie.</p>
+      } @else {
+        <div class="session-list">
+          @for (day of sessionsByDay(); track day.dayOfWeek) {
+            <div class="session-day">
+              <h3>{{ day.label }}</h3>
+
+              <div class="session-chips">
+                @for (session of day.sessions; track session.id) {
+                  <span class="session-chip">
+                    {{ session.time }}
+                    <button
+                      type="button"
+                      [attr.aria-label]="'Usuń seans ' + day.label + ' ' + session.time"
+                      [disabled]="isSavingSession()"
+                      (click)="deleteSession(session)"
+                    >
+                      <i class="pi pi-times"></i>
+                    </button>
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </p-card>
+  </section>
+</main>

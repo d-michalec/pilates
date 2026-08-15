@@ -1,0 +1,340 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Eventy"
+    description="Dodawanie wydarzeń widocznych w harmonogramie i na stronie szczegółów."
+    previewLink="/wydarzenia"
+  />
+
+  <section class="admin-grid" aria-label="Dodawanie eventów">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>{{ isEditing() ? 'Edycja wydarzenia' : 'Nowe wydarzenie' }}</ng-template>
+      <ng-template #subtitle>
+        {{
+          isEditing()
+            ? 'Zmieniasz wydarzenie ' + (editedEvent()?.title ?? '') + '.'
+            : 'Zdjęcie, prowadzący, termin i informacje organizacyjne.'
+        }}
+      </ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput, hostImageInput)">
+        <div class="field">
+          <label for="title">Tytuł</label>
+          <input id="title" pInputText type="text" formControlName="title" />
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="hostName">Prowadzący</label>
+            <input id="hostName" pInputText type="text" formControlName="hostName" />
+          </div>
+
+          <div class="field">
+            <label for="eventStartAt">Data i godzina</label>
+            <input id="eventStartAt" pInputText type="datetime-local" formControlName="eventStartAt" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="shortDescription">Krótki opis</label>
+          <textarea id="shortDescription" pTextarea formControlName="shortDescription" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="description">Opis wydarzenia</label>
+          <textarea id="description" pTextarea formControlName="description" rows="7"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="hostDescription">Opis prowadzącego</label>
+          <textarea id="hostDescription" pTextarea formControlName="hostDescription" rows="5"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="location">Miejsce</label>
+            <input id="location" pInputText type="text" formControlName="location" />
+          </div>
+
+          <div class="field">
+            <label for="price">Cena</label>
+            <input id="price" pInputText type="text" formControlName="price" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="durationMinutes">Czas trwania w minutach</label>
+            <input id="durationMinutes" pInputText type="number" formControlName="durationMinutes" />
+          </div>
+
+          <div class="field">
+            <label for="capacity">Liczba miejsc</label>
+            <input id="capacity" pInputText type="number" formControlName="capacity" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signupUrl">Link zapisu</label>
+          <input id="signupUrl" pInputText type="text" formControlName="signupUrl" />
+        </div>
+
+        <fieldset class="field-group-en">
+          <legend>Wersja angielska</legend>
+          <p class="field-hint">Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.</p>
+
+          <div class="field">
+            <label for="titleEn">Nazwa wydarzenia (EN)</label>
+            <input id="titleEn" pInputText type="text" formControlName="titleEn" />
+            @if (form.controls.titleEn.touched && form.controls.titleEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 220 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="shortDescriptionEn">Krótki opis (EN)</label>
+            <textarea id="shortDescriptionEn" pTextarea formControlName="shortDescriptionEn" rows="3"></textarea>
+            @if (form.controls.shortDescriptionEn.touched && form.controls.shortDescriptionEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 600 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="descriptionEn">Opis (EN)</label>
+            <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="6"></textarea>
+            @if (form.controls.descriptionEn.touched && form.controls.descriptionEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 6000 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="hostDescriptionEn">O prowadzącej (EN)</label>
+            <textarea id="hostDescriptionEn" pTextarea formControlName="hostDescriptionEn" rows="4"></textarea>
+            @if (form.controls.hostDescriptionEn.touched && form.controls.hostDescriptionEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 3000 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="locationEn">Miejsce (EN)</label>
+            <input id="locationEn" pInputText type="text" formControlName="locationEn" />
+            @if (form.controls.locationEn.touched && form.controls.locationEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 255 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="priceEn">Cena (EN)</label>
+            <input id="priceEn" pInputText type="text" formControlName="priceEn" />
+            @if (form.controls.priceEn.touched && form.controls.priceEn.invalid) {
+              <small class="field-error">Tłumaczenie może mieć do 80 znaków.</small>
+            }
+          </div>
+        </fieldset>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Zdjęcie wydarzenia</label>
+            <input
+              #imageInput
+              class="native-file-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onImageSelected($event)"
+            />
+            <div class="upload-control">
+              <p-button type="button" label="Wybierz zdjęcie" icon="pi pi-image" severity="secondary" [outlined]="true" (click)="imageInput.click()" />
+              @if (selectedImage()) {
+                <span class="file-name">{{ selectedImage()?.name }}</span>
+                <p-button type="button" icon="pi pi-times" severity="secondary" [text]="true" ariaLabel="Usuń zdjęcie" (click)="clearImage(imageInput)" />
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Zdjęcie prowadzącego</label>
+            <input
+              #hostImageInput
+              class="native-file-input"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onHostImageSelected($event)"
+            />
+            <div class="upload-control">
+              <p-button
+                type="button"
+                [label]="isEditing() ? 'Podmień zdjęcie' : 'Wybierz zdjęcie'"
+                icon="pi pi-user"
+                severity="secondary"
+                [outlined]="true"
+                (click)="hostImageInput.click()"
+              />
+              @if (selectedHostImage()) {
+                <span class="file-name">{{ selectedHostImage()?.name }}</span>
+                <p-button type="button" icon="pi pi-times" severity="secondary" [text]="true" ariaLabel="Usuń zdjęcie" (click)="clearHostImage(hostImageInput)" />
+              }
+            </div>
+
+            @if (isEditing() && !selectedHostImage()) {
+              @if (shouldRemoveHostImage()) {
+                <small class="field-hint">Zdjęcie prowadzącego zostanie usunięte po zapisaniu.</small>
+              } @else if (editedEvent()?.hostImage) {
+                <small class="field-hint">
+                  Zostaw puste, żeby zachować obecne.
+                  <button type="button" class="link-button" (click)="markHostImageForRemoval()">Usuń zdjęcie prowadzącego</button>
+                </small>
+              } @else {
+                <small class="field-hint">To wydarzenie nie ma zdjęcia prowadzącego.</small>
+              }
+            }
+          </div>
+        </div>
+
+        @if (isEditing()) {
+          <small class="field-hint">
+            Zdjęcie wydarzenia jest obowiązkowe - zostaw pole puste, żeby zachować dotychczasowe.
+          </small>
+        }
+
+        <div class="preview-row">
+          @if (previewUrl()) {
+            <img [src]="previewUrl()" alt="" />
+          }
+          @if (hostPreviewUrl()) {
+            <img [src]="hostPreviewUrl()" alt="" />
+          }
+
+          @if (isEditing() && editedEvent(); as edited) {
+            @if (!previewUrl()) {
+              <figure class="current-image">
+                <img [src]="imageUrl(edited)" [alt]="edited.title" />
+                <figcaption>Obecne zdjęcie wydarzenia</figcaption>
+              </figure>
+            }
+            @if (!hostPreviewUrl() && !shouldRemoveHostImage() && hostImageUrl(edited); as currentHostUrl) {
+              <figure class="current-image">
+                <img [src]="currentHostUrl" [alt]="edited.hostName" />
+                <figcaption>Obecne zdjęcie prowadzącego</figcaption>
+              </figure>
+            }
+          }
+        </div>
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <div class="form-actions">
+          <p-button
+            type="submit"
+            [label]="isEditing() ? 'Zapisz zmiany' : 'Dodaj event'"
+            [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+
+          @if (isEditing()) {
+            <p-button
+              type="button"
+              label="Anuluj"
+              severity="secondary"
+              [text]="true"
+              [disabled]="isSaving()"
+              (click)="cancelEditing(imageInput, hostImageInput)"
+            />
+          }
+        </div>
+      </form>
+    </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>Dodane eventy</ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (events().length === 0) {
+        <p class="empty-state">Brak dodanych eventów.</p>
+      } @else {
+        <div class="event-list">
+          @for (event of events(); track event.id) {
+            <article class="event-list-item" [class.event-list-item-editing]="editedEventId() === event.id">
+              <img [src]="imageUrl(event)" [alt]="event.title" />
+
+              <div class="event-list-item-body">
+                <h3>
+                  <a [routerLink]="['/event', event.id]">{{ event.title }}</a>
+                </h3>
+                <p>{{ event.hostName }} · {{ eventDate(event) }}</p>
+                @if (!event.titleEn && !event.descriptionEn) {
+                  <span class="missing-en" title="Brak tłumaczenia - na /en pokaże się tekst polski">brak EN</span>
+                }
+              </div>
+
+              <div class="event-list-item-actions">
+                <p-button
+                  type="button"
+                  label="Edytuj"
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="startEditing(event, imageInput, hostImageInput)"
+                />
+                <p-button
+                  type="button"
+                  label="Usuń"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  [disabled]="isSaving()"
+                  (click)="askForDeletion(event)"
+                />
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </p-card>
+  </section>
+
+  @if (eventPendingDeletion(); as pendingEvent) {
+    <div class="confirm-backdrop" role="presentation" (click)="cancelDeletion()">
+      <div
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <h2 id="confirm-title">Usunąć wydarzenie {{ pendingEvent.title }}?</h2>
+        <p>
+          Zniknie z harmonogramu, a jego strona szczegółów przestanie istnieć. Zdjęcia wydarzenia
+          i prowadzącego zostaną skasowane z dysku. Tej operacji nie da się cofnąć.
+        </p>
+
+        <div class="confirm-actions">
+          <p-button
+            type="button"
+            label="Anuluj"
+            severity="secondary"
+            [text]="true"
+            [disabled]="isSaving()"
+            (click)="cancelDeletion()"
+          />
+          <p-button
+            type="button"
+            label="Usuń"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+            (click)="confirmDeletion(imageInput, hostImageInput)"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</main>

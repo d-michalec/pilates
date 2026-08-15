@@ -1,0 +1,187 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="FAQ"
+    description="Pytania i odpowiedzi widoczne na stronie FAQ. Kolejność na liście odpowiada kolejności na stronie."
+    previewLink="/faq"
+  />
+
+  <section class="admin-grid" aria-label="Zarządzanie FAQ">
+    <p-card styleClass="admin-card editor-card">
+      <ng-template #title>{{ isEditing() ? 'Edycja pytania' : 'Nowe pytanie' }}</ng-template>
+      <ng-template #subtitle>
+        {{ isEditing() ? 'Zmieniasz istniejące pytanie.' : 'Pytanie i odpowiedź pojawią się na końcu listy.' }}
+      </ng-template>
+
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label for="question">Pytanie</label>
+          <input id="question" pInputText type="text" formControlName="question" />
+          @if (form.controls.question.touched && form.controls.question.invalid) {
+            <small class="field-error">Pytanie jest wymagane i może mieć do 400 znaków.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="answer">Odpowiedź</label>
+          <textarea id="answer" pTextarea formControlName="answer" rows="9"></textarea>
+          @if (form.controls.answer.touched && form.controls.answer.invalid) {
+            <small class="field-error">Odpowiedź jest wymagana i może mieć do 4000 znaków.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="questionEn">Pytanie po angielsku</label>
+          <input id="questionEn" pInputText type="text" formControlName="questionEn" />
+          <small class="field-hint">Puste pole oznacza, że na stronie angielskiej pokaże się wersja polska.</small>
+        </div>
+
+        <div class="field">
+          <label for="answerEn">Odpowiedź po angielsku</label>
+          <textarea id="answerEn" pTextarea formControlName="answerEn" rows="9"></textarea>
+        </div>
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <div class="form-actions">
+          <p-button
+            type="submit"
+            [label]="isEditing() ? 'Zapisz zmiany' : 'Dodaj pytanie'"
+            [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+
+          @if (isEditing()) {
+            <p-button
+              type="button"
+              label="Anuluj"
+              severity="secondary"
+              [text]="true"
+              [disabled]="isSaving()"
+              (click)="cancelEditing()"
+            />
+          }
+        </div>
+      </form>
+    </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>
+        <div class="card-title-row">
+          <span>Pytania</span>
+          @if (missingTranslations() > 0) {
+            <span class="translation-warning">Bez tłumaczenia: {{ missingTranslations() }}</span>
+          }
+        </div>
+      </ng-template>
+
+      @if (isLoading()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (entries().length === 0) {
+        <p class="empty-state">Brak pytań. Sekcja FAQ na stronie będzie pusta.</p>
+      } @else {
+        <div class="faq-admin-list">
+          @for (entry of entries(); track entry.id; let index = $index) {
+            <article class="faq-admin-item" [class.faq-admin-item-editing]="editedEntryId() === entry.id">
+              <span class="faq-position">{{ index + 1 }}</span>
+
+              <div class="faq-admin-body">
+                <h3>
+                  {{ entry.question }}
+                  @if (!entry.questionEn || !entry.answerEn) {
+                    <span class="translation-badge">brak EN</span>
+                  }
+                </h3>
+                <p>{{ entry.answer }}</p>
+              </div>
+
+              <div class="faq-admin-actions">
+                <div class="order-actions">
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-up"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń wyżej"
+                    [disabled]="isFirst(entry) || reorderingId() !== null"
+                    (click)="move(entry, -1)"
+                  />
+                  <p-button
+                    type="button"
+                    icon="pi pi-arrow-down"
+                    severity="secondary"
+                    [text]="true"
+                    ariaLabel="Przesuń niżej"
+                    [disabled]="isLast(entry) || reorderingId() !== null"
+                    (click)="move(entry, 1)"
+                  />
+                </div>
+
+                <p-button
+                  type="button"
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [outlined]="true"
+                  ariaLabel="Edytuj pytanie"
+                  [disabled]="isSaving()"
+                  (click)="startEditing(entry)"
+                />
+                <p-button
+                  type="button"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [outlined]="true"
+                  ariaLabel="Usuń pytanie"
+                  [disabled]="isSaving()"
+                  (click)="askForDeletion(entry)"
+                />
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </p-card>
+  </section>
+
+  @if (entryPendingDeletion(); as pendingEntry) {
+    <div class="confirm-backdrop" role="presentation" (click)="cancelDeletion()">
+      <div
+        class="confirm-dialog"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        (click)="$event.stopPropagation()"
+      >
+        <h2 id="confirm-title">Usunąć to pytanie?</h2>
+        <p class="confirm-question">{{ pendingEntry.question }}</p>
+        <p>Zniknie ze strony FAQ. Tej operacji nie da się cofnąć.</p>
+
+        <div class="confirm-actions">
+          <p-button
+            type="button"
+            label="Anuluj"
+            severity="secondary"
+            [text]="true"
+            [disabled]="isSaving()"
+            (click)="cancelDeletion()"
+          />
+          <p-button
+            type="button"
+            label="Usuń"
+            icon="pi pi-trash"
+            severity="danger"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+            (click)="confirmDeletion()"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</main>
