@@ -1,7 +1,7 @@
 <main class="admin-shell">
   <app-admin-header
     heading="Bar"
-    description="Treść strony baru, godziny otwarcia kawiarni oraz linki do social mediów widoczne w stopce całej strony."
+    description="Treść strony baru i godziny otwarcia kawiarni. Linki do social mediów przeniosły się na stronę Kontakt."
     previewLink="/bar"
   />
 
@@ -142,53 +142,6 @@
             (click)="saveHours()"
           />
         }
-      </p-card>
-
-      <p-card styleClass="admin-card">
-        <ng-template #title>Linki do social mediów</ng-template>
-        <ng-template #subtitle>Ikony pojawią się w stopce na całej stronie. Puste pole ukrywa ikonę.</ng-template>
-
-        <form class="editor-form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
-          <div class="field">
-            <label for="instagramUrl">Instagram</label>
-            <input
-              id="instagramUrl"
-              pInputText
-              type="url"
-              formControlName="instagramUrl"
-              placeholder="https://www.instagram.com/nazwa"
-            />
-          </div>
-
-          <div class="field">
-            <label for="facebookUrl">Facebook</label>
-            <input
-              id="facebookUrl"
-              pInputText
-              type="url"
-              formControlName="facebookUrl"
-              placeholder="https://www.facebook.com/nazwa"
-            />
-          </div>
-
-          <small class="field-hint">Adres musi zaczynać się od https:// albo http://.</small>
-
-          @if (settingsErrorMessage()) {
-            <p-message severity="error" [text]="settingsErrorMessage() ?? ''" />
-          }
-
-          @if (settingsMessage()) {
-            <p-message severity="success" [text]="settingsMessage() ?? ''" />
-          }
-
-          <p-button
-            type="submit"
-            label="Zapisz linki"
-            icon="pi pi-link"
-            [loading]="isSavingSettings()"
-            [disabled]="isSavingSettings()"
-          />
-        </form>
       </p-card>
     </div>
   </section>

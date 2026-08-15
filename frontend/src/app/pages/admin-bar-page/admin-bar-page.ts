@@ -7,7 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { TextareaModule } from 'primeng/textarea';
 import { finalize } from 'rxjs';
 
-import { BarContent, DAY_NAMES, SiteSettings, dayName } from '../../core/venue';
+import { BarContent, DAY_NAMES, dayName } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
 
@@ -25,13 +25,10 @@ export class AdminBarPage implements OnInit, OnDestroy {
   protected readonly isLoading = signal(true);
   protected readonly isSaving = signal(false);
   protected readonly isSavingHours = signal(false);
-  protected readonly isSavingSettings = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly successMessage = signal<string | null>(null);
   protected readonly hoursMessage = signal<string | null>(null);
   protected readonly hoursErrorMessage = signal<string | null>(null);
-  protected readonly settingsMessage = signal<string | null>(null);
-  protected readonly settingsErrorMessage = signal<string | null>(null);
 
   protected readonly form = new FormGroup({
     description: new FormControl('', {
@@ -56,11 +53,6 @@ export class AdminBarPage implements OnInit, OnDestroy {
       })
     )
   );
-
-  protected readonly settingsForm = new FormGroup({
-    instagramUrl: new FormControl('', { nonNullable: true }),
-    facebookUrl: new FormControl('', { nonNullable: true })
-  });
 
   constructor(private readonly venueService: VenueService) {}
 
@@ -167,25 +159,6 @@ export class AdminBarPage implements OnInit, OnDestroy {
       });
   }
 
-  protected saveSettings() {
-    this.settingsMessage.set(null);
-    this.settingsErrorMessage.set(null);
-
-    const { instagramUrl, facebookUrl } = this.settingsForm.getRawValue();
-    this.isSavingSettings.set(true);
-
-    this.venueService
-      .updateSettings({ instagramUrl: instagramUrl.trim() || null, facebookUrl: facebookUrl.trim() || null })
-      .pipe(finalize(() => this.isSavingSettings.set(false)))
-      .subscribe({
-        next: (settings) => this.applySettings(settings, 'Linki zostały zapisane.'),
-        error: (error) =>
-          this.settingsErrorMessage.set(
-            error?.error?.message ?? 'Nie udało się zapisać linków. Adres musi zaczynać się od https://.'
-          )
-      });
-  }
-
   protected currentImageUrl() {
     const image = this.bar()?.image;
     return image?.thumbnailUrl || image?.url || null;
@@ -215,22 +188,6 @@ export class AdminBarPage implements OnInit, OnDestroy {
         },
         error: () => this.errorMessage.set('Nie udało się pobrać treści strony baru.')
       });
-
-    this.venueService.getSettings().subscribe({
-      next: (settings) => this.applySettings(settings, null),
-      error: () => this.settingsErrorMessage.set('Nie udało się pobrać linków.')
-    });
-  }
-
-  private applySettings(settings: SiteSettings, message: string | null) {
-    this.settingsForm.setValue({
-      instagramUrl: settings.instagramUrl ?? '',
-      facebookUrl: settings.facebookUrl ?? ''
-    });
-
-    if (message) {
-      this.settingsMessage.set(message);
-    }
   }
 
   private revokePreviewUrl() {

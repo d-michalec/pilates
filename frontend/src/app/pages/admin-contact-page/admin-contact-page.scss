@@ -73,7 +73,7 @@
 
 .admin-grid {
   display: grid;
-  /* Jedno pole do wypełnienia, więc karta nie musi zajmować całej szerokości. */
+  /* Dwie karty jedna pod drugą - węższa kolumna czyta się lepiej niż pełna szerokość. */
   grid-template-columns: minmax(0, 680px);
   gap: 24px;
   align-items: start;

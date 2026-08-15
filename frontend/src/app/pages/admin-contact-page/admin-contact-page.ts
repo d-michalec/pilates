@@ -7,11 +7,17 @@ import { MessageModule } from 'primeng/message';
 import { finalize } from 'rxjs';
 
 import { ContactPageContent, ContactService } from '../../core/contact.service';
+import { SiteSettings } from '../../core/venue';
+import { VenueService } from '../../core/venue.service';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
 
 /**
- * Strona kontaktu ma tylko jedno wymienne pole - zdjęcie. Reszta treści jest
- * stała i siedzi w kodzie, bo nie zmienia się razem z ofertą studia.
+ * Wszystko, przez co studio jest osiągalne z zewnątrz: zdjęcie strony kontaktu
+ * i adresy profili w social mediach.
+ *
+ * Linki do profili stały wcześniej na stronie Baru, bo tam powstały razem
+ * z godzinami kawiarni. Dotyczą jednak stopki na całej stronie, więc nikt by ich
+ * tam nie szukał.
  */
 @Component({
   selector: 'app-admin-contact-page',
@@ -21,6 +27,7 @@ import { AdminHeader } from '../../layout/admin-header/admin-header';
 })
 export class AdminContactPage implements OnInit, OnDestroy {
   private readonly contactService = inject(ContactService);
+  private readonly venueService = inject(VenueService);
 
   protected readonly page = signal<ContactPageContent | null>(null);
   protected readonly selectedImage = signal<File | null>(null);
@@ -30,6 +37,15 @@ export class AdminContactPage implements OnInit, OnDestroy {
   protected readonly isSaving = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly successMessage = signal<string | null>(null);
+
+  protected readonly isSavingSettings = signal(false);
+  protected readonly settingsMessage = signal<string | null>(null);
+  protected readonly settingsErrorMessage = signal<string | null>(null);
+
+  protected readonly settingsForm = new FormGroup({
+    instagramUrl: new FormControl('', { nonNullable: true }),
+    facebookUrl: new FormControl('', { nonNullable: true })
+  });
 
   protected readonly form = new FormGroup({
     imageAlt: new FormControl('', {
@@ -127,6 +143,37 @@ export class AdminContactPage implements OnInit, OnDestroy {
       });
   }
 
+  protected saveSettings() {
+    this.settingsMessage.set(null);
+    this.settingsErrorMessage.set(null);
+
+    const { instagramUrl, facebookUrl } = this.settingsForm.getRawValue();
+    this.isSavingSettings.set(true);
+
+    // Puste pole zapisujemy jako brak wartości - stopka ukrywa wtedy ikonę.
+    this.venueService
+      .updateSettings({ instagramUrl: instagramUrl.trim() || null, facebookUrl: facebookUrl.trim() || null })
+      .pipe(finalize(() => this.isSavingSettings.set(false)))
+      .subscribe({
+        next: (settings) => this.applySettings(settings, 'Linki zostały zapisane.'),
+        error: (error) =>
+          this.settingsErrorMessage.set(
+            error?.error?.message ?? 'Nie udało się zapisać linków. Adres musi zaczynać się od https://.'
+          )
+      });
+  }
+
+  private applySettings(settings: SiteSettings, message: string | null) {
+    this.settingsForm.setValue({
+      instagramUrl: settings.instagramUrl ?? '',
+      facebookUrl: settings.facebookUrl ?? ''
+    });
+
+    if (message) {
+      this.settingsMessage.set(message);
+    }
+  }
+
   private load() {
     this.contactService
       .getPage()
@@ -141,6 +188,11 @@ export class AdminContactPage implements OnInit, OnDestroy {
         },
         error: () => this.errorMessage.set('Nie udało się pobrać danych strony kontaktu.')
       });
+
+    this.venueService.getSettings().subscribe({
+      next: (settings) => this.applySettings(settings, null),
+      error: () => this.settingsErrorMessage.set('Nie udało się pobrać linków.')
+    });
   }
 
   /** Adresy blob trzeba zwolnić ręcznie, inaczej podgląd zostaje w pamięci. */
