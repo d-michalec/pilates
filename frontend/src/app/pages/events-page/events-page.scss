@@ -177,3 +177,32 @@ h2 {
     grid-template-columns: 1fr;
   }
 }
+
+/* Numeracja stron minionych wydarzeń - pojawia się dopiero powyżej dwunastu pozycji. */
+.past-pagination {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 32px;
+
+  button {
+    min-width: 38px;
+    padding: 8px 10px;
+    border: 1px solid color-mix(in srgb, var(--baba-red) 30%, transparent);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--baba-red);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background: color-mix(in srgb, var(--baba-red) 10%, transparent);
+    }
+  }
+
+  .past-page-current {
+    background: var(--baba-red);
+    border-color: var(--baba-red);
+    color: #fff;
+  }
+}

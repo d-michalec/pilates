@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { finalize } from 'rxjs';
 
+import { CONTACT_DETAILS } from '../../core/contact-details';
 import { NewsletterService } from '../../core/newsletter.service';
 import { SiteSettings } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
@@ -22,6 +23,8 @@ type FooterTone = 'brown' | 'red' | 'olive';
 })
 export class SiteFooter implements OnInit {
   @Input() tone: FooterTone = 'brown';
+
+  protected readonly kontakt = CONTACT_DETAILS;
 
   protected readonly settings = signal<SiteSettings | null>(null);
   protected readonly hasSocials = computed(() => {

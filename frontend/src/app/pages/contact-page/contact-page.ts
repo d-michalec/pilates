@@ -6,6 +6,7 @@ import { MessageModule } from 'primeng/message';
 import { TextareaModule } from 'primeng/textarea';
 import { finalize } from 'rxjs';
 
+import { CONTACT_DETAILS } from '../../core/contact-details';
 import { ContactService } from '../../core/contact.service';
 import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
@@ -20,6 +21,8 @@ import { LanguageService } from '../../core/language.service';
   styleUrl: './contact-page.scss'
 })
 export class ContactPage implements OnInit {
+  protected readonly kontakt = CONTACT_DETAILS;
+
   private readonly languageService = inject(LanguageService);
 
   protected readonly isSending = signal(false);

@@ -8,6 +8,7 @@ import { VenueService } from '../../core/venue.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { isExternalUrl } from '../../core/cta-link';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
@@ -66,7 +67,7 @@ export class SaunaPage implements OnInit {
   }
 
   protected isExternalCta(url: string) {
-    return url.startsWith('http://') || url.startsWith('https://');
+    return isExternalUrl(url);
   }
 
   protected imageUrl(sauna: SaunaContent) {

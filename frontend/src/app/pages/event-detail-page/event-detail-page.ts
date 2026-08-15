@@ -8,6 +8,7 @@ import { StudioEvent } from '../../core/studio-event';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { isExternalUrl } from '../../core/cta-link';
 import { LanguageService } from '../../core/language.service';
 
 /** Google ucina opisy w okolicach 155-160 znaków. */
@@ -97,6 +98,11 @@ export class EventDetailPage implements OnInit {
   /** Wybiera wersję redagowaną w panelu; brak tłumaczenia oznacza polski tekst. */
   protected content(polish: string | null | undefined, english: string | null | undefined) {
     return this.languageService.content(polish, english);
+  }
+
+  /** Zewnętrzny adres idzie do href, wewnętrzny do routerLink z prefiksem języka. */
+  protected isExternalCta(url: string) {
+    return isExternalUrl(url);
   }
 
 }

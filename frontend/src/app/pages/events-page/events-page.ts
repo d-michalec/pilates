@@ -26,6 +26,19 @@ export class EventsPage implements OnInit {
   protected readonly upcomingEvents = computed(() => this.events().filter((event) => !this.isPast(event)));
   protected readonly pastEvents = computed(() => this.events().filter((event) => this.isPast(event)).reverse());
 
+  /** Makieta mieści dwanaście minionych wydarzeń, reszta idzie na kolejne strony. */
+  private readonly NA_STRONE = 12;
+
+  protected readonly pastPage = signal(1);
+  protected readonly pastPageCount = computed(() => Math.max(1, Math.ceil(this.pastEvents().length / this.NA_STRONE)));
+  protected readonly pastPages = computed(() => Array.from({ length: this.pastPageCount() }, (_, index) => index + 1));
+  protected readonly pagedPastEvents = computed(() => {
+    // Po zmianie danych numer strony może wskazywać poza listę - wtedy cofamy się na ostatnią.
+    const strona = Math.min(this.pastPage(), this.pastPageCount());
+    const od = (strona - 1) * this.NA_STRONE;
+    return this.pastEvents().slice(od, od + this.NA_STRONE);
+  });
+
   constructor(
     private readonly eventService: EventService,
     private readonly seoService: SeoService
@@ -64,6 +77,14 @@ export class EventsPage implements OnInit {
 
   protected imageUrl(event: StudioEvent) {
     return event.image.thumbnailUrl || event.image.url;
+  }
+
+  protected showPastPage(strona: number) {
+    this.pastPage.set(strona);
+  }
+
+  protected isCurrentPastPage(strona: number) {
+    return Math.min(this.pastPage(), this.pastPageCount()) === strona;
   }
 
   private isPast(event: StudioEvent) {

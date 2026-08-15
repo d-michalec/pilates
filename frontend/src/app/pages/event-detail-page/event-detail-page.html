@@ -23,7 +23,11 @@
       <aside class="event-date-box">
         <span>{{ dateLine(event) }}</span>
         <strong>{{ timeLine(event) }}</strong>
-        <a [href]="signupUrl(event)">{{ 'event.join' | t }}</a>
+        @if (isExternalCta(signupUrl(event))) {
+          <a [href]="signupUrl(event)" rel="noopener">{{ 'event.join' | t }}</a>
+        } @else {
+          <a [routerLink]="signupUrl(event) | localizePath">{{ 'event.join' | t }}</a>
+        }
       </aside>
     </section>
 
@@ -74,7 +78,11 @@
           </div>
         }
       </dl>
-      <a [href]="signupUrl(event)">{{ 'event.join' | t }}</a>
+      @if (isExternalCta(signupUrl(event))) {
+        <a [href]="signupUrl(event)" rel="noopener">{{ 'event.join' | t }}</a>
+      } @else {
+        <a [routerLink]="signupUrl(event) | localizePath">{{ 'event.join' | t }}</a>
+      }
     </section>
   }
 

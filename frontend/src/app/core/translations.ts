@@ -133,6 +133,7 @@ export const TRANSLATIONS = {
   'team.srHeading': { pl: 'Kadra BABA Studio', en: 'BABA Studio team' },
   'events.upcoming': { pl: 'Harmonogram wydarzeń', en: 'Upcoming events' },
   'events.past': { pl: 'Minione wydarzenia', en: 'Past events' },
+  'events.pastPagination': { pl: 'Strony minionych wydarzeń', en: 'Past events pages' },
   'events.none': { pl: 'Brak nadchodzących wydarzeń.', en: 'No upcoming events.' },
   'faq.title': { pl: 'FAQ', en: 'FAQ' },
   'faq.empty': { pl: 'Pytania pojawią się wkrótce.', en: 'Questions will appear here soon.' },

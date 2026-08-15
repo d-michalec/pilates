@@ -9,16 +9,16 @@
       <dl>
         <div>
           <dt>{{ 'contactPage.general' | t }}</dt>
-          <dd><a href="mailto:biuro@babapilates.pl">biuro@babapilates.pl</a></dd>
-          <dd><a href="tel:+48123456789">+48 123 456 789</a></dd>
+          <dd><a [href]="'mailto:' + kontakt.email">{{ kontakt.email }}</a></dd>
+          <dd><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phone }}</a></dd>
         </div>
         <div>
           <dt>{{ 'contactPage.media' | t }}</dt>
-          <dd><a href="mailto:management@babapilates.pl">management@babapilates.pl</a></dd>
+          <dd><a [href]="'mailto:' + kontakt.mediaEmail">{{ kontakt.mediaEmail }}</a></dd>
         </div>
         <div>
           <dt>{{ 'contactPage.address' | t }}</dt>
-          <dd>ul. Polskiej Organizacji Wojskowej 25,<br />90-248 Łódź</dd>
+          <dd>{{ kontakt.street }},<br />{{ kontakt.city }}</dd>
         </div>
       </dl>
     </div>

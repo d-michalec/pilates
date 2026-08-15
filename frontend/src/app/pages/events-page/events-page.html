@@ -35,7 +35,7 @@
       @if (pastEvents().length > 0) {
         <h2>{{ 'events.past' | t }}</h2>
         <div class="events-grid past-events">
-          @for (event of pastEvents(); track event.id) {
+          @for (event of pagedPastEvents(); track event.id) {
             <a class="event-card" [routerLink]="'/event/' + event.id | localizePath">
               <img [src]="imageUrl(event)" [alt]="content(event.title, event.titleEn)" loading="lazy" decoding="async" />
               <span class="event-date">{{ eventDate(event) }}<br />{{ eventTime(event) }}</span>
@@ -44,6 +44,21 @@
             </a>
           }
         </div>
+
+        @if (pastPageCount() > 1) {
+          <nav class="past-pagination" [attr.aria-label]="'events.pastPagination' | t">
+            @for (strona of pastPages(); track strona) {
+              <button
+                type="button"
+                [class.past-page-current]="isCurrentPastPage(strona)"
+                [attr.aria-current]="isCurrentPastPage(strona) ? 'page' : null"
+                (click)="showPastPage(strona)"
+              >
+                {{ strona }}
+              </button>
+            }
+          </nav>
+        }
       }
     }
   </section>
