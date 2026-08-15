@@ -50,6 +50,19 @@ Pierwszy build backendu trwa kilka minut, bo Gradle pobiera zależności. Flyway
 sam zakłada schemat bazy przy pierwszym starcie — nie trzeba niczego wykonywać
 ręcznie.
 
+> **Strony wydarzeń a kolejność budowania.** Front generuje statyczne strony
+> wydarzeń, odpytując backend podczas budowania. Przy pierwszym `up --build`
+> backend jeszcze nie działa, więc strony wydarzeń powstaną jako renderowane po
+> stronie klienta — działają normalnie, ale wyszukiwarka widzi pustą skorupę.
+> Po wgraniu wydarzeń z panelu przebuduj sam front, żeby weszły do indeksu:
+>
+> ```bash
+> docker compose up -d --build web
+> ```
+>
+> Warto powtarzać to po każdej większej zmianie treści — na przykład raz na
+> miesiąc albo po dodaniu nowych wydarzeń.
+
 **4. Sprawdź, że działa.**
 
 ```bash

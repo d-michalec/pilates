@@ -3,11 +3,11 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
 import { adminAuthInterceptor } from './core/admin-auth.interceptor';
+import { BabaPreset } from './core/baba-preset';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withNoHttpTransferCache()),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: BabaPreset,
         options: {
           darkModeSelector: false
         }

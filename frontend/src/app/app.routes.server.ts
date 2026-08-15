@@ -59,6 +59,20 @@ export const serverRoutes: ServerRoute[] = [
     getPrerenderParams: getEventPrerenderParams
   },
   {
+    /*
+     * Wersja angielska jest osobnym wpisem, bo wzorzec "event/:id" dopasowuje się
+     * wyłącznie do korzenia. Bez tej trasy /en/event/:id wpadałby pod gwiazdkę,
+     * która ma parametr w adresie, ale nie ma skąd wziąć jego wartości - build
+     * przerwałby się dopiero na produkcji.
+     */
+    path: 'en/event/:id',
+    renderMode: RenderMode.Prerender,
+    fallback: PrerenderFallback.Client,
+    getPrerenderParams: getEventPrerenderParams
+  },
+  {
+    // Reszta tras obu drzew jest zdefiniowana wprost w routerze, więc prerender
+    // sam je wylicza - łącznie z gałęzią /en.
     path: '**',
     renderMode: RenderMode.Prerender
   }
