@@ -1,0 +1,50 @@
+<main class="sauna-page">
+  <app-site-header tone="light" />
+
+  <section class="sauna-shell" aria-label="Sauna">
+    <span class="section-label">{{ 'sauna.label' | t }}</span>
+
+    <div class="sauna-copy">
+
+      @if (isLoading()) {
+        <p class="sauna-paragraph">{{ 'state.loading' | t }}</p>
+      } @else if (sauna(); as content) {
+        @for (paragraph of paragraphs(description(content)); track $index) {
+          <p class="sauna-paragraph">{{ paragraph }}</p>
+        }
+
+        <div class="sauna-cta-row">
+          @if (isExternalCta(content.ctaUrl)) {
+            <a class="sauna-cta" [href]="content.ctaUrl" rel="noopener">{{ ctaLabel(content) }}</a>
+          } @else {
+            <a class="sauna-cta" [routerLink]="content.ctaUrl | localizePath">{{ ctaLabel(content) }}</a>
+          }
+        </div>
+
+        @if (content.sessionGroups.length > 0) {
+          <div class="sauna-sessions">
+            <h2>{{ 'sauna.sessions' | t }}</h2>
+
+            @for (group of content.sessionGroups; track $index) {
+              <p><span class="sauna-days">{{ dayLabel(group) }}</span>: {{ group.times.join(', ') }}</p>
+            }
+          </div>
+        }
+      } @else {
+        <p class="sauna-paragraph">{{ 'sauna.error' | t }}</p>
+      }
+    </div>
+
+    <div class="sauna-image-wrapper">
+      @if (sauna(); as content) {
+        @if (imageUrl(content); as url) {
+          <img [src]="url" [alt]="imageAlt(content)" decoding="async" />
+        } @else {
+          <div class="sauna-image-placeholder" aria-hidden="true"></div>
+        }
+      }
+    </div>
+  </section>
+
+  <app-site-footer tone="red" />
+</main>

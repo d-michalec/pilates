@@ -1,0 +1,44 @@
+<main class="schedule-page">
+  <app-site-header tone="red" />
+
+  <section class="schedule-shell" aria-label="Grafik zajęć">
+    <h1>{{ 'schedule.title' | t }}</h1>
+
+    <div class="schedule-frame-shell" [class.schedule-frame-shell-ready]="isFrameReady()">
+      @if (!isFrameReady()) {
+        <div class="schedule-skeleton" aria-hidden="true">
+          <div class="schedule-skeleton-toolbar">
+            <span class="schedule-skeleton-block schedule-skeleton-pill"></span>
+            <span class="schedule-skeleton-block schedule-skeleton-pill"></span>
+            <span class="schedule-skeleton-block schedule-skeleton-pill"></span>
+          </div>
+
+          @for (row of skeletonRows; track row) {
+            <div class="schedule-skeleton-row">
+              <span class="schedule-skeleton-block schedule-skeleton-time"></span>
+              <span class="schedule-skeleton-block schedule-skeleton-title"></span>
+              <span class="schedule-skeleton-block schedule-skeleton-action"></span>
+            </div>
+          }
+        </div>
+      }
+
+      <p class="schedule-status" role="status" aria-live="polite">
+        @if (!isFrameReady()) {
+          {{ 'schedule.loading' | t }}
+        }
+      </p>
+
+      <iframe
+        class="schedule-frame"
+        [src]="scheduleUrl"
+        [title]="'schedule.frameTitle' | t"
+        loading="eager"
+        referrerpolicy="strict-origin-when-cross-origin"
+        (load)="onFrameLoad()"
+      ></iframe>
+    </div>
+  </section>
+
+  <app-site-footer />
+</main>

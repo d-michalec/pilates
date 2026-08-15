@@ -1,0 +1,89 @@
+<main class="contact-page">
+  <app-site-header tone="light" />
+
+  <section class="contact-hero" aria-label="Kontakt">
+    <div class="contact-image" aria-hidden="true"></div>
+    <div class="contact-copy">
+      <h1>{{ 'contactPage.title' | t }}</h1>
+
+      <dl>
+        <div>
+          <dt>{{ 'contactPage.general' | t }}</dt>
+          <dd><a href="mailto:biuro@babapilates.pl">biuro@babapilates.pl</a></dd>
+          <dd><a href="tel:+48123456789">+48 123 456 789</a></dd>
+        </div>
+        <div>
+          <dt>{{ 'contactPage.media' | t }}</dt>
+          <dd><a href="mailto:management@babapilates.pl">management@babapilates.pl</a></dd>
+        </div>
+        <div>
+          <dt>{{ 'contactPage.address' | t }}</dt>
+          <dd>ul. Polskiej Organizacji Wojskowej 25,<br />90-248 Łódź</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="contact-form-section" aria-label="Formularz kontaktowy">
+    <div>
+      <span>{{ 'contactPage.formLead' | t }}</span>
+      <h2>{{ 'contactPage.formHeading' | t }}</h2>
+      <p>{{ 'contactPage.formText' | t }}</p>
+    </div>
+
+    <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="contact-grid">
+        <label>
+          <span>{{ 'contact.name' | t }}</span>
+          <input pInputText type="text" formControlName="name" autocomplete="name" />
+        </label>
+
+        <label>
+          <span>{{ 'contact.phone' | t }}</span>
+          <input pInputText type="tel" formControlName="phone" autocomplete="tel" />
+        </label>
+      </div>
+
+      <label>
+        <span>{{ 'contact.email' | t }}</span>
+        <input pInputText type="email" formControlName="email" autocomplete="email" />
+      </label>
+
+      <label>
+        <span>{{ 'contact.subject' | t }}</span>
+        <input pInputText type="text" formControlName="subject" />
+      </label>
+
+      <label>
+        <span>{{ 'contact.message' | t }}</span>
+        <textarea pTextarea formControlName="message" rows="6"></textarea>
+      </label>
+
+      <div class="honeypot" aria-hidden="true">
+        <label>
+          Strona internetowa
+          <input pInputText type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage() ?? ''" />
+      }
+
+      @if (successMessage()) {
+        <p-message severity="success" [text]="successMessage() ?? ''" />
+      }
+
+      <button
+        pButton
+        type="submit"
+        [label]="'contact.send' | t"
+        icon="pi pi-send"
+        [loading]="isSending()"
+        [disabled]="isSending()"
+      ></button>
+    </form>
+  </section>
+
+  <app-site-footer />
+</main>

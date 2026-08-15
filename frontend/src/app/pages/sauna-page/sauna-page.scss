@@ -1,0 +1,135 @@
+:host {
+  display: block;
+  background: var(--baba-brown);
+}
+
+.sauna-page {
+  min-height: 100dvh;
+  background: var(--baba-brown);
+  color: var(--baba-white);
+}
+
+/* Makieta: tekst po lewej, zdjęcie po prawej. Bar ma to odwrócone. */
+.sauna-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+  width: min(100% - 56px, 1280px);
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 104px) 0 clamp(72px, 10vw, 128px);
+}
+
+/* Etykieta jest osobnym elementem siatki: na desktopie stoi nad kolumną z tekstem,
+   a na telefonie nad zdjęciem, żeby strona nie zaczynała się od samej fotografii. */
+.section-label {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  margin-bottom: clamp(28px, 4vw, 52px);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.sauna-paragraph {
+  margin: 0 0 20px;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.sauna-cta-row {
+  display: flex;
+  justify-content: center;
+  margin: clamp(32px, 5vw, 56px) 0;
+}
+
+.sauna-cta {
+  padding: 16px 34px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--baba-brown);
+  background: var(--baba-olive);
+  transition: filter 160ms ease;
+}
+
+.sauna-cta:hover {
+  filter: brightness(1.08);
+}
+
+.sauna-sessions {
+  margin-top: clamp(36px, 6vw, 72px);
+  text-align: right;
+}
+
+.sauna-sessions h2 {
+  margin: 0 0 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sauna-sessions p {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.sauna-days::first-letter {
+  text-transform: uppercase;
+}
+
+.sauna-image-wrapper {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.sauna-image-wrapper img,
+.sauna-image-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.sauna-image-placeholder {
+  background: color-mix(in srgb, var(--baba-white) 12%, var(--baba-brown));
+}
+
+@media (max-width: 900px) {
+  .sauna-shell {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 28px, 1280px);
+  }
+
+  /* Na wąskim ekranie: etykieta, zdjęcie, potem tekst. */
+  .section-label,
+  .sauna-copy,
+  .sauna-image-wrapper {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .sauna-image-wrapper {
+    order: -1;
+  }
+
+  .section-label {
+    order: -2;
+  }
+
+  .sauna-paragraph {
+    text-align: left;
+  }
+
+  .sauna-sessions {
+    text-align: left;
+  }
+}

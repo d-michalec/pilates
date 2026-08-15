@@ -1,0 +1,82 @@
+<main class="event-page">
+  <app-site-header tone="red" />
+
+  <header class="event-header old-event-header">
+    <a class="menu-link" [routerLink]="'/wydarzenia' | localizePath">
+      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Wydarzenia</span>
+    </a>
+    <a class="brand-link" [routerLink]="'/' | localizePath">BABA</a>
+  </header>
+
+  @if (isLoading()) {
+    <p class="empty-state">{{ 'state.loading' | t }}</p>
+  } @else if (errorMessage()) {
+    <p class="empty-state">{{ errorMessage() }}</p>
+  } @else if (event(); as event) {
+    <section class="event-hero">
+      <img [src]="event.image.url" [alt]="content(event.title, event.titleEn)" decoding="async" fetchpriority="high" />
+      <div class="event-hero-copy">
+        <span>{{ event.hostName }}</span>
+        <h1>{{ content(event.title, event.titleEn) }}</h1>
+      </div>
+      <aside class="event-date-box">
+        <span>{{ dateLine(event) }}</span>
+        <strong>{{ timeLine(event) }}</strong>
+        <a [href]="signupUrl(event)">{{ 'event.join' | t }}</a>
+      </aside>
+    </section>
+
+    <section class="event-description">
+      <p class="lead">{{ content(event.shortDescription, event.shortDescriptionEn) }}</p>
+      <p>{{ content(event.description, event.descriptionEn) }}</p>
+    </section>
+
+    <section class="host-section" [class.host-section-no-image]="!event.hostImage">
+      @if (event.hostImage) {
+        <img [src]="event.hostImage.url" [alt]="event.hostName" loading="lazy" decoding="async" />
+      }
+      <div>
+        <span>prowadzi</span>
+        <h2>{{ event.hostName }}</h2>
+        <p>{{ content(event.hostDescription, event.hostDescriptionEn) || content(event.shortDescription, event.shortDescriptionEn) }}</p>
+      </div>
+    </section>
+
+    <section class="event-facts">
+      <dl>
+        <div>
+          <dt>Data:</dt>
+          <dd>{{ dateLine(event) }}</dd>
+        </div>
+        @if (event.location) {
+          <div>
+            <dt>Miejsce:</dt>
+            <dd>{{ content(event.location, event.locationEn) }}</dd>
+          </div>
+        }
+        @if (event.durationMinutes) {
+          <div>
+            <dt>Czas trwania:</dt>
+            <dd>{{ event.durationMinutes }} min</dd>
+          </div>
+        }
+        @if (event.capacity) {
+          <div>
+            <dt>Liczba miejsc:</dt>
+            <dd>{{ event.capacity }}</dd>
+          </div>
+        }
+        @if (event.price) {
+          <div>
+            <dt>Cena:</dt>
+            <dd>{{ content(event.price, event.priceEn) }}</dd>
+          </div>
+        }
+      </dl>
+      <a [href]="signupUrl(event)">{{ 'event.join' | t }}</a>
+    </section>
+  }
+
+  <app-site-footer />
+</main>

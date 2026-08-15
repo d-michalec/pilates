@@ -1,0 +1,96 @@
+:host {
+  display: block;
+  background: var(--baba-brown);
+}
+
+.bar-page {
+  min-height: 100dvh;
+  background: var(--baba-brown);
+  color: var(--baba-white);
+}
+
+/* Makieta: bar ma zdjęcie po lewej, a tekst po prawej - odwrotnie niż sauna. */
+.bar-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+  width: min(100% - 56px, 1280px);
+  margin: 0 auto;
+  padding: clamp(56px, 8vw, 104px) 0 clamp(72px, 10vw, 128px);
+}
+
+/* Etykieta jako osobny element siatki - patrz komentarz na stronie sauny. */
+.section-label {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  margin-bottom: clamp(28px, 4vw, 52px);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.bar-paragraph {
+  margin: 0 0 20px;
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.bar-hours {
+  margin-top: clamp(48px, 8vw, 112px);
+}
+
+.bar-hours h2 {
+  margin: 0 0 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bar-hours p {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.bar-days::first-letter {
+  text-transform: uppercase;
+}
+
+.bar-image-wrapper {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.bar-copy {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.bar-image-wrapper img,
+.bar-image-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.bar-image-placeholder {
+  background: color-mix(in srgb, var(--baba-white) 12%, var(--baba-brown));
+}
+
+@media (max-width: 900px) {
+  .bar-shell {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 28px, 1280px);
+  }
+
+  .bar-paragraph {
+    text-align: left;
+  }
+}

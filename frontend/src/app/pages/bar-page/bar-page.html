@@ -1,0 +1,42 @@
+<main class="bar-page">
+  <app-site-header tone="light" />
+
+  <section class="bar-shell" aria-label="Bar">
+    <div class="bar-image-wrapper">
+      @if (bar(); as content) {
+        @if (imageUrl(content); as url) {
+          <img [src]="url" [alt]="imageAlt(content)" decoding="async" />
+        } @else {
+          <div class="bar-image-placeholder" aria-hidden="true"></div>
+        }
+      }
+    </div>
+
+    <span class="section-label">{{ 'bar.label' | t }}</span>
+
+    <div class="bar-copy">
+
+      @if (isLoading()) {
+        <p class="bar-paragraph">{{ 'state.loading' | t }}</p>
+      } @else if (bar(); as content) {
+        @for (paragraph of paragraphs(description(content)); track $index) {
+          <p class="bar-paragraph">{{ paragraph }}</p>
+        }
+
+        @if (openingHoursGroups().length > 0) {
+          <div class="bar-hours">
+            <h2>{{ 'bar.hours' | t }}</h2>
+
+            @for (group of openingHoursGroups(); track group.days) {
+              <p><span class="bar-days">{{ group.days }}</span>: {{ group.hours }}</p>
+            }
+          </div>
+        }
+      } @else {
+        <p class="bar-paragraph">{{ 'bar.error' | t }}</p>
+      }
+    </div>
+  </section>
+
+  <app-site-footer tone="olive" />
+</main>

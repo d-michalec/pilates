@@ -1,0 +1,52 @@
+<main class="events-page">
+  <app-site-header tone="light" />
+
+  <header class="events-header old-events-header">
+    <a class="menu-link" [routerLink]="'/' | localizePath">
+      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span>Menu</span>
+    </a>
+    <a class="brand-link" [routerLink]="'/' | localizePath">BABA</a>
+  </header>
+
+  <section class="events-shell" aria-label="Wydarzenia">
+    <h1>{{ 'events.upcoming' | t }}</h1>
+
+    @if (isLoading()) {
+      <p class="empty-state">{{ 'state.loading' | t }}</p>
+    } @else if (errorMessage()) {
+      <p class="empty-state">{{ errorMessage() }}</p>
+    } @else {
+      @if (upcomingEvents().length === 0) {
+        <p class="empty-state">{{ 'events.none' | t }}</p>
+      } @else {
+        <div class="events-grid">
+          @for (event of upcomingEvents(); track event.id) {
+            <a class="event-card" [routerLink]="'/event/' + event.id | localizePath">
+              <img [src]="imageUrl(event)" [alt]="content(event.title, event.titleEn)" loading="lazy" decoding="async" />
+              <span class="event-date">{{ eventDate(event) }}<br />{{ eventTime(event) }}</span>
+              <span class="event-host">{{ event.hostName }}</span>
+              <strong>{{ content(event.title, event.titleEn) }}</strong>
+            </a>
+          }
+        </div>
+      }
+
+      @if (pastEvents().length > 0) {
+        <h2>{{ 'events.past' | t }}</h2>
+        <div class="events-grid past-events">
+          @for (event of pastEvents(); track event.id) {
+            <a class="event-card" [routerLink]="'/event/' + event.id | localizePath">
+              <img [src]="imageUrl(event)" [alt]="content(event.title, event.titleEn)" loading="lazy" decoding="async" />
+              <span class="event-date">{{ eventDate(event) }}<br />{{ eventTime(event) }}</span>
+              <span class="event-host">{{ event.hostName }}</span>
+              <strong>{{ content(event.title, event.titleEn) }}</strong>
+            </a>
+          }
+        </div>
+      }
+    }
+  </section>
+
+  <app-site-footer />
+</main>

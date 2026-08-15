@@ -1,0 +1,160 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background: var(--baba-red);
+  color: var(--baba-white);
+}
+
+.pilates-page {
+  min-height: 100dvh;
+  background: var(--baba-red);
+}
+
+.pilates-hero {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  width: min(100% - 56px, 860px);
+  margin: 0 auto;
+  padding: clamp(68px, 10vw, 122px) 0 clamp(42px, 7vw, 80px);
+  text-align: center;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+.pilates-hero h1 {
+  font-family: var(--baba-serif);
+  font-size: clamp(5.5rem, 18vw, 15.5rem);
+  font-weight: 400;
+  line-height: 0.78;
+  text-transform: uppercase;
+}
+
+.pilates-hero p {
+  max-width: 560px;
+  line-height: 1.55;
+}
+
+.pilates-hero a,
+.class-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pilates-hero a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  background: var(--baba-olive);
+  padding: 0 22px;
+  color: var(--baba-white);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.classes-section {
+  width: min(100% - 56px, 1080px);
+  margin: 0 auto;
+  padding-bottom: clamp(70px, 10vw, 132px);
+}
+
+.classes-grid,
+.fallback-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 34px);
+}
+
+.class-card {
+  position: relative;
+  display: grid;
+  min-height: clamp(290px, 30vw, 410px);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--baba-white);
+  color: var(--baba-red);
+  padding: clamp(22px, 3vw, 30px);
+}
+
+.class-card-image {
+  color: var(--baba-white);
+}
+
+.class-card-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.66));
+}
+
+.class-card img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  filter: grayscale(1);
+  object-fit: cover;
+}
+
+.class-card div {
+  display: grid;
+  align-content: end;
+}
+
+.class-card span {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.class-card h2 {
+  max-width: 260px;
+  margin-bottom: 16px;
+  font-size: clamp(1.55rem, 3.2vw, 2.7rem);
+  line-height: 0.96;
+  text-transform: uppercase;
+}
+
+.class-card p {
+  max-width: 320px;
+  line-height: 1.55;
+}
+
+.state {
+  margin: 0;
+  color: var(--baba-white);
+  text-align: center;
+}
+
+.state-error {
+  color: var(--baba-blue);
+}
+
+@media (max-width: 860px) {
+  .classes-grid,
+  .fallback-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .pilates-hero,
+  .classes-section {
+    width: min(100% - 28px, 1080px);
+  }
+
+  .classes-grid,
+  .fallback-grid {
+    grid-template-columns: 1fr;
+  }
+}

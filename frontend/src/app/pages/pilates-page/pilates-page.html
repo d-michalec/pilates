@@ -1,0 +1,54 @@
+<main class="pilates-page">
+  <app-site-header tone="light" />
+
+  <section class="pilates-hero" aria-label="Pilates">
+    <h1>Pilates</h1>
+    <p>{{ 'pilates.lead' | t }} {{ 'pilates.leadLink' | t }}{{ 'pilates.leadTail' | t }}</p>
+    <a [href]="signupUrl()">{{ 'pilates.cta' | t }}</a>
+  </section>
+
+  <section class="classes-section" aria-label="Zajęcia pilates">
+    @if (isLoading()) {
+      <p class="state">{{ 'pilates.loading' | t }}</p>
+    } @else if (errorMessage()) {
+      <p class="state state-error">{{ errorMessage() }}</p>
+    } @else if (classes().length === 0) {
+      <div class="fallback-grid">
+        <article class="class-card class-card-image">
+          <div>
+            <span>{{ 'pilates.fallback.beginner.level' | t }}</span>
+            <h2>Pilates</h2>
+            <p>{{ 'pilates.fallback.beginner.text' | t }}</p>
+          </div>
+        </article>
+        <article class="class-card">
+          <span>Poziom otwarty</span>
+          <h2>Mat pilates</h2>
+          <p>{{ 'pilates.fallback.mat.text' | t }}</p>
+        </article>
+        <article class="class-card">
+          <span>Regeneracja</span>
+          <h2>Stretch & reset</h2>
+          <p>{{ 'pilates.fallback.stretch.text' | t }}</p>
+        </article>
+      </div>
+    } @else {
+      <div class="classes-grid">
+        @for (pilatesClass of classes(); track pilatesClass.id) {
+          <a class="class-card" [class.class-card-image]="pilatesClass.image" [href]="signupUrl(pilatesClass)">
+            @if (pilatesClass.image) {
+              <img [src]="imageUrl(pilatesClass)" [alt]="content(pilatesClass.title, pilatesClass.titleEn)" loading="lazy" decoding="async" />
+            }
+            <div>
+              <span>{{ content(pilatesClass.levelLabel, pilatesClass.levelLabelEn) }}</span>
+              <h2>{{ content(pilatesClass.title, pilatesClass.titleEn) }}</h2>
+              <p>{{ content(pilatesClass.description, pilatesClass.descriptionEn) }}</p>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </section>
+
+  <app-site-footer />
+</main>

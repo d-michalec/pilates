@@ -1,0 +1,34 @@
+<main class="faq-page">
+  <app-site-header tone="red" />
+
+  <section class="faq-shell" aria-label="FAQ">
+    <h1>{{ 'faq.title' | t }}</h1>
+
+    @if (isLoading()) {
+      <p class="faq-state">{{ 'state.loading' | t }}</p>
+    } @else if (errorMessage()) {
+      <p class="faq-state">{{ errorMessage() }}</p>
+    } @else if (faqItems().length === 0) {
+      <p class="faq-state">{{ 'faq.empty' | t }}</p>
+    } @else {
+    <div class="faq-list">
+      @for (item of faqItems(); track item.id; let isFirst = $first) {
+        <details class="faq-item" [open]="isFirst">
+          <summary>
+            <span>{{ question(item) }}</span>
+            <i class="pi pi-plus" aria-hidden="true"></i>
+          </summary>
+          <p>{{ answer(item) }}</p>
+        </details>
+      }
+    </div>
+    }
+
+    <div class="faq-contact">
+      <p>{{ 'faq.contactLead' | t }}</p>
+      <a [routerLink]="'/kontakt' | localizePath">{{ 'faq.contactLink' | t }}</a>
+    </div>
+  </section>
+
+  <app-site-footer />
+</main>
