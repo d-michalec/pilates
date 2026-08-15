@@ -395,3 +395,21 @@ ma swojej strony i dostaje pustą skorupę do renderowania w przeglądarce. To
 zachowanie zamierzone, dlatego test nie zgłasza go jako błędu, tylko wypisuje
 w polu `pominiete`. Jeśli chcesz sprawdzić render także dla nowych wydarzeń,
 przebuduj front po ich dodaniu.
+
+## Skrzynka wiadomości (`/admin/wiadomosci`)
+
+Sprawdzone przez API po stronie serwera; poniżej to samo do przeklikania w panelu.
+
+1. Wyślij wiadomość z formularza na `/kontakt`, wpisując w treści dwa akapity
+   oddzielone pustą linią.
+2. W panelu, na liście `Wiadomości`, zgłoszenie ma być na górze z czerwoną kropką,
+   a licznik przy nagłówku ma wzrosnąć.
+3. Rozwiń je — akapity mają zostać zachowane, a przy „Powiadomienie" ma być widać
+   stan wysyłki e-maila. Bez skonfigurowanego SMTP będzie to `powiadomienie
+   w kolejce`; to poprawne i właśnie po to ta skrzynka istnieje.
+4. Oznacz jako obsłużone — wpis przygasa i spada pod nieobsłużone. Cofnij
+   oznaczenie, żeby sprawdzić, że wraca na górę.
+5. Usuń wiadomość: pierwszy przycisk pyta o potwierdzenie, dopiero drugi kasuje.
+
+Sprawdzone dodatkowo bez logowania: odczyt skrzynki i kasowanie zwracają 401,
+a kasowanie nieistniejącej wiadomości 404, nie ciche powodzenie.
