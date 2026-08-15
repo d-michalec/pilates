@@ -29,5 +29,66 @@
     </div>
   </section>
 
+  <section class="contact-form-section" aria-label="Formularz kontaktowy">
+    <div>
+      <span>{{ 'contactPage.formLead' | t }}</span>
+      <h2>{{ 'contactPage.formHeading' | t }}</h2>
+      <p>{{ 'contactPage.formText' | t }}</p>
+    </div>
+
+    <form class="contact-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="contact-grid">
+        <label>
+          <span>{{ 'contact.name' | t }}</span>
+          <input pInputText type="text" formControlName="name" autocomplete="name" />
+        </label>
+
+        <label>
+          <span>{{ 'contact.phone' | t }}</span>
+          <input pInputText type="tel" formControlName="phone" autocomplete="tel" />
+        </label>
+      </div>
+
+      <label>
+        <span>{{ 'contact.email' | t }}</span>
+        <input pInputText type="email" formControlName="email" autocomplete="email" />
+      </label>
+
+      <label>
+        <span>{{ 'contact.subject' | t }}</span>
+        <input pInputText type="text" formControlName="subject" />
+      </label>
+
+      <label>
+        <span>{{ 'contact.message' | t }}</span>
+        <textarea pTextarea formControlName="message" rows="6"></textarea>
+      </label>
+
+      <div class="honeypot" aria-hidden="true">
+        <label>
+          {{ 'contact.website' | t }}
+          <input pInputText type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+
+      @if (errorMessage()) {
+        <p-message severity="error" [text]="errorMessage() ?? ''" />
+      }
+
+      @if (successMessage()) {
+        <p-message severity="success" [text]="successMessage() ?? ''" />
+      }
+
+      <button
+        pButton
+        type="submit"
+        [label]="'contact.send' | t"
+        icon="pi pi-send"
+        [loading]="isSending()"
+        [disabled]="isSending()"
+      ></button>
+    </form>
+  </section>
+
   <app-site-footer />
 </main>
