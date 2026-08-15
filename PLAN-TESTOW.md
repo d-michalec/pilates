@@ -378,3 +378,20 @@ został żaden rekord z tym prefiksem — gdyby coś zostało, zgłasza to jako 
 Sam test został zweryfikowany kontrolą negatywną: uruchomiony przeciw atrapie
 z celowo zepsutą dwujęzycznością zapalał dokładnie te asercje, które powinien
 (np. brak `hreflang` → 38/39, ignorowanie pól angielskich w HTML → 30/39).
+
+### Co znalazł przy pierwszym uruchomieniu
+
+Kolejność argumentów w `EventResponse.from()` nie odpowiadała deklaracji rekordu:
+po cenie szło od razu pole angielskie, z pominięciem `signupUrl`. Wszystkie pola
+angielskie były przez to przesunięte o jedną pozycję. Ponieważ są tego samego
+typu, kompilator nie miał jak tego zauważyć — po polsku strona wyglądała dobrze,
+a po angielsku pokazywała przesunięte treści.
+
+### Pominięcia zamiast fałszywych alarmów
+
+Strony wydarzeń powstają statycznie na podstawie listy pobranej z backendu
+w momencie budowania. Wydarzenie utworzone przez test powstaje później, więc nie
+ma swojej strony i dostaje pustą skorupę do renderowania w przeglądarce. To
+zachowanie zamierzone, dlatego test nie zgłasza go jako błędu, tylko wypisuje
+w polu `pominiete`. Jeśli chcesz sprawdzić render także dla nowych wydarzeń,
+przebuduj front po ich dodaniu.
