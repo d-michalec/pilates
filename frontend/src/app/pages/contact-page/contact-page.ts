@@ -100,7 +100,7 @@ export class ContactPage implements OnInit {
           this.successMessage.set(this.languageService.translate('contact.success'));
         },
         error: (error) => {
-          this.errorMessage.set(error?.error?.message ?? this.languageService.translate('contact.failure'));
+          this.errorMessage.set(this.languageService.formError(error, 'contact.failure'));
         }
       });
   }

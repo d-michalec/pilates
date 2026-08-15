@@ -214,7 +214,7 @@ export class HomePage implements OnInit, AfterViewInit {
           this.contactSuccessMessage.set(this.languageService.translate('contact.success'));
         },
         error: (error) => {
-          this.contactErrorMessage.set(error?.error?.message ?? this.languageService.translate('contact.failure'));
+          this.contactErrorMessage.set(this.languageService.formError(error, 'contact.failure'));
         }
       });
   }

@@ -126,6 +126,12 @@ potwierdzenie własności domeny. `docker compose logs web` powie dokładnie.
 niewykonana migracja. `docker compose logs backend` pokazuje powód w pierwszych
 liniach wyjątku.
 
+**Wszyscy dostają komunikat o zbyt wielu zgłoszeniach.** Limit liczy się per adres
+odwiedzającego, a ten przychodzi z nagłówka `X-Forwarded-For` ustawianego przez
+Caddy. Jeśli backend zostanie wystawiony bezpośrednio, z pominięciem Caddy'ego,
+wszystkie zapytania będą wyglądały na jeden adres i limit obejmie wszystkich
+naraz. Dlatego usługa `backend` w `docker-compose.yml` celowo nie publikuje portu.
+
 **Zdjęcia zniknęły po aktualizacji.** Oznacza, że wolumen `uploads` został
 usunięty — najczęściej przez `docker compose down -v`. Ta flaga kasuje wolumeny
 i przy tym projekcie nie powinna być używana.

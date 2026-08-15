@@ -7,6 +7,7 @@ import { MessageModule } from 'primeng/message';
 import { finalize } from 'rxjs';
 
 import { CONTACT_DETAILS } from '../../core/contact-details';
+import { LanguageService } from '../../core/language.service';
 import { NewsletterService } from '../../core/newsletter.service';
 import { SiteSettings } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
@@ -33,6 +34,7 @@ export class SiteFooter implements OnInit {
   });
 
   private readonly venueService = inject(VenueService);
+  private readonly languageService = inject(LanguageService);
 
   protected readonly isSubscribing = signal(false);
   protected readonly successMessage = signal<string | null>(null);
@@ -86,7 +88,7 @@ export class SiteFooter implements OnInit {
           this.successMessage.set('Dziękujemy za zapis.');
         },
         error: (error) => {
-          this.errorMessage.set(error?.error?.message ?? 'Nie udało się zapisać do newslettera.');
+          this.errorMessage.set(this.languageService.formError(error, 'newsletter.failure'));
         }
       });
   }

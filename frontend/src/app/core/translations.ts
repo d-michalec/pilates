@@ -94,6 +94,10 @@ export const TRANSLATIONS = {
     pl: 'Dziękujemy za wiadomość. Odezwemy się tak szybko, jak to możliwe.',
     en: 'Thank you for your message. We will get back to you as soon as we can.'
   },
+  'form.tooManyRequests': {
+    pl: 'Wysłano już kilka wiadomości z tego miejsca. Spróbuj ponownie za kilkanaście minut.',
+    en: 'Several messages have already been sent from here. Please try again in a few minutes.'
+  },
   'contact.failure': { pl: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.', en: 'Could not send the message. Please try again.' },
 
   // Newsletter w stopce

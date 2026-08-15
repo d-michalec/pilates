@@ -66,6 +66,20 @@ export class LanguageService {
     return polish ?? '';
   }
 
+  /**
+   * Komunikat błędu formularza we właściwym języku.
+   *
+   * Odpowiedź 429 tłumaczymy po stronie przeglądarki, bo backend nie wie, którą
+   * wersję strony ogląda odwiedzający - jego komunikat jest zawsze po polsku.
+   */
+  formError(error: { status?: number; error?: { message?: string } } | null, kluczDomyslny: TranslationKey): string {
+    if (error?.status === 429) {
+      return this.translate('form.tooManyRequests');
+    }
+
+    return error?.error?.message ?? this.translate(kluczDomyslny);
+  }
+
   /** Dokleja prefiks języka do ścieżki wewnętrznej. Adresy zewnętrzne zostawia w spokoju. */
   localizePath(path: string): string {
     if (!path.startsWith('/')) {

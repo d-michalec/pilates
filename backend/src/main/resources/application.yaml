@@ -1,3 +1,9 @@
+server:
+  # Za serwerem pośredniczącym adres klienta przychodzi w nagłówku X-Forwarded-For.
+  # Bez tego getRemoteAddr() zwracałby adres Caddy'ego, więc wszyscy odwiedzający
+  # dzieliliby jeden limit zapytań i blokowaliby się nawzajem.
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:framework}
+
 spring:
   application:
     name: babastudio-backend
@@ -39,6 +45,11 @@ app:
     from-email: ${MAIL_FROM:}
     retention-days: ${CONTACT_RETENTION_DAYS:365}
     cleanup-cron: ${CONTACT_CLEANUP_CRON:0 20 3 * * *}
+  rate-limit:
+    # Limit dotyczy formularza kontaktowego i zapisu do newslettera, liczony osobno
+    # dla każdego adresu i każdego z tych dwóch zasobów.
+    max-requests: ${RATE_LIMIT_MAX_REQUESTS:5}
+    window-minutes: ${RATE_LIMIT_WINDOW_MINUTES:10}
   newsletter:
     consent-text: ${NEWSLETTER_CONSENT_TEXT:Wyrażam zgodę na otrzymywanie newslettera BABA Studio i wiem, że mogę wycofać zgodę w każdej chwili.}
     getresponse:
