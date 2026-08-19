@@ -27,7 +27,16 @@
   text-decoration: none;
 }
 
-.footer-brand a {
+/*
+ * Znak ">" jest tutaj istotny. Bez niego reguła obejmowała też odnośniki mailowy
+ * i telefoniczny, bo one także są odnośnikami wewnątrz .footer-brand - tyle że
+ * zagnieżdżonymi w akapitach. Adres e-mail renderował się wtedy krojem szeryfowym
+ * w rozmiarze logotypu, zawijał się na dwie linijki i nachodził na kolumnę
+ * z newsletterem. Przy krótkim adresie zastępczym było to mniej widoczne;
+ * prawdziwy adres studia jest o połowę dłuższy i rozjeżdżał stopkę na każdej
+ * podstronie.
+ */
+.footer-brand > a {
   display: inline-block;
   margin-bottom: 26px;
   color: inherit;
@@ -41,6 +50,14 @@
 .footer-newsletter p {
   margin: 0 0 8px;
   line-height: 1.45;
+}
+
+.footer-brand p a {
+  color: inherit;
+  /* Długi adres e-mail nie ma gdzie się złamać na spacji, więc bez tego rozpycha
+     kolumnę zamiast się zawinąć. */
+  overflow-wrap: anywhere;
+  text-underline-offset: 3px;
 }
 
 .footer-newsletter {
