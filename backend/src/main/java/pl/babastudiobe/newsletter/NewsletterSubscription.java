@@ -137,6 +137,12 @@ class NewsletterSubscription {
 		this.syncedAt = OffsetDateTime.now();
 	}
 
+	void markGetResponseRejected(String powod) {
+		this.status = NewsletterSubscriptionStatus.GETRESPONSE_REJECTED;
+		this.failureReason = powod;
+		this.syncedAt = OffsetDateTime.now();
+	}
+
 	void markFailed(String failureReason) {
 		this.status = NewsletterSubscriptionStatus.FAILED;
 		this.failureReason = failureReason;

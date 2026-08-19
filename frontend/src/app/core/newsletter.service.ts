@@ -22,6 +22,8 @@ export interface NewsletterAdminStatus {
   localOnlySubscriptions: number;
   acceptedByGetResponse: number;
   failedSubscriptions: number;
+  rejectedByGetResponse: number;
+  unsubscribed: number;
   lastFailureReason: string | null;
 }
 

@@ -9,6 +9,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 @Component
@@ -42,7 +43,21 @@ class GetResponseNewsletterClient {
 		return adminUrl;
 	}
 
-	void subscribe(NewsletterSubscription subscription) {
+	/**
+	 * Dodaje kontakt do listy wysyłkowej.
+	 *
+	 * Odpowiedź GetResponse wymaga rozróżnienia trzech przypadków, bo dwa z nich
+	 * przychodzą jako kody błędu, a błędem nie są:
+	 *
+	 * 409 znaczy, że ten adres jest już na liście. To normalny skutek ponownego
+	 * zapisu przez formularz i nie ma powodu, żeby straszył właścicielkę w panelu.
+	 *
+	 * 400 z kodem 1002 znaczy, że GetResponse odmawia trwale - najczęściej dlatego,
+	 * że ta osoba sama się kiedyś wypisała albo zgłosiła wiadomość jako spam.
+	 * Takich kontaktów nie da się dodać z powrotem przez API i ponawianie nic nie
+	 * da. To jest coś innego niż zerwane połączenie, więc i stan zapisujemy inny.
+	 */
+	GetResponseSubscribeResult subscribe(NewsletterSubscription subscription) {
 		Map<String, Object> payload = new LinkedHashMap<>();
 		payload.put("email", subscription.getEmail());
 		payload.put("campaign", Map.of("campaignId", campaignId));
@@ -50,13 +65,31 @@ class GetResponseNewsletterClient {
 			payload.put("name", subscription.getName());
 		}
 
-		restClient
-				.post()
-				.uri("/contacts")
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(payload)
-				.retrieve()
-				.toBodilessEntity();
+		try {
+			restClient
+					.post()
+					.uri("/contacts")
+					.contentType(MediaType.APPLICATION_JSON)
+					.body(payload)
+					.retrieve()
+					.toBodilessEntity();
+		}
+		catch (HttpClientErrorException.Conflict conflict) {
+			return GetResponseSubscribeResult.ALREADY_ON_LIST;
+		}
+		catch (HttpClientErrorException exception) {
+			if (exception.getStatusCode().value() == 400
+					&& exception.getResponseBodyAsString().contains("\"code\":1002")) {
+				return GetResponseSubscribeResult.REJECTED;
+			}
+			throw exception;
+		}
+
+		// GetResponse odpowiada 202, czyli "przyjęte do kolejki" - nie "dodane".
+		// Kontakt może jeszcze odpaść na dalszym etapie przetwarzania i o tym nie
+		// dowiemy się już nigdy. Dlatego stan nazywa się KOLEJKA, a nie "dodany":
+		// to jest wszystko, co naprawdę wiemy.
+		return GetResponseSubscribeResult.QUEUED;
 	}
 
 	/**

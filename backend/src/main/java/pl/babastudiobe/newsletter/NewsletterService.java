@@ -64,8 +64,24 @@ class NewsletterService {
 		}
 
 		try {
-			getResponseClient.subscribe(subscription);
-			subscription.markGetResponseAccepted(null);
+			GetResponseSubscribeResult wynik = getResponseClient.subscribe(subscription);
+			if (wynik == GetResponseSubscribeResult.REJECTED) {
+				// Ta osoba wypisała się kiedyś sama i GetResponse celowo nie pozwala
+				// dodać jej z powrotem. To nie jest usterka do naprawienia - to ich
+				// decyzja, którą trzeba uszanować. Zapisujemy stan, żeby właścicielka
+				// wiedziała, dlaczego ten adres nie dostaje wiadomości.
+				subscription.markGetResponseRejected(
+						"GetResponse odmówił dodania kontaktu. Zwykle znaczy to, że ta osoba "
+								+ "wypisała się wcześniej sama albo zgłosiła wiadomość jako spam. "
+								+ "Nie da się jej dodać z powrotem przez stronę.");
+			}
+			else {
+				// ALREADY_ON_LIST traktujemy jak powodzenie, bo cel jest osiągnięty:
+				// adres jest na liście. Wcześniej leciało to jako wyjątek i ponowny
+				// zapis tej samej osoby przez formularz zapisywał się jako błąd
+				// integracji, strasząc w panelu bez powodu.
+				subscription.markGetResponseAccepted(null);
+			}
 		}
 		catch (RestClientException exception) {
 			subscription.markFailed(truncate(exception.getMessage()));
@@ -172,6 +188,8 @@ class NewsletterService {
 				repository.countByStatus(NewsletterSubscriptionStatus.LOCAL_ONLY),
 				repository.countByStatus(NewsletterSubscriptionStatus.GETRESPONSE_ACCEPTED),
 				repository.countByStatus(NewsletterSubscriptionStatus.FAILED),
+				repository.countByStatus(NewsletterSubscriptionStatus.GETRESPONSE_REJECTED),
+				repository.countByStatus(NewsletterSubscriptionStatus.UNSUBSCRIBED),
 				repository
 						.findTopByStatusOrderByUpdatedAtDesc(NewsletterSubscriptionStatus.FAILED)
 						.map(NewsletterSubscription::getFailureReason)

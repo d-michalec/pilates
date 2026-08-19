@@ -37,7 +37,22 @@
             <dt>Błędy integracji</dt>
             <dd>{{ status()?.failedSubscriptions }}</dd>
           </div>
+          <div>
+            <dt>Rezygnacje</dt>
+            <dd>{{ status()?.unsubscribed }}</dd>
+          </div>
+          <div>
+            <dt>Odrzucone przez GetResponse</dt>
+            <dd>{{ status()?.rejectedByGetResponse }}</dd>
+          </div>
         </dl>
+
+        @if (status()?.rejectedByGetResponse) {
+          <p-message
+            severity="info"
+            text="Odrzucone adresy to zwykle osoby, które wcześniej same się wypisały. GetResponse celowo nie pozwala dodać ich z powrotem i nie da się tego obejść ze strony."
+          />
+        }
 
         @if (status()?.lastFailureReason) {
           <p-message severity="error" [text]="status()?.lastFailureReason ?? ''" />
