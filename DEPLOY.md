@@ -219,8 +219,15 @@ Osobno, przed premierą, zostaje do zrobienia:
 - prawdziwy numer telefonu zamiast `123 456 789` w `core/contact-details.ts`
   (bez niego nie ma sensu wstawiać danych strukturalnych `LocalBusiness`),
 - `og:image` i `sitemap.xml`,
-- ograniczenie liczby zapytań na `/api/contact` i `/api/newsletter/subscribe`,
-- klucz API GetResponse, jeśli newsletter ma faktycznie zbierać adresy.
+- klucz API GetResponse, jeśli newsletter ma faktycznie zbierać adresy,
+- **treść regulaminu.** Podstrona `/regulamin` ma same nagłówki, a każdy pusty
+  punkt wyświetla na stronie znacznik „TREŚĆ DO UZUPEŁNIENIA". Treść pisze
+  właścicielka albo jej prawnik — te punkty to jej zobowiązania wobec klientek,
+- **przegląd polityki prywatności przez prawnika.** Opis jest zgodny z tym, co
+  system faktycznie robi z danymi, ale podstawy prawne i sformułowania powinien
+  potwierdzić ktoś z uprawnieniami,
+- **działający SMTP.** Bez niego nie wyjdzie wiadomość powitalna z odnośnikiem do
+  rezygnacji z newslettera, a wtedy jedyną drogą wypisu zostaje prośba mailem.
 
 ## Próba generalna bez serwera
 

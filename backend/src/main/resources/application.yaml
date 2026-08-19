@@ -37,6 +37,10 @@ app:
   # Włączane na serwerze: aplikacja odmówi startu na domyślnym admin/admin.
   # Lokalnie zostaje wyłączone, żeby praca nad projektem nie wymagała konfiguracji.
   require-strong-admin: ${APP_REQUIRE_STRONG_ADMIN:false}
+  # Adres strony. Backend buduje z niego odnośnik do rezygnacji z newslettera,
+  # bo wiadomość wychodzi z serwera i nie ma dostępu do adresu przeglądarki.
+  # Lokalnie wskazuje na ng serve, na serwerze podmienia to zmienna SITE_URL.
+  site-url: ${SITE_URL:http://localhost:4200}
   admin:
     username: ${ADMIN_USERNAME:admin}
     password: ${ADMIN_PASSWORD:admin}
@@ -55,6 +59,10 @@ app:
     window-minutes: ${RATE_LIMIT_WINDOW_MINUTES:10}
   newsletter:
     consent-text: ${NEWSLETTER_CONSENT_TEXT:Wyrażam zgodę na otrzymywanie newslettera BABA Studio i wiem, że mogę wycofać zgodę w każdej chwili.}
+    # Po tylu dniach od rezygnacji kasujemy wiersz. Do tego czasu jest dowodem na
+    # to, że zgoda była i kiedy została wycofana. Zero wyłącza sprzątanie.
+    unsubscribed-retention-days: ${NEWSLETTER_UNSUBSCRIBED_RETENTION_DAYS:365}
+    cleanup-cron: ${NEWSLETTER_CLEANUP_CRON:0 40 3 * * *}
     getresponse:
       api-url: ${GETRESPONSE_API_URL:https://api.getresponse.com/v3}
       api-key: ${GETRESPONSE_API_KEY:}

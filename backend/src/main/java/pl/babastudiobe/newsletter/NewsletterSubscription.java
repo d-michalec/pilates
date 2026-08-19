@@ -53,6 +53,18 @@ class NewsletterSubscription {
 	@Column(name = "synced_at")
 	private OffsetDateTime syncedAt;
 
+	/**
+	 * Jedyne uwierzytelnienie przy wypisie. Losowy UUID, nie da się go zgadnąć ani
+	 * wyliczyć z adresu - dzięki temu odnośnik w wiadomości nie pozwala nikomu
+	 * wypisać cudzego adresu, a my nie musimy prosić o hasło do czegoś, co hasła
+	 * nie ma.
+	 */
+	@Column(name = "unsubscribe_token", nullable = false)
+	private UUID unsubscribeToken;
+
+	@Column(name = "unsubscribed_at")
+	private OffsetDateTime unsubscribedAt;
+
 	protected NewsletterSubscription() {
 	}
 
@@ -62,6 +74,7 @@ class NewsletterSubscription {
 		this.consentAccepted = consentAccepted;
 		this.consentText = consentText;
 		this.status = NewsletterSubscriptionStatus.LOCAL_ONLY;
+		this.unsubscribeToken = UUID.randomUUID();
 	}
 
 	@PrePersist
@@ -71,6 +84,9 @@ class NewsletterSubscription {
 		this.updatedAt = now;
 		if (this.status == null) {
 			this.status = NewsletterSubscriptionStatus.LOCAL_ONLY;
+		}
+		if (this.unsubscribeToken == null) {
+			this.unsubscribeToken = UUID.randomUUID();
 		}
 	}
 
@@ -83,6 +99,29 @@ class NewsletterSubscription {
 		this.name = name;
 		this.consentAccepted = consentAccepted;
 		this.consentText = consentText;
+		// Ktoś, kto zapisuje się ponownie po rezygnacji, przestaje być wypisany.
+		// Bez tego zostałby ze statusem UNSUBSCRIBED i datą rezygnacji, a jego
+		// nowa zgoda nie miałaby żadnego odzwierciedlenia.
+		this.unsubscribedAt = null;
+	}
+
+	void markUnsubscribed() {
+		this.status = NewsletterSubscriptionStatus.UNSUBSCRIBED;
+		this.unsubscribedAt = OffsetDateTime.now();
+		this.failureReason = null;
+	}
+
+	/**
+	 * Rezygnacja u nas się udała, ale nie udało się usunąć kontaktu w GetResponse.
+	 * Zapisujemy powód, bo inaczej ta osoba dalej dostawałaby wiadomości, a nikt by
+	 * się o tym nie dowiedział - u nas w bazie wyglądałaby na wypisaną.
+	 */
+	void markUnsubscribeSyncFailed(String failureReason) {
+		this.failureReason = failureReason;
+	}
+
+	boolean isUnsubscribed() {
+		return this.status == NewsletterSubscriptionStatus.UNSUBSCRIBED;
 	}
 
 	void markLocalOnly() {
@@ -121,5 +160,13 @@ class NewsletterSubscription {
 
 	String getFailureReason() {
 		return failureReason;
+	}
+
+	UUID getUnsubscribeToken() {
+		return unsubscribeToken;
+	}
+
+	String getGetResponseContactId() {
+		return getResponseContactId;
 	}
 }

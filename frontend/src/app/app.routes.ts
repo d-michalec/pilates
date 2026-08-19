@@ -23,6 +23,7 @@ import { PilatesPage } from './pages/pilates-page/pilates-page';
 import { SaunaPage } from './pages/sauna-page/sauna-page';
 import { SchedulePage } from './pages/schedule-page/schedule-page';
 import { TeamPage } from './pages/team-page/team-page';
+import { UnsubscribePage } from './pages/unsubscribe-page/unsubscribe-page';
 
 /**
  * Trasy publiczne trzymamy w jednej tablicy i montujemy dwa razy: bez prefiksu dla
@@ -82,6 +83,12 @@ const publicRoutes: Routes = [
     path: 'polityka-prywatnosci',
     component: LegalPage,
     data: { dokument: 'polityka-prywatnosci' }
+  },
+  // Adres musi się zgadzać z tym, który backend wkleja do wiadomości powitalnej -
+  // patrz NewsletterMailer.unsubscribeUrl.
+  {
+    path: 'newsletter/wypisz',
+    component: UnsubscribePage
   }
 ];
 

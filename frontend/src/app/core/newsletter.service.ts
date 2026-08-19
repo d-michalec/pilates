@@ -42,6 +42,10 @@ export class NewsletterService {
     return this.http.post<NewsletterSubscribeResponse>(`${this.apiUrl}/newsletter/subscribe`, input);
   }
 
+  unsubscribe(token: string) {
+    return this.http.post<void>(`${this.apiUrl}/newsletter/unsubscribe`, { token });
+  }
+
   getAdminStatus() {
     return this.http.get<NewsletterAdminStatus>(`${this.apiUrl}/admin/newsletter/status`);
   }

@@ -145,6 +145,28 @@ export const TRANSLATIONS = {
   },
   'consent.privacyLink': { pl: 'polityką prywatności', en: 'privacy policy' },
 
+  // Rezygnacja z newslettera
+  'unsubscribe.title': { pl: 'Rezygnacja', en: 'Unsubscribe' },
+  'unsubscribe.lead': {
+    pl: 'Potwierdź, że nie chcesz już dostawać newslettera BABA Studio.',
+    en: 'Confirm that you no longer want to receive the BABA Studio newsletter.'
+  },
+  'unsubscribe.confirm': { pl: 'Wypisz mnie', en: 'Unsubscribe me' },
+  'unsubscribe.doneTitle': { pl: 'Wypisaliśmy Cię', en: 'You are unsubscribed' },
+  'unsubscribe.doneText': {
+    pl: 'Nie będziemy już wysyłać newslettera na ten adres. Jeśli zmienisz zdanie, możesz zapisać się ponownie w stopce strony.',
+    en: 'We will not send the newsletter to this address any more. If you change your mind, you can subscribe again in the site footer.'
+  },
+  'unsubscribe.missingToken': {
+    pl: 'Ten odnośnik jest niepełny - programy pocztowe czasem łamią długie adresy. Otwórz go jeszcze raz z wiadomości albo napisz do nas, a wypiszemy Cię ręcznie.',
+    en: 'This link is incomplete - email clients sometimes break long addresses. Open it again from the message or write to us and we will unsubscribe you manually.'
+  },
+  'unsubscribe.failure': {
+    pl: 'Nie udało się wypisać. Spróbuj ponownie albo napisz do nas.',
+    en: 'Could not unsubscribe. Please try again or write to us.'
+  },
+  'unsubscribe.back': { pl: 'Wróć na stronę', en: 'Back to the site' },
+
   // Podstrony
   'pilates.title': { pl: 'Pilates', en: 'Pilates' },
   'sauna.label': { pl: 'Sauna', en: 'Sauna' },

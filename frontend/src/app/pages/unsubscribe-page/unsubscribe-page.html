@@ -1,0 +1,38 @@
+<main class="unsubscribe-page">
+  <app-site-header tone="red" />
+
+  <section class="unsubscribe-shell" [attr.aria-label]="'unsubscribe.title' | t">
+    @if (isDone()) {
+      <h1>{{ 'unsubscribe.doneTitle' | t }}</h1>
+      <p>{{ 'unsubscribe.doneText' | t }}</p>
+    } @else if (!token()) {
+      <!--
+        Brak tokenu w adresie to zwykle ucięty odnośnik - programy pocztowe potrafią
+        łamać długie adresy w połowie. Mówimy więc, co się stało, zamiast pokazywać
+        przycisk, który i tak nie zadziała.
+      -->
+      <h1>{{ 'unsubscribe.title' | t }}</h1>
+      <p>{{ 'unsubscribe.missingToken' | t }}</p>
+    } @else {
+      <h1>{{ 'unsubscribe.title' | t }}</h1>
+      <p>{{ 'unsubscribe.lead' | t }}</p>
+
+      <button
+        pButton
+        type="button"
+        [label]="'unsubscribe.confirm' | t"
+        [loading]="isSending()"
+        [disabled]="isSending()"
+        (click)="confirm()"
+      ></button>
+
+      @if (errorMessage()) {
+        <p class="unsubscribe-error">{{ errorMessage() }}</p>
+      }
+    }
+
+    <a class="unsubscribe-back" [routerLink]="'/' | localizePath">{{ 'unsubscribe.back' | t }}</a>
+  </section>
+
+  <app-site-footer />
+</main>

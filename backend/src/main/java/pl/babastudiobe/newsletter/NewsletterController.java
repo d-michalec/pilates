@@ -27,6 +27,20 @@ class NewsletterController {
 				.body(newsletterService.subscribe(request));
 	}
 
+	/**
+	 * Wypis metodą POST, a nie GET-em prosto z odnośnika w wiadomości.
+	 *
+	 * Skanery bezpieczeństwa w poczcie i podglądy odnośników odwiedzają adresy z
+	 * wiadomości same, bez udziału odbiorcy. Gdyby samo wejście na adres kasowało
+	 * zapis, część osób wypisywałaby się bez swojej wiedzy. Odnośnik prowadzi więc
+	 * na stronę z przyciskiem, a dopiero przycisk wysyła to żądanie.
+	 */
+	@PostMapping("/newsletter/unsubscribe")
+	ResponseEntity<Void> unsubscribe(@Valid @RequestBody NewsletterUnsubscribeRequest request) {
+		newsletterService.unsubscribe(request.token());
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/admin/newsletter/status")
 	NewsletterAdminStatusResponse adminStatus() {
 		return newsletterService.adminStatus();

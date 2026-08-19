@@ -1,8 +1,13 @@
 package pl.babastudiobe.newsletter;
 
+import java.time.OffsetDateTime;
 import java.util.Locale;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -11,20 +16,28 @@ import org.springframework.web.client.RestClientException;
 @Service
 class NewsletterService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(NewsletterService.class);
+
 	private static final int MAX_FAILURE_REASON_LENGTH = 1000;
 
 	private final NewsletterSubscriptionRepository repository;
 	private final GetResponseNewsletterClient getResponseClient;
+	private final NewsletterMailer mailer;
 	private final String consentText;
+	private final int unsubscribedRetentionDays;
 
 	NewsletterService(
 			NewsletterSubscriptionRepository repository,
 			GetResponseNewsletterClient getResponseClient,
-			@Value("${app.newsletter.consent-text:Wyrażam zgodę na otrzymywanie newslettera BABA Studio i wiem, że mogę wycofać zgodę w każdej chwili.}") String consentText
+			NewsletterMailer mailer,
+			@Value("${app.newsletter.consent-text:Wyrażam zgodę na otrzymywanie newslettera BABA Studio i wiem, że mogę wycofać zgodę w każdej chwili.}") String consentText,
+			@Value("${app.newsletter.unsubscribed-retention-days:365}") int unsubscribedRetentionDays
 	) {
 		this.repository = repository;
 		this.getResponseClient = getResponseClient;
+		this.mailer = mailer;
 		this.consentText = consentText;
+		this.unsubscribedRetentionDays = unsubscribedRetentionDays;
 	}
 
 	@Transactional
@@ -45,7 +58,9 @@ class NewsletterService {
 
 		if (!getResponseClient.isConfigured()) {
 			subscription.markLocalOnly();
-			return NewsletterSubscribeResponse.from(repository.save(subscription));
+			NewsletterSubscription zapisana = repository.save(subscription);
+			mailer.sendWelcome(zapisana);
+			return NewsletterSubscribeResponse.from(zapisana);
 		}
 
 		try {
@@ -56,7 +71,71 @@ class NewsletterService {
 			subscription.markFailed(truncate(exception.getMessage()));
 		}
 
-		return NewsletterSubscribeResponse.from(repository.save(subscription));
+		NewsletterSubscription zapisana = repository.save(subscription);
+		// Wysyłka idzie jeszcze wewnątrz transakcji. Świadomy kompromis: przy tym ruchu
+		// jedna wiadomość na zapis nie utrzyma transakcji długo, a wyniesienie jej poza
+		// commit wymagałoby zdarzeń transakcyjnych, czyli maszynerii nieproporcjonalnej
+		// do problemu. Gdyby SMTP zaczął się zacinać, to jest pierwsze miejsce do zmiany.
+		// Mailer połyka własne błędy, więc nieudana wysyłka nie wywraca zapisu.
+		mailer.sendWelcome(zapisana);
+		return NewsletterSubscribeResponse.from(zapisana);
+	}
+
+	/**
+	 * Wypisanie z newslettera na podstawie tokenu z odnośnika.
+	 *
+	 * Nieznany token traktujemy tak samo jak udany wypis. Inna odpowiedź zamieniłaby
+	 * ten adres w narzędzie do sprawdzania, czy dany token istnieje, a osobie, która
+	 * kliknęła stary odnośnik po ponownym zapisie, pokazywałaby błąd zamiast
+	 * spokojnego potwierdzenia. Cel jest ten sam: ten adres nie dostaje wiadomości.
+	 */
+	@Transactional
+	void unsubscribe(UUID token) {
+		NewsletterSubscription subscription = repository.findByUnsubscribeToken(token).orElse(null);
+		if (subscription == null || subscription.isUnsubscribed()) {
+			return;
+		}
+
+		if (getResponseClient.isConfigured()) {
+			try {
+				getResponseClient.unsubscribe(subscription);
+			}
+			catch (RestClientException exception) {
+				// Rezygnację zapisujemy niezależnie od tego, czy GetResponse odpowiedział.
+				// Odwrotna kolejność oznaczałaby, że awaria cudzego serwisu blokuje komuś
+				// wycofanie zgody - a to jego prawo, nie nasza uprzejmość. Powód zapisujemy,
+				// żeby dało się to potem posprzątać ręcznie w panelu GetResponse.
+				LOGGER.warn("Nie udało się usunąć kontaktu w GetResponse: {}", exception.getMessage());
+				subscription.markUnsubscribed();
+				subscription.markUnsubscribeSyncFailed(truncate(exception.getMessage()));
+				repository.save(subscription);
+				return;
+			}
+		}
+
+		subscription.markUnsubscribed();
+		repository.save(subscription);
+	}
+
+	/**
+	 * Kasuje stare rezygnacje. Sam wiersz jest dowodem na to, że zgoda kiedyś była i
+	 * kiedy została wycofana, więc nie znika od razu - ale trzymanie go w
+	 * nieskończoność byłoby przechowywaniem adresu osoby, która wyraźnie poprosiła,
+	 * żeby jej nie pisać.
+	 */
+	@Scheduled(cron = "${app.newsletter.cleanup-cron:0 40 3 * * *}")
+	@Transactional
+	void deleteOldUnsubscriptions() {
+		if (unsubscribedRetentionDays <= 0) {
+			return;
+		}
+
+		OffsetDateTime unsubscribedBefore = OffsetDateTime.now().minusDays(unsubscribedRetentionDays);
+		long deleted = repository.deleteByStatusAndUnsubscribedAtBefore(
+				NewsletterSubscriptionStatus.UNSUBSCRIBED, unsubscribedBefore);
+		if (deleted > 0) {
+			LOGGER.info("Deleted {} newsletter unsubscriptions older than {} days.", deleted, unsubscribedRetentionDays);
+		}
 	}
 
 	@Transactional(readOnly = true)

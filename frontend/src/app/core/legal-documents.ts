@@ -103,13 +103,24 @@ export const PRIVACY_POLICY: LegalDocument = {
 				},
 				{
 					pl:
-						'Adresy przekazujemy do serwisu GetResponse, który wysyła za nas wiadomości. Zgodę możesz wycofać ' +
-						`w każdej chwili - wystarczy odnośnik na dole każdej wiadomości albo e-mail na ${CONTACT_DETAILS.email}. ` +
-						'Wycofanie zgody nie wpływa na to, co wysłaliśmy wcześniej.',
+						'Adresy przekazujemy do serwisu GetResponse, który wysyła za nas wiadomości. Zaraz po zapisie ' +
+						'dostaniesz od nas wiadomość powitalną z odnośnikiem do rezygnacji - dzięki temu masz go od ' +
+						'pierwszego dnia, także wtedy, gdyby ktoś zapisał Twój adres bez Twojej wiedzy.',
 					en:
-						'Addresses are passed to GetResponse, which sends the messages on our behalf. You can withdraw your ' +
-						`consent at any time - use the link at the bottom of any message or write to ${CONTACT_DETAILS.email}. ` +
-						'Withdrawing consent does not affect messages sent before.'
+						'Addresses are passed to GetResponse, which sends the messages on our behalf. Right after signing up ' +
+						'you will receive a welcome message from us containing an unsubscribe link - so you have it from day ' +
+						'one, including in case someone entered your address without your knowledge.'
+				},
+				{
+					pl:
+						`Zgodę możesz wycofać w każdej chwili odnośnikiem z wiadomości albo pisząc na ${CONTACT_DETAILS.email}. ` +
+						'Po rezygnacji zapis zostaje u nas jeszcze przez rok - jest wtedy wyłącznie zapisem tego, że zgoda ' +
+						'istniała i kiedy została wycofana - po czym kasuje się sam. Wycofanie zgody nie wpływa na to, ' +
+						'co wysłaliśmy wcześniej.',
+					en:
+						`You can withdraw consent at any time using the link in any message or by writing to ${CONTACT_DETAILS.email}. ` +
+						'After you unsubscribe, the record stays with us for one year - purely as evidence that consent existed ' +
+						'and when it was withdrawn - and then deletes itself. Withdrawing consent does not affect messages sent before.'
 				}
 			]
 		},
