@@ -18,6 +18,16 @@
   box-sizing: border-box;
 }
 
+html {
+  /*
+   * Miejsce na pasek przewijania rezerwujemy zawsze, także gdy strona się mieści
+   * na ekranie. Bez tego krótsza podstrona nie ma paska, viewport jest szerszy
+   * o kilkanaście pikseli, a wyśrodkowana treść przeskakuje w bok przy każdym
+   * przejściu między zakładkami - w panelu było to widać jako drgający nagłówek.
+   */
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
 }
