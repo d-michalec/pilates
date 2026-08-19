@@ -1,17 +1,8 @@
+@use '../../layout/admin-header/admin-shell' as panel;
+
+@include panel.rama;
+
 /* Style skrzynki wiadomości - ten sam język wizualny co pozostałe strony panelu. */
-
-:host {
-  display: block;
-  min-height: 100dvh;
-  background: color-mix(in srgb, var(--baba-blue) 18%, var(--baba-white));
-  color: var(--baba-red);
-}
-
-.admin-shell {
-  width: min(100% - 48px, 1240px);
-  margin: 0 auto;
-  padding: 34px 0 72px;
-}
 
 .admin-grid {
   display: grid;

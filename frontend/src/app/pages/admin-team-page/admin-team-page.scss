@@ -1,17 +1,6 @@
-:host {
-  display: block;
-  min-height: 100dvh;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0)),
-    #f6f2eb;
-  color: #292522;
-}
+@use '../../layout/admin-header/admin-shell' as panel;
 
-.admin-shell {
-  width: min(1180px, calc(100% - 32px));
-  margin: 0 auto;
-  padding: 32px 0 48px;
-}
+@include panel.rama;
 
 .admin-header {
   display: flex;

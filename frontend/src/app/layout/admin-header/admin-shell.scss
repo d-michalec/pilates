@@ -1,0 +1,32 @@
+/**
+ * Wspólna rama wszystkich stron panelu.
+ *
+ * Strony panelu powstawały w dwóch turach i każda miała własne tło, szerokość
+ * i odstępy. Efekt był taki, że przy przechodzeniu między zakładkami zmieniał się
+ * kolor tła, a nagłówek przeskakiwał o trzydzieści pikseli w bok - bo siedzi
+ * wewnątrz kontenera o różnej szerokości.
+ *
+ * Dlatego to jest jedno miejsce z tymi wartościami. Nowa strona panelu powinna
+ * zaczynać się od @include, zamiast kopiować bloki z sąsiedniej.
+ */
+
+/* Ciepła biel pasuje do palety marki: czerwieni, brązu i oliwki. */
+$tlo: #f7f4ee;
+$szerokosc: min(100% - 48px, 1240px);
+$odstep: 34px 0 72px;
+
+@mixin rama {
+	:host {
+		display: block;
+		min-height: 100dvh;
+		background: $tlo;
+		/* Brąz czyta się spokojniej niż czerwień; czerwień zostaje na akcenty. */
+		color: var(--baba-brown);
+	}
+
+	.admin-shell {
+		width: $szerokosc;
+		margin: 0 auto;
+		padding: $odstep;
+	}
+}
