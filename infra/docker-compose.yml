@@ -36,14 +36,19 @@ services:
       DB_USERNAME: ${POSTGRES_USER:-babastudio}
       DB_PASSWORD: ${POSTGRES_PASSWORD:-babastudio}
 
-      ADMIN_USERNAME: ${ADMIN_USERNAME:?ustaw ADMIN_USERNAME w pliku .env}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ustaw ADMIN_PASSWORD w pliku .env}
+      # Bez wartości albo z domyślnym "admin" aplikacja nie wstanie - pilnuje tego
+      # APP_REQUIRE_STRONG_ADMIN poniżej. Wymogu nie zapisujemy składnią Compose,
+      # bo ta podstawia zmienne przy wczytywaniu pliku i blokowałaby też "build".
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      APP_REQUIRE_STRONG_ADMIN: "true"
+
+      CONTACT_TO_EMAIL: ${CONTACT_TO_EMAIL:-}
 
       # Front i backend stoją pod tym samym adresem, więc przeglądarka nie wykonuje
       # zapytań międzydomenowych. Lista zostaje na wypadek podglądu z innego adresu.
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://${SITE_DOMAIN}}
 
-      CONTACT_TO_EMAIL: ${CONTACT_TO_EMAIL:?ustaw CONTACT_TO_EMAIL w pliku .env}
       MAIL_FROM: ${MAIL_FROM:-}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}

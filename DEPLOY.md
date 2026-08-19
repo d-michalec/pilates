@@ -35,9 +35,10 @@ cd pilates/infra
 cp .env.example .env
 ```
 
-Uzupełnij `.env`. Bez `ADMIN_USERNAME`, `ADMIN_PASSWORD` i `CONTACT_TO_EMAIL`
-kontenery nie wstaną — to celowe, żeby domyślne `admin/admin` nie pojechało na
-produkcję.
+Uzupełnij `.env`. Backend odmówi startu, jeśli login albo hasło administratora
+zostaną puste lub na domyślnej wartości `admin` — to celowe, żeby dane
+z repozytorium nie pojechały na produkcję. Samo `docker compose build` działa bez
+pliku `.env`, więc obrazy można zbudować na próbę wcześniej.
 
 **3. Uruchom.**
 
@@ -121,6 +122,11 @@ Osobno, przed premierą, zostaje do zrobienia:
 **Certyfikat się nie pobiera.** Prawie zawsze DNS albo zablokowany port 80.
 Caddy potrzebuje portu 80 także wtedy, gdy strona działa po HTTPS — tamtędy idzie
 potwierdzenie własności domeny. `docker compose logs web` powie dokładnie.
+
+**Backend nie wstaje z komunikatem o haśle administratora.** Brakuje
+`ADMIN_USERNAME` albo `ADMIN_PASSWORD` w `infra/.env`, albo któreś zostało na
+wartości `admin`. Wartości domyślne są w repozytorium, więc na serwerze muszą być
+inne.
 
 **Backend restartuje się w kółko.** Zwykle brak zmiennej wymaganej w `.env` albo
 niewykonana migracja. `docker compose logs backend` pokazuje powód w pierwszych
