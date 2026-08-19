@@ -70,9 +70,12 @@ docker compose up -d --build
 docker compose logs -f
 ```
 
-Pierwszy build backendu trwa kilka minut, bo Gradle pobiera zależności. Flyway
-sam zakłada schemat bazy przy pierwszym starcie — nie trzeba niczego wykonywać
-ręcznie.
+Pierwsze budowanie obu obrazów trwa około dziesięciu minut — Gradle i npm
+pobierają zależności. Kolejne są znacznie krótsze, bo warstwa z zależnościami
+zostaje w pamięci podręcznej i zmiana samego kodu jej nie unieważnia.
+
+Flyway zakłada schemat bazy przy pierwszym starcie backendu — nie trzeba niczego
+wykonywać ręcznie.
 
 > **Strony wydarzeń a kolejność budowania.** Front generuje statyczne strony
 > wydarzeń, odpytując backend podczas budowania. Przy pierwszym `up --build`
@@ -139,6 +142,25 @@ Osobno, przed premierą, zostaje do zrobienia:
 - `og:image` i `sitemap.xml`,
 - ograniczenie liczby zapytań na `/api/contact` i `/api/newsletter/subscribe`,
 - klucz API GetResponse, jeśli newsletter ma faktycznie zbierać adresy.
+
+## Próba generalna bez serwera
+
+Całość da się uruchomić lokalnie, zanim pojawi się VPS. Sprawdza to wszystko poza
+certyfikatem i domeną: konfigurację Caddy'ego, przekazywanie zapytań do backendu,
+migracje na czystej bazie i odmowę startu przy domyślnym haśle.
+
+```bash
+cd infra
+cp .env.example .env     # ustaw ADMIN_USERNAME, ADMIN_PASSWORD, SITE_DOMAIN=localhost
+docker compose up -d
+docker compose logs -f
+```
+
+Strona stanie pod `https://localhost` z certyfikatem samopodpisanym, więc
+przeglądarka pokaże ostrzeżenie — to normalne i nie oznacza błędu.
+
+Uwaga na porty: jeśli masz uruchomiony backend albo bazę do pracy nad projektem,
+zatrzymaj je wcześniej, bo zajmują te same porty.
 
 ## Rzeczy, o które łatwo się potknąć
 
