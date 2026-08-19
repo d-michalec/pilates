@@ -28,6 +28,16 @@ infra/.env
 backend/.env
 frontend/.env
 
+# Kopie zapasowe. Domyślnie lądują poza projektem, ale ktoś prędzej czy później
+# uruchomi backup.sh z KATALOG_KOPII wskazującym tutaj - a te pliki zawierają
+# dane osobowe z formularza kontaktowego i listy newslettera.
+#
+# Wzorce są zawężone do nazw, które nadaje backup.sh. Samo "*.sql" wycięłoby
+# migracje Flyway z backend/src/main/resources/db/migration.
+baza-*.sql
+baza-*.sql.gz
+uploads-*.tar.gz
+
 # Runtime uploads: keep the directory, ignore uploaded files
 uploads/*
 !uploads/.gitkeep

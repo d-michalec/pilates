@@ -113,19 +113,98 @@ nietknięte, więc zdjęcia i dane nie znikają.
 
 ## Kopia zapasowa
 
-Warte zabezpieczenia są dwie rzeczy: baza i wgrane zdjęcia.
+### Co jest do stracenia
+
+Rezerwacje, klienci i płatności siedzą w Fitssey i to Fitssey je zabezpiecza.
+Po naszej stronie zostają cztery rzeczy, i różnią się one wartością:
+
+| Dane | Gdzie | Da się odtworzyć bez kopii? |
+| --- | --- | --- |
+| Treść strony | baza | Tak — dzień przeklikiwania w panelu |
+| Zdjęcia | wolumen `uploads` | Tak, o ile właścicielka ma oryginały u siebie |
+| Wiadomości z formularza | baza | **Nie** |
+| Zapisy do newslettera | baza | **Nie** |
+
+Dwie ostatnie pozycje są jedynym powodem, dla którego ta sekcja istnieje.
+
+Najczęstszą przyczyną utraty danych nie jest awaria sprzętu, tylko
+`docker compose down -v` wpisane przez zmęczoną osobę podczas aktualizacji.
+Przed tym broni każda kopia, nawet leżąca na tym samym dysku.
+
+### Uruchomienie
 
 ```bash
-# baza
-docker compose exec postgres pg_dump -U babastudio babastudio > kopia-$(date +%F).sql
-
-# zdjęcia
-docker run --rm -v babastudio_uploads:/dane -v "$PWD":/kopia alpine \
-  tar czf /kopia/uploads-$(date +%F).tar.gz -C /dane .
+cd /root/pilates/infra
+chmod +x backup.sh restore.sh
+./backup.sh
 ```
 
-Zanim uznasz kopię za działającą, odtwórz ją raz na czystym środowisku. Kopia,
-której nikt nie próbował odtworzyć, jest tylko przypuszczeniem.
+Kopie lądują w `/var/backups/babastudio`, poza katalogiem projektu — żeby nie dało
+się ich przypadkiem zacommitować. Starsze niż czternaście dni kasują się same.
+Obie wartości da się zmienić zmiennymi `KATALOG_KOPII` i `DNI_PRZECHOWYWANIA`.
+
+Codziennie o trzeciej w nocy, przez crona roota:
+
+```bash
+crontab -e
+```
+
+```
+0 3 * * * cd /root/pilates/infra && ./backup.sh >> /var/log/babastudio-backup.log 2>&1
+```
+
+Skrypt kończy się błędem, gdy zrzut bazy nie zawiera ani jednej tabeli albo gdy
+archiwum zdjęć jest uszkodzone. To celowe: `pg_dump | gzip` bez zabezpieczenia
+melduje sukces także wtedy, gdy `pg_dump` padnie w połowie, bo `gzip` swoją część
+wykonał bez zarzutu. Powstaje wtedy poprawne archiwum z uciętą bazą w środku —
+gorsze niż brak kopii, bo wygląda na kopię aż do dnia, w którym trzeba jej użyć.
+
+### Kopia poza serwerem
+
+Kopia leżąca wyłącznie na serwerze nie chroni przed utratą samego serwera.
+W 2021 spłonęła serwerownia OVH w Strasburgu i część klientów straciła wszystko,
+bo ich kopie były w tym samym budynku.
+
+Z Windowsa, z katalogu `infra`:
+
+```powershell
+.\pobierz-kopie.ps1
+```
+
+Skrypt sam znajduje najnowszą kopię, ściąga zrzut bazy razem z pasującym
+archiwum zdjęć i zapisuje je w `%USERPROFILE%\Kopie\babastudio`. Warto puszczać
+go po każdej większej zmianie treści.
+
+### Odtworzenie
+
+```bash
+./restore.sh /var/backups/babastudio/baza-2026-08-19_0300.sql.gz
+```
+
+Archiwum zdjęć z tej samej chwili znajduje się samo, po znaczniku czasu w nazwie.
+Skrypt pyta o potwierdzenie, zatrzymuje backend, kasuje schemat i wgrywa zrzut
+od nowa — bo wgranie kopii na istniejące tabele zostawiłoby wiersze usunięte już
+po jej wykonaniu i dałoby stan, którego nigdy nie było.
+
+> **Odtwórz kopię raz, zanim będzie potrzebna.** Najlepiej lokalnie, na próbnym
+> stacku: zrób kopię, skasuj wolumeny, odtwórz i sprawdź, czy treść i zdjęcia
+> wracają. Kopia, której nikt nie próbował odtworzyć, jest tylko przypuszczeniem,
+> a odtwarzanie wymyślane po raz pierwszy w chwili awarii idzie źle zawsze.
+
+### Dane osobowe
+
+Kopie zawierają imiona, adresy e-mail i numery telefonu osób, które wypełniły
+formularz albo zapisały się do newslettera. To dane osobowe i obowiązują je te
+same zasady co bazę produkcyjną:
+
+- nie zostawiaj ściągniętych kopii na pulpicie ani w katalogu synchronizowanym
+  z chmurą, do której dostęp mają osoby postronne,
+- czternastodniowe okno przechowywania jest świadomym ograniczeniem, nie
+  przypadkiem — im dłużej trzymamy kopie, tym dłużej żyją w nich dane osób,
+  które prosiły o usunięcie,
+- gdy ktoś skorzysta z prawa do bycia zapomnianym, usunięcie wiersza z bazy nie
+  usuwa go z kopii. Zniknie stamtąd sam po dwóch tygodniach — i to jest powód,
+  żeby tego okna nie wydłużać bez potrzeby.
 
 ## W dniu otwarcia studia
 
