@@ -12,9 +12,32 @@ przeglądarka → Caddy (web) ─┬→ pliki strony z /srv
 
 ## Czego potrzeba na serwerze
 
-VPS z Dockerem i wtyczką compose. Dla tego ruchu wystarczy 2 vCPU i 4 GB RAM —
-pamięć zjada głównie budowanie obrazu backendu, samo działanie jest lekkie.
+VPS z Dockerem i wtyczką compose, **2 vCPU i 4 GB RAM w zupełności wystarczą**.
 Otwarte porty 80 i 443.
+
+Same usługi zajmują około 1,7 GB, bo mają ustawione limity pamięci: baza 512 MB,
+backend 1 GB, serwer WWW 128 MB. Szczytem obciążenia jest budowanie obrazów, nie
+działanie strony — Gradle i kompilacja frontu potrzebują po około 1–1,5 GB.
+Dlatego przy pierwszym uruchomieniu na małej maszynie warto zbudować obrazy
+pojedynczo, zamiast obu naraz:
+
+```bash
+docker compose build backend
+docker compose build web
+docker compose up -d
+```
+
+Dysk 40 GB starcza z zapasem, ale pamięć podręczna Dockera rośnie z każdą
+aktualizacją. Raz na kilka miesięcy warto ją wyczyścić:
+
+```bash
+docker system prune -f
+```
+
+> **Automatyczna kopia zapasowa u dostawcy to nie to samo co kopia bazy.**
+> Migawka maszyny robiona przy działającym Postgresie może być niespójna, bo
+> łapie pliki w połowie zapisu. Traktuj ją jako zabezpieczenie przed awarią
+> sprzętu, a nie przed pomyłką w danych — do tego służy `pg_dump` opisany niżej.
 
 ## Kolejność przy pierwszym uruchomieniu
 
