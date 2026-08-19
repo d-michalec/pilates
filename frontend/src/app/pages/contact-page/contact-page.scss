@@ -193,6 +193,22 @@ h2 {
   text-transform: uppercase;
 }
 
+/* Nota o prywatności pod przyciskiem. Reguła `.contact-form-section p` nadaje
+   akapitom margines 24px i szerokość 420px - tu obie wartości przeszkadzają,
+   bo to podpis pod formularzem, a nie akapit tekstu w kolumnie obok. */
+.contact-form .contact-privacy {
+  max-width: none;
+  margin-top: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  opacity: 0.8;
+}
+
+.contact-form .contact-privacy a {
+  color: var(--baba-red);
+  text-underline-offset: 3px;
+}
+
 .honeypot {
   position: absolute;
   left: -10000px;

@@ -48,7 +48,9 @@ export class SiteFooter implements OnInit {
       nonNullable: true,
       validators: [Validators.maxLength(128)]
     }),
-    consentAccepted: new FormControl(true, {
+    // Domyślnie odznaczone. Zgoda zaznaczona z góry nie jest zgodą - musi być
+    // świadomym działaniem osoby zapisującej się.
+    consentAccepted: new FormControl(false, {
       nonNullable: true,
       validators: [Validators.requiredTrue]
     }),
@@ -74,7 +76,13 @@ export class SiteFooter implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.errorMessage.set('Podaj poprawny e-mail.');
+      // Rozróżniamy powody, bo "podaj poprawny e-mail" przy poprawnym adresie
+      // i niezaznaczonej zgodzie wysyłałoby ludzi w złą stronę.
+      this.errorMessage.set(
+        this.form.controls.consentAccepted.invalid
+          ? this.languageService.translate('consent.required')
+          : this.languageService.translate('newsletter.invalid')
+      );
       return;
     }
 
@@ -84,7 +92,7 @@ export class SiteFooter implements OnInit {
       .pipe(finalize(() => this.isSubscribing.set(false)))
       .subscribe({
         next: () => {
-          this.form.reset({ email: '', name: '', consentAccepted: true, website: '' });
+          this.form.reset({ email: '', name: '', consentAccepted: false, website: '' });
           this.successMessage.set('Dziękujemy za zapis.');
         },
         error: (error) => {

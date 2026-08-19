@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
@@ -9,14 +10,25 @@ import { finalize } from 'rxjs';
 import { CONTACT_DETAILS } from '../../core/contact-details';
 import { ContactPageContent, ContactService } from '../../core/contact.service';
 import { LanguageService } from '../../core/language.service';
-import { TranslatePipe } from '../../core/localize.pipe';
+import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
 import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 
 @Component({
   selector: 'app-contact-page',
-  imports: [ButtonModule, InputTextModule, MessageModule, ReactiveFormsModule, SiteFooter, SiteHeader, TextareaModule, TranslatePipe],
+  imports: [
+    ButtonModule,
+    InputTextModule,
+    LocalizePathPipe,
+    MessageModule,
+    ReactiveFormsModule,
+    RouterLink,
+    SiteFooter,
+    SiteHeader,
+    TextareaModule,
+    TranslatePipe
+  ],
   templateUrl: './contact-page.html',
   styleUrl: './contact-page.scss'
 })

@@ -18,6 +18,7 @@ import { EventDetailPage } from './pages/event-detail-page/event-detail-page';
 import { EventsPage } from './pages/events-page/events-page';
 import { FaqPage } from './pages/faq-page/faq-page';
 import { HomePage } from './pages/home-page/home-page';
+import { LegalPage } from './pages/legal-page/legal-page';
 import { PilatesPage } from './pages/pilates-page/pilates-page';
 import { SaunaPage } from './pages/sauna-page/sauna-page';
 import { SchedulePage } from './pages/schedule-page/schedule-page';
@@ -68,6 +69,19 @@ const publicRoutes: Routes = [
   {
     path: 'event/:id',
     component: EventDetailPage
+  },
+  // Oba dokumenty obsługuje jeden komponent, a rozróżnia je wpis w `data`.
+  // Adresy zostają polskie także w wersji angielskiej, tak jak reszta tras -
+  // angielski dostaje prefiks /en, a nie inne nazwy podstron.
+  {
+    path: 'regulamin',
+    component: LegalPage,
+    data: { dokument: 'regulamin' }
+  },
+  {
+    path: 'polityka-prywatnosci',
+    component: LegalPage,
+    data: { dokument: 'polityka-prywatnosci' }
   }
 ];
 

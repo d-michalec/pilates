@@ -94,6 +94,16 @@
         [loading]="isSending()"
         [disabled]="isSending()"
       ></button>
+
+      <!--
+        Przy formularzu kontaktowym nie ma okienka zgody i nie powinno go być:
+        odpisanie na wiadomość nie wymaga zgody, tylko obowiązku informacyjnego.
+        Wystarczy powiedzieć, co się z danymi dzieje, i dać odnośnik.
+      -->
+      <p class="contact-privacy">
+        {{ 'consent.privacyNote' | t }}
+        <a [routerLink]="'/polityka-prywatnosci' | localizePath">{{ 'consent.privacyLink' | t }}</a>.
+      </p>
     </form>
   </section>
 

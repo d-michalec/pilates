@@ -1,0 +1,57 @@
+<main class="legal-page">
+  <app-site-header tone="red" />
+
+  <section class="legal-shell" [attr.aria-label]="tekst(dokument().title)">
+    <h1>{{ tekst(dokument().title) }}</h1>
+
+    <p class="legal-updated">{{ 'legal.updated' | t }} {{ dataAktualizacji() }}</p>
+
+    @if (dokument().intro; as intro) {
+      <p class="legal-intro">{{ tekst(intro) }}</p>
+    }
+
+    <div class="legal-body">
+      @for (sekcja of dokument().sections; track $index) {
+        <section class="legal-section">
+          @if (sekcja.heading; as naglowek) {
+            <h2>{{ tekst(naglowek) }}</h2>
+          }
+
+          @for (akapit of sekcja.paragraphs ?? []; track $index) {
+            <p>{{ tekst(akapit) }}</p>
+          }
+
+          @if (sekcja.bullets?.length) {
+            <ul>
+              @for (punkt of sekcja.bullets ?? []; track $index) {
+                <li>{{ tekst(punkt) }}</li>
+              }
+            </ul>
+          }
+
+          <!--
+            Widoczny znacznik zamiast cichej pustki. Dokument prawny z pustym
+            punktem wygląda jak niedopatrzenie dopiero wtedy, gdy ktoś to zauważy -
+            a zauważa zwykle klientka, nie właścicielka.
+          -->
+          @if (sekcja.doUzupelnienia) {
+            <p class="legal-todo">
+              @if (czyPusta(sekcja)) {
+                {{ 'legal.missing' | t }}
+              } @else {
+                {{ 'legal.check' | t }}
+              }
+            </p>
+          }
+        </section>
+      }
+    </div>
+
+    <div class="legal-contact">
+      <p>{{ 'legal.questions' | t }}</p>
+      <a [routerLink]="'/kontakt' | localizePath">{{ 'legal.contactLink' | t }}</a>
+    </div>
+  </section>
+
+  <app-site-footer />
+</main>

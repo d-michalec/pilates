@@ -87,6 +87,50 @@
 }
 
 .sr-only,
+/* Odnośniki do dokumentów prawnych. Celowo drobne i stonowane - mają być łatwe
+   do znalezienia, ale nie konkurować z resztą stopki o uwagę. */
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 18px;
+}
+
+.footer-legal a {
+  color: inherit;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footer-legal a:hover {
+  opacity: 1;
+}
+
+.newsletter-consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.newsletter-consent input {
+  /* Domyślny checkbox wyrównuje się do linii bazowej tekstu i przy dwóch
+     wierszach opisu wygląda na przesunięty. */
+  margin-top: 2px;
+  accent-color: currentColor;
+}
+
+.newsletter-consent a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
 .honeypot {
   position: absolute;
   width: 1px;

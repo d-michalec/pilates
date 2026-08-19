@@ -27,6 +27,11 @@
     </p>
     <p><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phone }}</a></p>
     <p>{{ kontakt.street }}<br />{{ kontakt.city }}</p>
+
+    <nav class="footer-legal" [attr.aria-label]="'footer.terms' | t">
+      <a [routerLink]="'/regulamin' | localizePath">{{ 'footer.terms' | t }}</a>
+      <a [routerLink]="'/polityka-prywatnosci' | localizePath">{{ 'footer.privacy' | t }}</a>
+    </nav>
   </div>
 
   <form class="footer-newsletter" [formGroup]="form" (ngSubmit)="submit()">
@@ -40,6 +45,21 @@
       </label>
       <button pButton type="submit" [label]="'newsletter.submit' | t" [loading]="isSubscribing()" [disabled]="isSubscribing()"></button>
     </div>
+
+    <!--
+      Zgoda musi być widoczna i odznaczona domyślnie. Wcześniej pole istniało
+      wyłącznie w modelu formularza, ustawione na true - backend zapisywał więc
+      "zgoda udzielona" razem z jej treścią, której nikt nigdy nie zobaczył.
+      RODO wymaga wyraźnego działania, a okienko zaznaczone z góry nim nie jest.
+    -->
+    <label class="newsletter-consent">
+      <input type="checkbox" formControlName="consentAccepted" />
+      <span>
+        {{ 'consent.newsletter' | t }}
+        {{ 'consent.privacyNote' | t }}
+        <a [routerLink]="'/polityka-prywatnosci' | localizePath">{{ 'consent.privacyLink' | t }}</a>.
+      </span>
+    </label>
 
     <div class="honeypot" aria-hidden="true">
       <label>

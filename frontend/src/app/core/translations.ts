@@ -114,6 +114,36 @@ export const TRANSLATIONS = {
 
   // Stopka
   'footer.contactLabel': { pl: 'kontakt:', en: 'contact:' },
+  'footer.terms': { pl: 'Regulamin', en: 'Terms' },
+  'footer.privacy': { pl: 'Polityka prywatności', en: 'Privacy policy' },
+
+  // Dokumenty prawne
+  'legal.updated': { pl: 'Ostatnia zmiana:', en: 'Last updated:' },
+  'legal.missing': {
+    pl: 'TREŚĆ DO UZUPEŁNIENIA PRZED OTWARCIEM STUDIA.',
+    en: 'CONTENT TO BE COMPLETED BEFORE THE STUDIO OPENS.'
+  },
+  'legal.check': {
+    pl: 'DO POTWIERDZENIA PRZED OTWARCIEM STUDIA.',
+    en: 'TO BE CONFIRMED BEFORE THE STUDIO OPENS.'
+  },
+  'legal.questions': { pl: 'Masz pytania?', en: 'Any questions?' },
+  'legal.contactLink': { pl: 'Napisz do nas', en: 'Write to us' },
+
+  // Zgody
+  'consent.newsletter': {
+    pl: 'Chcę dostawać newsletter BABA Studio. Wiem, że mogę wycofać zgodę w każdej chwili.',
+    en: 'I want to receive the BABA Studio newsletter. I know I can withdraw my consent at any time.'
+  },
+  'consent.required': {
+    pl: 'Zaznacz zgodę, żeby zapisać się do newslettera.',
+    en: 'Please tick the consent box to subscribe.'
+  },
+  'consent.privacyNote': {
+    pl: 'Twoje dane przetwarzamy zgodnie z',
+    en: 'We process your data in line with our'
+  },
+  'consent.privacyLink': { pl: 'polityką prywatności', en: 'privacy policy' },
 
   // Podstrony
   'pilates.title': { pl: 'Pilates', en: 'Pilates' },
