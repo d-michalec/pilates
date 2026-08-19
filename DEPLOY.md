@@ -201,6 +201,29 @@ Caddy. Jeśli backend zostanie wystawiony bezpośrednio, z pominięciem Caddy'eg
 wszystkie zapytania będą wyglądały na jeden adres i limit obejmie wszystkich
 naraz. Dlatego usługa `backend` w `docker-compose.yml` celowo nie publikuje portu.
 
+**Wszystkie zdjęcia zwracają 404, choć strona działa.** Baza i pliki to dwie
+osobne rzeczy: w bazie są tylko nazwy plików, a same pliki leżą w wolumenie
+`uploads`. Jeśli przeniesiesz bazę na nowy serwer bez katalogu ze zdjęciami, każdy
+odnośnik będzie wskazywał na plik, którego tam nie ma.
+
+Przenosząc treści na serwer, weź obie rzeczy naraz — zrzut bazy i archiwum
+z wolumenu `uploads`, oba opisane w sekcji o kopii zapasowej. Odtworzenie
+wolumenu:
+
+```bash
+docker run --rm -v babastudio_uploads:/dane -v "$PWD":/kopia alpine \
+  tar xzf /kopia/uploads-RRRR-MM-DD.tar.gz -C /dane
+```
+
 **Zdjęcia zniknęły po aktualizacji.** Oznacza, że wolumen `uploads` został
 usunięty — najczęściej przez `docker compose down -v`. Ta flaga kasuje wolumeny
 i przy tym projekcie nie powinna być używana.
+
+**Zmiana w `Caddyfile` nie robi żadnej różnicy.** `docker compose up -d web`
+porównuje definicję usługi i obraz — jedno i drugie zostało bez zmian, więc
+kontener nie jest ruszany. Caddyfile jest podpięty jako plik, a jego zawartości
+Compose nie śledzi. Po każdej edycji:
+
+```bash
+docker compose restart web
+```

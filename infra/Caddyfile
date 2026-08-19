@@ -30,8 +30,25 @@
 
 	handle /uploads/* {
 		reverse_proxy backend:8080 {
-			# Zdjęcia się nie zmieniają w miejscu - po podmianie dostają nową nazwę.
-			header_down Cache-Control "public, max-age=2592000"
+			# Zdjęcia się nie zmieniają w miejscu - po podmianie dostają nową nazwę,
+			# więc mogą leżeć w pamięci podręcznej długo.
+			#
+			# Nagłówek dokładamy wyłącznie do odpowiedzi udanych. Wcześniej trafiał
+			# też na 404 i brak pliku zapamiętywałby się na miesiąc - a brakujące
+			# zdjęcie to zwykle stan przejściowy, na przykład po przeniesieniu bazy
+			# bez katalogu z plikami.
+			@znalezione status 200
+			handle_response @znalezione {
+				# Znak ">" jest tu istotny. Spring Security dokłada do każdej
+				# odpowiedzi "no-store", a copy_response dopisuje nagłówki backendu
+				# do tych już ustawionych, zamiast je zastąpić. Zwykłe "header"
+				# wykonuje się za wcześnie i obie wartości lądują obok siebie -
+				# przeglądarka słucha wtedy zakazu i pobiera zdjęcia od nowa przy
+				# każdym wejściu. ">" odkłada ustawienie na moment wysyłania
+				# odpowiedzi, czyli już po skopiowaniu nagłówków backendu.
+				header >Cache-Control "public, max-age=2592000"
+				copy_response
+			}
 		}
 	}
 
