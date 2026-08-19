@@ -168,6 +168,24 @@ zatrzymaj je wcześniej, bo zajmują te same porty.
 Caddy potrzebuje portu 80 także wtedy, gdy strona działa po HTTPS — tamtędy idzie
 potwierdzenie własności domeny. `docker compose logs web` powie dokładnie.
 
+**Baza odrzuca hasło: `password authentication failed for user "babastudio"`.**
+Postgres zapisuje hasło w danych przy **pierwszym** uruchomieniu i później zmiana
+`POSTGRES_PASSWORD` nic nie zmienia — ta zmienna jest czytana tylko przy
+zakładaniu katalogu z danymi. Jeśli wolumen już istnieje, obowiązuje stare hasło.
+
+Masz dwa wyjścia. Albo wpisz w `.env` hasło, którym baza została założona — na
+maszynie deweloperskiej to zwykle `babastudio` — albo załóż bazę od nowa,
+świadomie tracąc jej zawartość:
+
+```bash
+docker compose down
+docker volume rm babastudio_postgres-data
+docker compose up -d
+```
+
+Na świeżym serwerze problem nie wystąpi, bo wolumen powstaje razem z pierwszym
+uruchomieniem i przyjmuje hasło z `.env`.
+
 **Backend nie wstaje z komunikatem o haśle administratora.** Brakuje
 `ADMIN_USERNAME` albo `ADMIN_PASSWORD` w `infra/.env`, albo któreś zostało na
 wartości `admin`. Wartości domyślne są w repozytorium, więc na serwerze muszą być

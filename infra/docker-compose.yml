@@ -77,7 +77,6 @@ services:
       - backend
     environment:
       SITE_DOMAIN: ${SITE_DOMAIN:-localhost}
-      ACME_EMAIL: ${ACME_EMAIL:-}
       ROBOTS_TAG: ${ROBOTS_TAG:-noindex, nofollow}
     mem_limit: 128m
     ports:

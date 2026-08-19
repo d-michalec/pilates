@@ -4,11 +4,14 @@
 # ten serwer i porty 80 oraz 443 są otwarte. Do prób lokalnych wystarczy ustawić
 # SITE_DOMAIN na localhost - wtedy Caddy użyje certyfikatu samopodpisanego.
 
-{
-	# Adres do powiadomień o certyfikacie. Pusty jest dopuszczalny, ale wtedy nie
-	# przyjdzie ostrzeżenie, gdyby odnowienie zaczęło się nie udawać.
-	email {$ACME_EMAIL:}
-}
+# Caddy nie przyjmuje dyrektywy "email" bez wartości, a nie ma w składni warunków,
+# więc nie da się jej uzależnić od zmiennej środowiskowej. Zostawiamy ją pominiętą:
+# certyfikat działa tak samo, tylko Let's Encrypt nie ma adresu do powiadomień.
+# Jeśli chcesz ostrzeżenia o problemach z odnowieniem, dopisz tutaj blok:
+#
+#     {
+#         email twoj@adres.pl
+#     }
 
 {$SITE_DOMAIN:localhost} {
 	encode zstd gzip
