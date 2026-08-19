@@ -118,6 +118,31 @@ class NewsletterService {
 	}
 
 	/**
+	 * Rezygnacja zgłoszona przez GetResponse - ktoś kliknął stopkę w wiadomości.
+	 *
+	 * W przeciwieństwie do wypisu z naszego odnośnika nie wołamy tu GetResponse z
+	 * powrotem: kontakt jest już po tamtej stronie usunięty, a dokumentacja daje na
+	 * odpowiedź cztery sekundy i nie ponawia nieodebranych wywołań. Zapytanie do
+	 * cudzego API zmieściłoby się w tym oknie tylko przy dobrej pogodzie.
+	 *
+	 * Nieznany adres pomijamy po cichu. To normalny stan, a nie błąd: na liście w
+	 * GetResponse mogą być kontakty dodane ręcznie albo zaimportowane, które nigdy
+	 * nie przeszły przez formularz na stronie.
+	 */
+	@Transactional
+	void markUnsubscribedFromGetResponse(String email) {
+		String znormalizowany = email.trim().toLowerCase(Locale.ROOT);
+		repository.findByEmail(znormalizowany).ifPresent(subscription -> {
+			if (subscription.isUnsubscribed()) {
+				return;
+			}
+			subscription.markUnsubscribed();
+			repository.save(subscription);
+			LOGGER.info("Rezygnacja zgłoszona przez GetResponse została zapisana.");
+		});
+	}
+
+	/**
 	 * Kasuje stare rezygnacje. Sam wiersz jest dowodem na to, że zgoda kiedyś była i
 	 * kiedy została wycofana, więc nie znika od razu - ale trzymanie go w
 	 * nieskończoność byłoby przechowywaniem adresu osoby, która wyraźnie poprosiła,

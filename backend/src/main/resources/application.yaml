@@ -63,6 +63,10 @@ app:
     # to, że zgoda była i kiedy została wycofana. Zero wyłącza sprzątanie.
     unsubscribed-retention-days: ${NEWSLETTER_UNSUBSCRIBED_RETENTION_DAYS:365}
     cleanup-cron: ${NEWSLETTER_CLEANUP_CRON:0 40 3 * * *}
+    # Sekret w adresie zwrotnym z GetResponse. Ich wywołania nie są podpisane ani
+    # uwierzytelnione, więc bez tego każdy, kto zna adres, mógłby wypisywać dowolne
+    # osoby. Puste = endpoint odpowiada czterysta czterema i nic nie robi.
+    callback-secret: ${NEWSLETTER_CALLBACK_SECRET:}
     getresponse:
       api-url: ${GETRESPONSE_API_URL:https://api.getresponse.com/v3}
       api-key: ${GETRESPONSE_API_KEY:}

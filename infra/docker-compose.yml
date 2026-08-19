@@ -63,6 +63,7 @@ services:
 
       GETRESPONSE_API_KEY: ${GETRESPONSE_API_KEY:-}
       GETRESPONSE_CAMPAIGN_ID: ${GETRESPONSE_CAMPAIGN_ID:-}
+      NEWSLETTER_CALLBACK_SECRET: ${NEWSLETTER_CALLBACK_SECRET:-}
     # Bez tego limitu MaxRAMPercentage w Dockerfile liczy się od pamięci całego
     # serwera: na maszynie z 4 GB maszyna wirtualna Javy sięgnęłaby po 3 GB i przy
     # działającej obok bazie system zaczyna zabijać procesy. Z limitem 1 GB sterta

@@ -229,6 +229,39 @@ Osobno, przed premierą, zostaje do zrobienia:
 - **działający SMTP.** Bez niego nie wyjdzie wiadomość powitalna z odnośnikiem do
   rezygnacji z newslettera, a wtedy jedyną drogą wypisu zostaje prośba mailem.
 
+## Newsletter: dwie listy, które muszą się zgadzać
+
+Adresy żyją w dwóch miejscach naraz — w naszej bazie i na liście w GetResponse.
+To nie jest duplikat do usunięcia, tylko konsekwencja podziału ról: my zbieramy
+zgody, GetResponse wysyła. Problem w tym, że **rezygnacja może się zdarzyć po
+każdej ze stron**, a bez konfiguracji obie listy zaczynają się rozjeżdżać.
+
+| Gdzie ktoś klika | Co się dzieje bez konfiguracji |
+| --- | --- |
+| Stopka w wiadomości z GetResponse | Znika z ich listy, u nas **zostaje jako zgoda** |
+| Nasz odnośnik z wiadomości powitalnej | Znika u nas i przez API u nich — działa |
+
+Pierwszy wiersz zamyka callback. W GetResponse: **Integracje → Callback → Enable
+callback**, zaznacz wyłącznie *The latest unsubscribes* i wpisz adres:
+
+```
+https://babapilates.pl/api/newsletter/getresponse-callback?secret=TENSEKRET
+```
+
+`TENSEKRET` musi być tą samą wartością co `NEWSLETTER_CALLBACK_SECRET` w `.env`.
+Wygeneruj ją przez `openssl rand -hex 24`. Bez sekretu endpoint odpowiada 404 —
+celowo, bo GetResponse nie podpisuje swoich wywołań i adres bez sekretu byłby
+otwartą furtką do wypisywania dowolnych osób.
+
+Dwie rzeczy warte zapamiętania z ich dokumentacji:
+
+- **Nieodebrane wywołanie przepada i nie jest ponawiane**, a limit czasu to cztery
+  sekundy. Dlatego nasz endpoint tylko zapisuje do bazy. Jeśli backend akurat nie
+  stał, ta rezygnacja nie dotrze nigdy i trzeba ją nanieść ręcznie.
+- **Callback obejmuje wyłącznie kliknięcie w stopkę.** Odbicia i zgłoszenia spamu
+  idą osobnym zdarzeniem, którego nie odbieramy — takie adresy zostaną u nas jako
+  aktywne, choć GetResponse przestanie do nich pisać.
+
 ## Próba generalna bez serwera
 
 Całość da się uruchomić lokalnie, zanim pojawi się VPS. Sprawdza to wszystko poza
