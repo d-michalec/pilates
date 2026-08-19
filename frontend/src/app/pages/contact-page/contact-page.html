@@ -19,10 +19,17 @@
           <dd><a [href]="'mailto:' + kontakt.email">{{ kontakt.email }}</a></dd>
           <dd><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phoneDisplay }}</a></dd>
         </div>
-        <div>
-          <dt>{{ 'contactPage.media' | t }}</dt>
-          <dd><a [href]="'mailto:' + kontakt.mediaEmail">{{ kontakt.mediaEmail }}</a></dd>
-        </div>
+        <!--
+          Osobny adres do mediów pokazujemy tylko wtedy, gdy faktycznie jest inny.
+          Ten sam adres wypisany dwa razy pod dwoma nagłówkami wygląda na pomyłkę,
+          a nie na ofertę kontaktu.
+        -->
+        @if (kontakt.mediaEmail !== kontakt.email) {
+          <div>
+            <dt>{{ 'contactPage.media' | t }}</dt>
+            <dd><a [href]="'mailto:' + kontakt.mediaEmail">{{ kontakt.mediaEmail }}</a></dd>
+          </div>
+        }
       </dl>
 
       <address>{{ kontakt.street }},<br />{{ kontakt.city }}</address>
