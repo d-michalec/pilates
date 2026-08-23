@@ -48,7 +48,14 @@ app:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
   uploads-dir: ${UPLOADS_DIR:../uploads}
   contact:
-    to-email: ${CONTACT_TO_EMAIL:damianmichalec5@gmail.com}
+    # Bez wartości wiadomości z formularza tylko zapisują się do bazy i widać je
+    # w panelu - nic nie jest wysyłane. To celowe.
+    #
+    # Wcześniej stał tu prywatny adres na gmailu, wygodny przy pracy nad projektem.
+    # Na serwerze z działającym SMTP i pustym CONTACT_TO_EMAIL zgłoszenia klientek
+    # studia poszłyby prosto na prywatną skrzynkę programisty - i nikt by tego nie
+    # zauważył, bo wszystko działałoby poprawnie.
+    to-email: ${CONTACT_TO_EMAIL:}
     from-email: ${MAIL_FROM:}
     retention-days: ${CONTACT_RETENTION_DAYS:365}
     cleanup-cron: ${CONTACT_CLEANUP_CRON:0 20 3 * * *}
