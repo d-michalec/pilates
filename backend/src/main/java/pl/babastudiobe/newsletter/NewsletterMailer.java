@@ -40,7 +40,7 @@ class NewsletterMailer {
 			@Value("${spring.mail.host:}") String mailHost,
 			@Value("${spring.mail.username:}") String mailUsername,
 			@Value("${app.contact.from-email:}") String fromEmail,
-			@Value("${app.site-url:https://babapilates.pl}") String siteUrl
+			@Value("${app.site-url:https://baba-studio.pl}") String siteUrl
 	) {
 		this.mailSenderProvider = mailSenderProvider;
 		this.mailHost = mailHost;

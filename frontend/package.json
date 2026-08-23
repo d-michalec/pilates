@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build",
+    "build": "ng build && node tools/generate-sitemap.mjs",
     "prerender": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "sitemap": "node tools/generate-sitemap.mjs"
   },
   "private": true,
   "packageManager": "npm@11.9.0",

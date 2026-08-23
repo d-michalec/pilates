@@ -87,7 +87,8 @@ export class HomePage implements OnInit, AfterViewInit {
   ngOnInit() {
     this.seoService.set({
       title: this.languageService.translate('seo.home.title'),
-      description: this.languageService.translate('seo.home.description')
+      description: this.languageService.translate('seo.home.description'),
+      localBusiness: true
     });
 
     this.landingService

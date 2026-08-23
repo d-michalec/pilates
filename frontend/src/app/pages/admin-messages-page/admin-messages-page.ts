@@ -123,7 +123,7 @@ export class AdminMessagesPage implements OnInit {
   }
 
   protected mailtoLink(message: ContactMessage) {
-    const temat = message.subject ? `Re: ${message.subject}` : 'Wiadomość z babapilates.pl';
+    const temat = message.subject ? `Re: ${message.subject}` : 'Wiadomość z baba-studio.pl';
     return `mailto:${message.email}?subject=${encodeURIComponent(temat)}`;
   }
 

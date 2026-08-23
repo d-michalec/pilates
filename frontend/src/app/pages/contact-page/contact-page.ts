@@ -74,7 +74,8 @@ export class ContactPage implements OnInit {
   ngOnInit() {
     this.seoService.set({
       title: this.languageService.translate('seo.contact.title'),
-      description: this.languageService.translate('seo.contact.description')
+      description: this.languageService.translate('seo.contact.description'),
+      localBusiness: true
     });
 
     // Brak zdjęcia nie jest błędem - strona ma wtedy pokazać zastępnik.

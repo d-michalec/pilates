@@ -12,7 +12,7 @@
 param(
 	# Adres serwera w postaci użytkownik@host. Domyślną wartość podmień po
 	# zakupie VPS-a, żeby dało się uruchamiać skrypt bez argumentów.
-	[string]$Serwer = "root@babapilates.pl",
+	[string]$Serwer = "root@baba-studio.pl",
 
 	# Katalog na serwerze, do którego pisze backup.sh.
 	[string]$KatalogZdalny = "/var/backups/babastudio",

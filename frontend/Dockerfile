@@ -11,6 +11,12 @@ RUN npm ci
 
 COPY . .
 
+# Adres wchodzi do sitemap.xml, który powstaje zaraz po budowaniu. Domyślna wartość
+# w skrypcie jest ta sama, ale przekazujemy ją jawnie - mapa z cudzą domeną w środku
+# to błąd, który wychodzi dopiero w Search Console, kilka tygodni po wdrożeniu.
+ARG SITE_URL=https://baba-studio.pl
+ENV SITE_URL=$SITE_URL
+
 # outputMode "static" w angular.json sprawia, że build wypluwa gotowy HTML dla
 # każdej trasy. Dzięki temu w produkcji nie potrzebujemy procesu Node - wystarczy
 # serwer plików statycznych.

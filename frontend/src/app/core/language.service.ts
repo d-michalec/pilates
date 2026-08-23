@@ -14,7 +14,7 @@ export const EN_PREFIX = 'en';
  * Adres produkcyjny potrzebny do bezwzględnych odnośników hreflang i canonical.
  * Wyszukiwarki wymagają tu pełnych adresów, względne są ignorowane.
  */
-export const SITE_URL = 'https://babapilates.pl';
+export const SITE_URL = 'https://baba-studio.pl';
 
 /**
  * Język wynika wyłącznie z adresu, a nie z zapamiętanego wyboru. Dzięki temu ten sam

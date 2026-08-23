@@ -7,4 +7,4 @@ Disallow: /
 # Wersja docelowa, po otwarciu studia:
 # User-agent: *
 # Allow: /
-# Sitemap: https://babapilates.pl/sitemap.xml
+# Sitemap: https://baba-studio.pl/sitemap.xml

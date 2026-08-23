@@ -41,13 +41,13 @@ docker system prune -f
 
 ## Kolejność przy pierwszym uruchomieniu
 
-**1. Skieruj domenę na serwer.** Rekord `A` dla `babapilates.pl` (i `www`, jeśli
+**1. Skieruj domenę na serwer.** Rekord `A` dla `baba-studio.pl` (i `www`, jeśli
 ma działać) na adres IP serwera. Zrób to **przed** uruchomieniem kontenerów:
 Caddy prosi o certyfikat od razu przy starcie, a Let's Encrypt ogranicza liczbę
 nieudanych prób. Sprawdź, że propagacja doszła:
 
 ```bash
-dig +short babapilates.pl
+dig +short baba-studio.pl
 ```
 
 **2. Wgraj kod i przygotuj konfigurację.**
@@ -93,9 +93,9 @@ wykonywać ręcznie.
 **4. Sprawdź, że działa.**
 
 ```bash
-curl -I https://babapilates.pl                 # 200 i nagłówek strict-transport-security
-curl -s https://babapilates.pl/api/settings    # odpowiedź JSON z backendu
-curl -sI https://babapilates.pl | grep -i robots   # ma być noindex do dnia premiery
+curl -I https://baba-studio.pl                 # 200 i nagłówek strict-transport-security
+curl -s https://baba-studio.pl/api/settings    # odpowiedź JSON z backendu
+curl -sI https://baba-studio.pl | grep -i robots   # ma być noindex do dnia premiery
 ```
 
 Potem zaloguj się na `/admin/login` i wgraj treści.
@@ -227,7 +227,17 @@ Osobno, przed premierą, zostaje do zrobienia:
   system faktycznie robi z danymi, ale podstawy prawne i sformułowania powinien
   potwierdzić ktoś z uprawnieniami,
 - **działający SMTP.** Bez niego nie wyjdzie wiadomość powitalna z odnośnikiem do
-  rezygnacji z newslettera, a wtedy jedyną drogą wypisu zostaje prośba mailem.
+  rezygnacji z newslettera, a wtedy jedyną drogą wypisu zostaje prośba mailem,
+- **wizytówka Google Business Profile.** Dla studia w Łodzi to ważniejsze niż cała
+  reszta tej listy: przy zapytaniu „pilates Łódź” mapka z wizytówkami stoi nad
+  wynikami zwykłymi. Weryfikacja adresu potrafi trwać tygodnie, więc warto zacząć
+  wcześniej niż w dniu premiery. Nazwa, adres i telefon muszą zgadzać się co do
+  znaku z tym, co jest na stronie kontaktu — rozbieżność szkodzi bardziej niż brak,
+- **Google Search Console.** Weryfikacja domeny i zgłoszenie `sitemap.xml`. Bez
+  tego nie wiadomo, co zostało zaindeksowane ani co się zepsuło,
+- **prawdziwe zdjęcie zamiast `frontend/public/og-image.jpg`.** Obecny plik to
+  napis na czerwonym tle, zrobiony po to, żeby udostępniony link nie wyglądał na
+  porzucony. Fotografia ze studia zadziała dużo lepiej — rozmiar 1200×630.
 
 ## Newsletter: dwie listy, które muszą się zgadzać
 
@@ -245,7 +255,7 @@ Pierwszy wiersz zamyka callback. W GetResponse: **Integracje → Callback → En
 callback**, zaznacz wyłącznie *The latest unsubscribes* i wpisz adres:
 
 ```
-https://babapilates.pl/api/newsletter/getresponse-callback?secret=TENSEKRET
+https://baba-studio.pl/api/newsletter/getresponse-callback?secret=TENSEKRET
 ```
 
 `TENSEKRET` musi być tą samą wartością co `NEWSLETTER_CALLBACK_SECRET` w `.env`.

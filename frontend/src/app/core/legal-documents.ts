@@ -44,11 +44,11 @@ export const PRIVACY_POLICY: LegalDocument = {
 	updated: '2026-08-19',
 	intro: {
 		pl:
-			'Ten dokument opisuje, jakie dane zbieramy za pośrednictwem strony babapilates.pl, po co je zbieramy, ' +
+			'Ten dokument opisuje, jakie dane zbieramy za pośrednictwem strony baba-studio.pl, po co je zbieramy, ' +
 			'komu je powierzamy i jak długo je przechowujemy. Staraliśmy się napisać go zrozumiale, bez zasłaniania ' +
 			'się formułkami.',
 		en:
-			'This document explains what data we collect through babapilates.pl, why we collect it, who we share it ' +
+			'This document explains what data we collect through baba-studio.pl, why we collect it, who we share it ' +
 			'with and how long we keep it. We have tried to write it plainly, without hiding behind legal formulas.'
 	},
 	sections: [

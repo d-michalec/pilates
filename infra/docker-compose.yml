@@ -76,6 +76,9 @@ services:
   web:
     build:
       context: ../frontend
+      args:
+        # Wchodzi do sitemap.xml generowanego w trakcie budowania.
+        SITE_URL: https://${SITE_DOMAIN:-localhost}
     container_name: babastudio-web
     restart: unless-stopped
     depends_on:
