@@ -7,6 +7,7 @@
 # zawsze - a kopia, której nikt nie próbował odtworzyć, jest tylko
 # przypuszczeniem, że dane da się odzyskać.
 #
+#     cd ~/pilates/infra
 #     ./restore.sh /var/backups/babastudio/baza-2026-08-19_0300.sql.gz
 #
 # Archiwum zdjęć z tej samej chwili znajduje się samo, po nazwie.

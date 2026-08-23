@@ -8,7 +8,7 @@
 # daje stronę, na której każde zdjęcie zwraca 404.
 #
 # Uruchomienie ręczne:
-#     cd /root/pilates/infra && ./backup.sh
+#     cd ~/pilates/infra && ./backup.sh
 #
 # Uruchomienie z crona - patrz DEPLOY.md, rozdział o kopii zapasowej.
 
@@ -34,7 +34,17 @@ KATALOG_KOPII="${KATALOG_KOPII:-/var/backups/babastudio}"
 DNI_PRZECHOWYWANIA="${DNI_PRZECHOWYWANIA:-14}"
 
 DATA="$(date +%Y-%m-%d_%H%M)"
-mkdir -p "$KATALOG_KOPII"
+
+# Katalog domyślny należy do roota, a skrypt uruchamia użytkownik ubuntu. Zamiast
+# wywracać się z niejasnym błędem uprawnień w środku pracy, sprawdzamy to na
+# wejściu i mówimy wprost, co zrobić.
+if ! mkdir -p "$KATALOG_KOPII" 2>/dev/null || [[ ! -w "$KATALOG_KOPII" ]]; then
+	echo "Nie mogę pisać do $KATALOG_KOPII." >&2
+	echo "Załóż katalog i nadaj mu właściciela:" >&2
+	echo "    sudo mkdir -p $KATALOG_KOPII && sudo chown \$USER:\$USER $KATALOG_KOPII" >&2
+	echo "Albo wskaż inne miejsce: KATALOG_KOPII=~/kopie ./backup.sh" >&2
+	exit 1
+fi
 
 # Nazwa projektu Compose - stąd biorą się nazwy wolumenów (babastudio_uploads).
 NAZWA_PROJEKTU="$(docker compose config --format json 2>/dev/null | sed -n 's/.*"name":"\([^"]*\)".*/\1/p' | head -1)"

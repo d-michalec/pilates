@@ -41,21 +41,62 @@ docker system prune -f
 
 ## Kolejność przy pierwszym uruchomieniu
 
-**1. Skieruj domenę na serwer.** Rekord `A` dla `baba-studio.pl` (i `www`, jeśli
-ma działać) na adres IP serwera. Zrób to **przed** uruchomieniem kontenerów:
-Caddy prosi o certyfikat od razu przy starcie, a Let's Encrypt ogranicza liczbę
-nieudanych prób. Sprawdź, że propagacja doszła:
+### Stan na dziś
 
-```bash
-dig +short baba-studio.pl
+| Co | Wartość |
+| --- | --- |
+| Serwer | `vps-26a7e271.vps.ovh.net`, Ubuntu 26.04 |
+| Adres IPv4 | `54.38.203.166` |
+| Użytkownik | `ubuntu` (nie `root` — OVH blokuje logowanie na roota) |
+| Domena | `baba-studio.pl`, zarejestrowana w **nazwa.pl** |
+| Serwery nazw | `ns1.nazwa.pl`, `ns2.nazwa.pl`, `ns3.nazwa.pl` |
+
+DNS-em zarządza panel nazwa.pl, nie OVH. Wszystkie rekordy ustawia się tam.
+
+**1. Skieruj domenę na serwer.** W panelu nazwa.pl dodaj rekord `A` dla
+`baba-studio.pl` (i `www`, jeśli ma działać) wskazujący na `54.38.203.166`.
+
+> **Nie ruszaj rekordów MX.** Poczta w tej domenie stoi na Google i działa
+> niezależnie od strony. Skasowanie albo podmiana MX-ów odetnie skrzynkę studia —
+> a to znacznie gorsza awaria niż niedziałająca strona. Dodajesz `A`, reszty nie
+> dotykasz.
+
+**Rekordu `AAAA` na razie nie dodawaj**, mimo że serwer ma adres IPv6. Docker
+domyślnie nie przekazuje ruchu IPv6 do kontenerów, więc opublikowanie `AAAA`
+sprawiłoby, że osoby z działającym IPv6 trafiałyby w pustkę — a ich przeglądarka
+woli IPv6 od IPv4. Sama strona wyglądałaby na niedziałającą tylko u części osób,
+co jest wyjątkowo trudne do zdiagnozowania.
+
+Rekord `A` ustaw **przed** uruchomieniem kontenerów: Caddy prosi o certyfikat od
+razu przy starcie, a Let's Encrypt ogranicza liczbę nieudanych prób. Sprawdź, czy
+propagacja doszła — z Windowsa:
+
+```powershell
+nslookup baba-studio.pl
 ```
+
+Ma zwrócić `54.38.203.166`. Zmiana potrafi zająć od kilku minut do kilku godzin.
 
 **2. Wgraj kod i przygotuj konfigurację.**
 
 ```bash
+ssh ubuntu@54.38.203.166
+
+# Docker nie jest preinstalowany na czystym obrazie Ubuntu.
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker ubuntu
+# Wyloguj się i zaloguj ponownie, żeby przynależność do grupy zaczęła obowiązywać.
+exit
+```
+
+```bash
+ssh ubuntu@54.38.203.166
+docker ps          # ma zadziałać bez sudo; jeśli nie - wyloguj się jeszcze raz
+
 git clone https://github.com/d-michalec/pilates.git
 cd pilates/infra
 cp .env.example .env
+nano .env
 ```
 
 Uzupełnij `.env`. Backend odmówi startu, jeśli login albo hasło administratora
@@ -103,7 +144,7 @@ Potem zaloguj się na `/admin/login` i wgraj treści.
 ## Aktualizacja
 
 ```bash
-cd pilates
+cd ~/pilates
 git pull
 docker compose -f infra/docker-compose.yml up -d --build
 ```
@@ -134,8 +175,14 @@ Przed tym broni każda kopia, nawet leżąca na tym samym dysku.
 ### Uruchomienie
 
 ```bash
-cd /root/pilates/infra
+cd ~/pilates/infra
 chmod +x backup.sh restore.sh
+
+# Katalog na kopie musi należeć do użytkownika ubuntu - inaczej skrypt nie ma
+# gdzie pisać, bo /var/backups należy do roota.
+sudo mkdir -p /var/backups/babastudio
+sudo chown ubuntu:ubuntu /var/backups/babastudio
+
 ./backup.sh
 ```
 
@@ -143,15 +190,20 @@ Kopie lądują w `/var/backups/babastudio`, poza katalogiem projektu — żeby n
 się ich przypadkiem zacommitować. Starsze niż czternaście dni kasują się same.
 Obie wartości da się zmienić zmiennymi `KATALOG_KOPII` i `DNI_PRZECHOWYWANIA`.
 
-Codziennie o trzeciej w nocy, przez crona roota:
+Codziennie o trzeciej w nocy, przez crona użytkownika `ubuntu` (nie roota — to
+`ubuntu` należy do grupy `docker` i tylko on może rozmawiać z kontenerami):
 
 ```bash
 crontab -e
 ```
 
 ```
-0 3 * * * cd /root/pilates/infra && ./backup.sh >> /var/log/babastudio-backup.log 2>&1
+0 3 * * * cd /home/ubuntu/pilates/infra && ./backup.sh >> /home/ubuntu/babastudio-backup.log 2>&1
 ```
+
+Ścieżka w cronie musi być pełna. Cron nie zna `~` ani zmiennych ze zwykłej powłoki
+i to jest najczęstszy powód, dla którego zadanie „nie działa", choć ręcznie
+uruchomione działa bez zarzutu.
 
 Skrypt kończy się błędem, gdy zrzut bazy nie zawiera ani jednej tabeli albo gdy
 archiwum zdjęć jest uszkodzone. To celowe: `pg_dump | gzip` bez zabezpieczenia

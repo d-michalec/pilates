@@ -5,14 +5,17 @@
 # większej zmianie treści, a poza tym raz na jakiś czas.
 #
 #     .\pobierz-kopie.ps1
-#     .\pobierz-kopie.ps1 -Serwer root@51.83.0.1 -Docelowy D:\kopie\baba
+#     .\pobierz-kopie.ps1 -Serwer ubuntu@54.38.203.166 -Docelowy D:\kopie\baba
 #
 # Wymaga klienta scp, który w Windowsie 10 i 11 jest wbudowany.
 
 param(
-	# Adres serwera w postaci użytkownik@host. Domyślną wartość podmień po
-	# zakupie VPS-a, żeby dało się uruchamiać skrypt bez argumentów.
-	[string]$Serwer = "root@baba-studio.pl",
+	# Adres serwera w postaci użytkownik@host.
+	#
+	# Użytkownik to "ubuntu", nie "root" - OVH blokuje logowanie na roota na swoim
+	# obrazie Ubuntu. Dopóki rekord A nie wskaże na serwer, w miejsce nazwy domeny
+	# można podać sam adres: ubuntu@54.38.203.166
+	[string]$Serwer = "ubuntu@baba-studio.pl",
 
 	# Katalog na serwerze, do którego pisze backup.sh.
 	[string]$KatalogZdalny = "/var/backups/babastudio",
