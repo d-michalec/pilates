@@ -7,6 +7,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import pl.babastudiobe.config.MailFrom;
+
 @Service
 class ContactService {
 
@@ -18,6 +20,7 @@ class ContactService {
 	private final String mailUsername;
 	private final String toEmail;
 	private final String fromEmail;
+	private final String fromName;
 
 	ContactService(
 			ContactMessageRepository repository,
@@ -25,7 +28,8 @@ class ContactService {
 			@Value("${spring.mail.host:}") String mailHost,
 			@Value("${spring.mail.username:}") String mailUsername,
 			@Value("${app.contact.to-email:}") String toEmail,
-			@Value("${app.contact.from-email:}") String fromEmail
+			@Value("${app.contact.from-email:}") String fromEmail,
+			@Value("${app.contact.from-name:}") String fromName
 	) {
 		this.repository = repository;
 		this.mailSenderProvider = mailSenderProvider;
@@ -33,6 +37,7 @@ class ContactService {
 		this.mailUsername = mailUsername;
 		this.toEmail = toEmail;
 		this.fromEmail = fromEmail;
+		this.fromName = fromName;
 	}
 
 	ContactMessage create(ContactRequest request) {
@@ -69,7 +74,7 @@ class ContactService {
 	private SimpleMailMessage toMail(ContactMessage contactMessage, String resolvedFromEmail) {
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setTo(toEmail);
-		mailMessage.setFrom(resolvedFromEmail);
+		mailMessage.setFrom(MailFrom.format(resolvedFromEmail, fromName));
 		mailMessage.setReplyTo(contactMessage.getEmail());
 		mailMessage.setSubject(subject(contactMessage));
 		mailMessage.setText("""

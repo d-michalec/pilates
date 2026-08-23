@@ -57,6 +57,9 @@ app:
     # zauważył, bo wszystko działałoby poprawnie.
     to-email: ${CONTACT_TO_EMAIL:}
     from-email: ${MAIL_FROM:}
+    # Nazwa widoczna w skrzynce odbiorcy zamiast samego adresu. Nie bierze udziału
+    # w sprawdzeniu nadawcy po stronie Google - tam liczy się wyłącznie adres.
+    from-name: ${MAIL_FROM_NAME:BABA Studio}
     retention-days: ${CONTACT_RETENTION_DAYS:365}
     cleanup-cron: ${CONTACT_CLEANUP_CRON:0 20 3 * * *}
   rate-limit:

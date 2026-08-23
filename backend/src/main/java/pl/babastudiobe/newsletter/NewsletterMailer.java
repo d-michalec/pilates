@@ -9,6 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import pl.babastudiobe.config.MailFrom;
+
 /**
  * Wiadomość powitalna po zapisie do newslettera.
  *
@@ -33,6 +35,7 @@ class NewsletterMailer {
 	private final String mailHost;
 	private final String mailUsername;
 	private final String fromEmail;
+	private final String fromName;
 	private final String siteUrl;
 
 	NewsletterMailer(
@@ -40,12 +43,14 @@ class NewsletterMailer {
 			@Value("${spring.mail.host:}") String mailHost,
 			@Value("${spring.mail.username:}") String mailUsername,
 			@Value("${app.contact.from-email:}") String fromEmail,
+			@Value("${app.contact.from-name:}") String fromName,
 			@Value("${app.site-url:https://baba-studio.pl}") String siteUrl
 	) {
 		this.mailSenderProvider = mailSenderProvider;
 		this.mailHost = mailHost;
 		this.mailUsername = mailUsername;
 		this.fromEmail = fromEmail;
+		this.fromName = fromName;
 		this.siteUrl = siteUrl;
 	}
 
@@ -73,7 +78,7 @@ class NewsletterMailer {
 	private SimpleMailMessage toMail(NewsletterSubscription subscription, String resolvedFrom) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(subscription.getEmail());
-		message.setFrom(resolvedFrom);
+		message.setFrom(MailFrom.format(resolvedFrom, fromName));
 		message.setSubject("Zapis do newslettera BABA Studio");
 		message.setText("""
 				Cześć%s!
