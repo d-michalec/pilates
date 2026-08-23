@@ -254,8 +254,18 @@ pocztowy.
 `SMTP_USERNAME`, `MAIL_FROM` i `CONTACT_TO_EMAIL` ten sam adres skrzynki studia.
 Google wymaga, żeby nadawca zgadzał się z kontem, na które się logujemy.
 
+**Do której skrzynki się logujemy — to nie zawsze ten sam adres, co nadawca.**
+Jeśli poczta studia to konto Google Workspace w domenie `baba-studio.pl`, wtedy
+`SMTP_USERNAME` i `MAIL_FROM` są identyczne. Ale jeśli skrzynka jest zwyczajnym
+kontem `@gmail.com`, a adres w domenie studia działa jako alias, to
+`SMTP_USERNAME` musi być tym adresem `@gmail.com`, a `MAIL_FROM` aliasem — i ten
+alias musi być wcześniej potwierdzony w Gmailu w ustawieniach „Wyślij jako".
+Pomylenie tych dwóch przypadków kończy się odrzuceniem wysyłki przez Google.
+Backend wypisuje przy starcie ostrzeżenie, gdy te adresy się różnią.
+
 **`SMTP_PASSWORD` to hasło aplikacji, nie hasło do konta.** Generuje się je na
-`myaccount.google.com/apppasswords` przy włączonej weryfikacji dwuetapowej.
+`myaccount.google.com/apppasswords` przy włączonej weryfikacji dwuetapowej —
+**na koncie, z którego wychodzi poczta**, nie na koncie osoby wdrażającej.
 Logowanie zwykłym hasłem do konta Google zostało wyłączone dla aplikacji
 zewnętrznych i nie zadziała. Zaletą hasła aplikacji jest to, że da się je
 unieważnić pojedynczo — wyciek pliku `.env` odcina wysyłkę ze strony, a nie
@@ -263,6 +273,19 @@ dostęp do skrzynki.
 
 **Limity.** Zwykłe konto Gmail przyjmuje około 500 wiadomości dziennie, Workspace
 około 2000. Przy kilku zgłoszeniach dziennie to zapas na lata.
+
+**Jak sprawdzić, czy poczta w ogóle jest podpięta.** Backend wypisuje to przy
+starcie — brak konfiguracji nie przerywa uruchomienia, bo lokalnie SMTP zwykle nie
+istnieje, a formularz ma tam działać:
+
+```bash
+docker compose logs backend | grep -i "Poczta wychodząca"
+```
+
+Trzy możliwe odpowiedzi: skonfigurowana (z nazwą serwera i nadawcą), WYŁĄCZONA
+(brak `SMTP_HOST`) albo NIEKOMPLETNA (host jest, hasła brak — każda wysyłka się
+wywróci). Ostatni przypadek zdarza się najczęściej, gdy ktoś uzupełnił połowę
+pliku `.env` i uznał temat za zamknięty.
 
 **Sprawdź, gdzie ląduje powiadomienie.** Wiadomość idzie ze skrzynki studia na tę
 samą skrzynkę, a poczta wysłana sama do siebie potrafi w Gmailu ominąć skrzynkę
