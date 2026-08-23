@@ -44,6 +44,8 @@ button {
   border-color: var(--baba-red);
   color: var(--baba-white);
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -57,6 +59,8 @@ button {
   color: var(--baba-red);
   font-size: 0.86rem;
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
   text-underline-offset: 4px;
 }

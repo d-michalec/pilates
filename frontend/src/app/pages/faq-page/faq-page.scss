@@ -52,6 +52,8 @@ h1 {
   cursor: pointer;
   font-weight: 800;
   list-style: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -84,6 +86,8 @@ h1 {
 
 .faq-contact p {
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

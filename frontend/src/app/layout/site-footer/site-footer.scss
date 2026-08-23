@@ -100,10 +100,29 @@
   border-color: var(--baba-red);
   color: var(--baba-white);
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
-.sr-only,
+/*
+ * Etykieta widoczna wyłącznie dla czytników ekranu.
+ *
+ * Wcześniej ten selektor był sklejony przecinkiem z .footer-legal i zamiast
+ * ukrywać element, nadawał mu "display: flex" - napis "E-mail" wyświetlał się nad
+ * polem newslettera na każdej podstronie, choć makieta pokazuje tam samo pole.
+ * Ukrywanie przez clip zamiast display:none jest celowe: display:none usuwa
+ * element także z drzewa dostępności, więc czytnik ekranu przestałby go czytać.
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 /* Odnośniki do dokumentów prawnych. Celowo drobne i stonowane - mają być łatwe
    do znalezienia, ale nie konkurować z resztą stopki o uwagę. */
 .footer-legal {

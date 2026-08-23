@@ -40,6 +40,8 @@
   font: inherit;
   font-weight: 800;
   text-decoration: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -145,6 +147,8 @@
   font-size: clamp(1.35rem, 5vw, 2.35rem);
   font-weight: 800;
   line-height: 1;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

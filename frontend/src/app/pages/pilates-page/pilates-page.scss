@@ -55,6 +55,8 @@ p {
   color: var(--baba-white);
   font-size: 0.82rem;
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -114,6 +116,8 @@ p {
   margin-bottom: 10px;
   font-size: 0.78rem;
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -122,6 +126,8 @@ p {
   margin-bottom: 16px;
   font-size: clamp(1.55rem, 3.2vw, 2.7rem);
   line-height: 0.96;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

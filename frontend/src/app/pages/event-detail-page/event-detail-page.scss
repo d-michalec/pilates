@@ -23,6 +23,8 @@
   color: inherit;
   font-weight: 800;
   text-decoration: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -104,6 +106,8 @@ dd {
   color: var(--baba-blue);
   font-size: clamp(2.6rem, 6vw, 5.4rem);
   line-height: 1.02;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -135,6 +139,8 @@ dd {
   color: var(--baba-red);
   font-weight: 800;
   text-decoration: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -224,6 +230,8 @@ dd {
 .event-facts dt {
   color: var(--baba-red);
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

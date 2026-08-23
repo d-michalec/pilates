@@ -28,6 +28,8 @@
   color: inherit;
   font-weight: 800;
   text-decoration: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -72,6 +74,8 @@ p {
 h1,
 h2 {
   text-align: center;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -99,6 +103,8 @@ h2 {
   isolation: isolate;
   color: var(--baba-white);
   text-decoration: none;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

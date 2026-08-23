@@ -10,7 +10,21 @@
   --baba-white: #ffffff;
   --baba-serif: "Instrument Serif", Georgia, serif;
   --baba-sans: "Neue Plak", "Arial Black", Arial, sans-serif;
-  font-family: var(--baba-sans);
+
+  /*
+   * Krojem domyślnym jest szeryfowy, zgodnie z makietą.
+   *
+   * Makieta konsekwentnie na wszystkich stronach używa Instrument Serif do tekstu
+   * ciągłego, nagłówków, danych kontaktowych i godzin otwarcia, a bezszeryfowego
+   * wyłącznie w wersalikach: etykietach sekcji, nawigacji i przyciskach. Widać to
+   * także po samym pliku PDF - osadzony jest w nim wyłącznie NeuePlak-Bold, bez
+   * odmiany zwykłej, której tekst ciągły by wymagał.
+   *
+   * Wcześniej było odwrotnie: bezszeryfowy stał tu jako domyślny, więc akapity szły
+   * pogrubioną bezszeryfową zamiast lekkim szeryfem. Stąd wrażenie, że strona jest
+   * cięższa niż projekt.
+   */
+  font-family: var(--baba-serif);
   background: var(--baba-white);
 }
 

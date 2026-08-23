@@ -1,5 +1,8 @@
 :host {
   display: block;
+  /* Ta strona nie korzysta ze wspólnej ramy panelu, więc krój trzeba ustawić tu.
+     Bez tego dziedziczyłaby szeryfowy ze strony publicznej. */
+  font-family: var(--baba-sans);
 }
 
 .admin-login-page {

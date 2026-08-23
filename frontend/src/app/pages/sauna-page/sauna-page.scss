@@ -31,6 +31,8 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-align: center;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -52,6 +54,8 @@
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.06em;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
   text-decoration: none;
   color: var(--baba-brown);
@@ -73,6 +77,8 @@
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.12em;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -83,6 +89,8 @@
 }
 
 .sauna-days::first-letter {
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

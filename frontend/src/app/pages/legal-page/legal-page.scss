@@ -41,6 +41,8 @@ h1 {
   color: var(--baba-brown);
   font-size: 0.86rem;
   letter-spacing: 0.04em;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -67,6 +69,8 @@ h2 {
   font-size: 1rem;
   font-weight: 800;
   letter-spacing: 0.02em;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -103,6 +107,8 @@ h2 {
 
 .legal-contact p {
   font-weight: 800;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 

@@ -1,6 +1,9 @@
 :host {
   display: block;
   margin-bottom: 34px;
+  /* Nagłówek panelu jest osobnym komponentem i nie obejmuje go wspólna rama,
+     więc krój ustawiamy tutaj - inaczej wziąłby szeryfowy ze strony publicznej. */
+  font-family: var(--baba-sans);
 }
 
 .admin-header {

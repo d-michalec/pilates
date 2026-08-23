@@ -22,6 +22,14 @@ $odstep: 34px 0 72px;
 		background: $tlo;
 		/* Brąz czyta się spokojniej niż czerwień; czerwień zostaje na akcenty. */
 		color: var(--baba-brown);
+
+		/*
+		 * Panel zostaje przy kroju bezszeryfowym, choć strona publiczna przeszła na
+		 * szeryfowy. Panelu nie ma w makiecie - to nasz własny widok roboczy, w którym
+		 * liczy się czytelność tabel, etykiet i formularzy, a nie charakter marki.
+		 * Bez tej linijki zmiana kroju domyślnego przestawiłaby też panel.
+		 */
+		font-family: var(--baba-sans);
 	}
 
 	.admin-shell {
