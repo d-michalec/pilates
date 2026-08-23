@@ -134,6 +134,78 @@ code {
   font-weight: 800;
 }
 
+/* Lista zapisanych zajmuje całą szerokość pod dwiema kartami u góry. */
+:host ::ng-deep .list-card {
+  grid-column: 1 / -1;
+}
+
+.subs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.subs-table th {
+  padding: 0 12px 10px 0;
+  border-bottom: 1px solid rgba(59, 29, 23, 0.16);
+  color: #6b5e55;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.subs-table td {
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid rgba(59, 29, 23, 0.08);
+  vertical-align: middle;
+}
+
+.subs-email {
+  /* Adresy nie mają gdzie się złamać na spacji i rozpychają tabelę. */
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+/* Znak zapytania obok stanu - powód błędu pokazuje się jako podpowiedź, żeby
+   długi komunikat z GetResponse nie rozwalał układu tabeli. */
+.subs-reason {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  cursor: help;
+  font-size: 0.7rem;
+  font-weight: 800;
+  vertical-align: middle;
+}
+
+.subs-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.delete-confirm {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  /* Przy wąskim ekranie tabela z pięcioma kolumnami przestaje się mieścić.
+     Zamiast ściskać kolumny, pozwalamy jej się przewijać w poziomie. */
+  .subs-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 900px) {
   .admin-header {
     align-items: flex-start;

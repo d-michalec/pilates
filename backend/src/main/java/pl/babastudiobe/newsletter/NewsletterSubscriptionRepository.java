@@ -1,6 +1,7 @@
 package pl.babastudiobe.newsletter;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,8 @@ interface NewsletterSubscriptionRepository extends JpaRepository<NewsletterSubsc
 	Optional<NewsletterSubscription> findByEmail(String email);
 
 	Optional<NewsletterSubscription> findByUnsubscribeToken(UUID unsubscribeToken);
+
+	List<NewsletterSubscription> findAllByOrderByCreatedAtDesc();
 
 	long countByStatus(NewsletterSubscriptionStatus status);
 

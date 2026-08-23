@@ -81,5 +81,68 @@
         <li><code>GETRESPONSE_ADMIN_URL</code></li>
       </ul>
     </p-card>
+
+    <p-card styleClass="admin-card list-card">
+      <ng-template #title>Zapisane osoby</ng-template>
+      <ng-template #subtitle>
+        Usuwaj stąd tylko na wyraźną prośbę o usunięcie danych. Zwykła rezygnacja z wysyłki
+        dzieje się sama, odnośnikiem z wiadomości, i zostawia wpis oznaczony jako wypisany.
+      </ng-template>
+
+      @if (listError()) {
+        <p-message severity="error" [text]="listError() ?? ''" />
+      }
+
+      @if (isLoadingList()) {
+        <p class="empty-state">Ładowanie...</p>
+      } @else if (!hasSubscriptions()) {
+        <p class="empty-state">Nikt jeszcze się nie zapisał.</p>
+      } @else {
+        <table class="subs-table">
+          <thead>
+            <tr>
+              <th>Adres</th>
+              <th>Imię</th>
+              <th>Stan</th>
+              <th>Zapisany</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (zapis of subscriptions(); track zapis.id) {
+              <tr>
+                <td class="subs-email">{{ zapis.email }}</td>
+                <td>{{ zapis.name || '-' }}</td>
+                <td>
+                  <p-tag [severity]="opis(zapis.status).kolor" [value]="opis(zapis.status).etykieta" />
+                  @if (zapis.failureReason) {
+                    <span class="subs-reason" [title]="zapis.failureReason">?</span>
+                  }
+                </td>
+                <td>{{ data(zapis.createdAt) }}</td>
+                <td class="subs-actions">
+                  @if (isConfirmingDelete(zapis)) {
+                    <span class="delete-confirm">
+                      Usunąć bezpowrotnie?
+                      <p-button
+                        type="button"
+                        label="Tak, usuń"
+                        severity="danger"
+                        [loading]="deletingId() === zapis.id"
+                        [disabled]="deletingId() === zapis.id"
+                        (click)="confirmDelete(zapis)"
+                      />
+                      <p-button type="button" label="Anuluj" severity="secondary" [text]="true" (click)="cancelDelete()" />
+                    </span>
+                  } @else {
+                    <p-button type="button" label="Usuń" severity="danger" [text]="true" (click)="askDelete(zapis)" />
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </p-card>
   </section>
 </main>

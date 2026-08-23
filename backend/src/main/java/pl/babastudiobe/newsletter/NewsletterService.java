@@ -1,17 +1,20 @@
 package pl.babastudiobe.newsletter;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 class NewsletterService {
@@ -177,6 +180,51 @@ class NewsletterService {
 		if (deleted > 0) {
 			LOGGER.info("Deleted {} newsletter unsubscriptions older than {} days.", deleted, unsubscribedRetentionDays);
 		}
+	}
+
+	/** Lista dla panelu, od najnowszego zapisu. */
+	@Transactional(readOnly = true)
+	List<NewsletterSubscriptionResponse> list() {
+		return repository.findAllByOrderByCreatedAtDesc()
+				.stream()
+				.map(NewsletterSubscriptionResponse::from)
+				.toList();
+	}
+
+	/**
+	 * Trwałe usunięcie zapisu - obsługa żądania "proszę usunąć moje dane".
+	 *
+	 * To co innego niż rezygnacja. Rezygnacja zostawia wiersz jako zapis tego, że
+	 * zgoda istniała i kiedy została wycofana. Tutaj wiersz znika, bo o to właśnie
+	 * prosi osoba korzystająca z prawa do usunięcia danych.
+	 *
+	 * Kasujemy też kontakt po stronie GetResponse. Usunięcie wyłącznie u nas
+	 * zostawiłoby adres na cudzej liście - a żądanie dotyczy wszystkich miejsc,
+	 * w których te dane trzymamy, nie tylko naszej bazy. Gdy GetResponse odmówi,
+	 * przerywamy i mówimy o tym wprost, zamiast kasować u siebie i zostawiać ślad
+	 * tam, gdzie nikt już nie będzie go szukał.
+	 */
+	@Transactional
+	void delete(UUID id) {
+		NewsletterSubscription subscription = repository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie ma takiego zapisu."));
+
+		if (getResponseClient.isConfigured() && !subscription.isUnsubscribed()) {
+			try {
+				getResponseClient.unsubscribe(subscription);
+			}
+			catch (RestClientException exception) {
+				LOGGER.warn("Nie udało się usunąć kontaktu w GetResponse: {}", exception.getMessage());
+				throw new ResponseStatusException(
+						HttpStatus.BAD_GATEWAY,
+						"Nie udało się usunąć kontaktu w GetResponse, więc nie kasuję go też u nas - inaczej adres "
+								+ "zostałby na ich liście, a u nas nie byłoby po nim śladu. Usuń kontakt ręcznie "
+								+ "w panelu GetResponse i spróbuj ponownie.");
+			}
+		}
+
+		repository.delete(subscription);
+		LOGGER.info("Usunięto zapis do newslettera na żądanie.");
 	}
 
 	@Transactional(readOnly = true)

@@ -15,6 +15,23 @@ export interface NewsletterSubscribeResponse {
   status: 'LOCAL_ONLY' | 'GETRESPONSE_ACCEPTED' | 'FAILED' | 'ACCEPTED';
 }
 
+export type NewsletterSubscriptionStatus =
+  | 'LOCAL_ONLY'
+  | 'GETRESPONSE_ACCEPTED'
+  | 'GETRESPONSE_REJECTED'
+  | 'FAILED'
+  | 'UNSUBSCRIBED';
+
+export interface NewsletterSubscription {
+  id: string;
+  email: string;
+  name: string | null;
+  status: NewsletterSubscriptionStatus;
+  failureReason: string | null;
+  createdAt: string;
+  unsubscribedAt: string | null;
+}
+
 export interface NewsletterAdminStatus {
   getResponseConfigured: boolean;
   getResponseAdminUrl: string;
@@ -46,6 +63,14 @@ export class NewsletterService {
 
   unsubscribe(token: string) {
     return this.http.post<void>(`${this.apiUrl}/newsletter/unsubscribe`, { token });
+  }
+
+  listSubscriptions() {
+    return this.http.get<NewsletterSubscription[]>(`${this.apiUrl}/admin/newsletter/subscriptions`);
+  }
+
+  deleteSubscription(id: string) {
+    return this.http.delete<void>(`${this.apiUrl}/admin/newsletter/subscriptions/${id}`);
   }
 
   getAdminStatus() {

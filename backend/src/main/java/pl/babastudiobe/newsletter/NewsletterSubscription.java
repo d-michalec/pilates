@@ -160,6 +160,14 @@ class NewsletterSubscription {
 		return name;
 	}
 
+	OffsetDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	OffsetDateTime getUnsubscribedAt() {
+		return unsubscribedAt;
+	}
+
 	NewsletterSubscriptionStatus getStatus() {
 		return status;
 	}
