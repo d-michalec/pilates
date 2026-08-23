@@ -239,6 +239,41 @@ Osobno, przed premierą, zostaje do zrobienia:
   napis na czerwonym tle, zrobiony po to, żeby udostępniony link nie wyglądał na
   porzucony. Fotografia ze studia zadziała dużo lepiej — rozmiar 1200×630.
 
+## Poczta wychodząca
+
+Strona wysyła dwa rodzaje wiadomości: powiadomienie o zgłoszeniu z formularza
+(do studia) i wiadomość powitalną po zapisie do newslettera (do osoby, która się
+zapisała). Obie idą przez Gmaila, na którym stoi poczta w domenie `baba-studio.pl`.
+
+Serwer nie może wysyłać poczty sam z siebie. Świeży adres IP nie ma reputacji,
+większość dostawców taką pocztę odrzuca, a OVH domyślnie blokuje wyjściowy port 25.
+Backend loguje się więc do Gmaila i prosi go o wysyłkę — dokładnie jak program
+pocztowy.
+
+**Co ustawić w `.env`:** `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, a w polach
+`SMTP_USERNAME`, `MAIL_FROM` i `CONTACT_TO_EMAIL` ten sam adres skrzynki studia.
+Google wymaga, żeby nadawca zgadzał się z kontem, na które się logujemy.
+
+**`SMTP_PASSWORD` to hasło aplikacji, nie hasło do konta.** Generuje się je na
+`myaccount.google.com/apppasswords` przy włączonej weryfikacji dwuetapowej.
+Logowanie zwykłym hasłem do konta Google zostało wyłączone dla aplikacji
+zewnętrznych i nie zadziała. Zaletą hasła aplikacji jest to, że da się je
+unieważnić pojedynczo — wyciek pliku `.env` odcina wysyłkę ze strony, a nie
+dostęp do skrzynki.
+
+**Limity.** Zwykłe konto Gmail przyjmuje około 500 wiadomości dziennie, Workspace
+około 2000. Przy kilku zgłoszeniach dziennie to zapas na lata.
+
+**Sprawdź, gdzie ląduje powiadomienie.** Wiadomość idzie ze skrzynki studia na tę
+samą skrzynkę, a poczta wysłana sama do siebie potrafi w Gmailu ominąć skrzynkę
+odbiorczą i wylądować wyłącznie w „Wszystkie wiadomości". Po pierwszym teście
+warto to sprawdzić i — jeśli tak się dzieje — założyć filtr, który tym wiadomościom
+nadaje etykietę i wymusza pokazanie w skrzynce odbiorczej. Nie zakładaj, że skoro
+wysyłka się powiodła, to wiadomość widać.
+
+Odpowiadanie działa naturalnie: pole `Reply-To` ustawiamy na adres osoby, która
+wypełniła formularz, więc „Odpowiedz" w Gmailu pisze do niej, a nie do siebie.
+
 ## Newsletter: dwie listy, które muszą się zgadzać
 
 Adresy żyją w dwóch miejscach naraz — w naszej bazie i na liście w GetResponse.
