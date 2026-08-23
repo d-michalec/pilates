@@ -25,8 +25,19 @@ backend/out/
 # Local environment
 .env
 infra/.env
-backend/.env
 frontend/.env
+
+# UWAGA: backend/.env jest tu wyłącznie po to, żeby nie dało się go przypadkiem
+# zacommitować. NIC GO NIE CZYTA - w projekcie nie ma biblioteki dotenv, a Spring
+# bierze wyłącznie zmienne środowiskowe. Wpisanie tam hasła i zdziwienie, czemu
+# poczta nie działa, to pomyłka, która kosztuje pół godziny.
+#
+# Do pracy lokalnej są dwie działające drogi:
+#   - zmienne środowiskowe w konfiguracji uruchomieniowej IntelliJ,
+#   - plik application-local.yaml i profil "local" (też ignorowany poniżej).
+backend/.env
+backend/src/main/resources/application-local.yaml
+backend/src/main/resources/application-local.yml
 
 # Kopie zapasowe. Domyślnie lądują poza projektem, ale ktoś prędzej czy później
 # uruchomi backup.sh z KATALOG_KOPII wskazującym tutaj - a te pliki zawierają
