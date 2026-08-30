@@ -39,7 +39,22 @@ class SecurityConfig {
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers("/api/admin/**").hasRole(ADMIN_ROLE)
 						.anyRequest().permitAll())
-				.httpBasic(Customizer.withDefaults())
+				/*
+				 * Ten sam punkt wejścia trzeba podać w dwóch miejscach i to nie jest
+				 * powtórzenie przez nieuwagę.
+				 *
+				 * Poniższy exceptionHandling obsługuje żądania BEZ danych logowania.
+				 * Natomiast gdy dane zostały podane i okazały się błędne, odpowiedź
+				 * tworzy filtr uwierzytelniania podstawowego, który ma własny punkt
+				 * wejścia - i domyślnie dokłada nagłówek "WWW-Authenticate: Basic".
+				 *
+				 * Przeglądarka na ten nagłówek reaguje własnym okienkiem logowania,
+				 * które wyskakuje nad naszym formularzem. Wygląda jak awaria strony,
+				 * a wpisanie w nim czegokolwiek i tak nic nie daje, bo panel oczekuje
+				 * danych ze swojego formularza. Stąd jawne ustawienie także tutaj.
+				 */
+				.httpBasic(basic -> basic
+						.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
 				// Bez tego Spring odpowiadałby 302 na formularz logowania, co w kliencie
 				// wygląda jak dziwny błąd CORS zamiast czytelnego 401.
 				.exceptionHandling(exceptions -> exceptions
