@@ -97,10 +97,23 @@ class ContactService {
 		return mailMessage;
 	}
 
+	/**
+	 * Formularz na stronie głównej nie ma pola tematu - makieta przewiduje tam
+	 * cztery pola. Bez tematu każda wiadomość miała w skrzynce identyczny tytuł
+	 * "nowa wiadomość z formularza", więc listy dało się odróżnić tylko po
+	 * otwarciu. Dlatego tytuł składamy wtedy z imienia nadawcy.
+	 *
+	 * Imię jest polem wymaganym (@NotBlank w ContactRequest), więc nie ma tu
+	 * przypadku z pustym tytułem. Ostatni wariant zostaje na wypadek wiadomości
+	 * zapisanych wcześniej, bez imienia.
+	 */
 	private String subject(ContactMessage contactMessage) {
 		String requestSubject = contactMessage.getSubject();
 		if (StringUtils.hasText(requestSubject)) {
 			return "BABA Studio: " + requestSubject;
+		}
+		if (StringUtils.hasText(contactMessage.getName())) {
+			return "BABA Studio: wiadomość od " + contactMessage.getName();
 		}
 		return "BABA Studio: nowa wiadomość z formularza";
 	}

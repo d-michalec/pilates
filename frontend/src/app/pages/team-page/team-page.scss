@@ -36,6 +36,7 @@
 /*
  * Makieta: każda osoba zajmuje pas na pełną szerokość ekranu, podzielony na pół.
  * Strony zamieniają się miejscami co osobę, a zdjęcie dochodzi do samej krawędzi.
+ * Pasy stoją jeden przy drugim, bez przerwy między nimi.
  */
 .team-list {
   display: grid;
@@ -43,53 +44,102 @@
 
 .team-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
 }
 
+/*
+ * Wysokość pasa bierze się ze zdjęcia, a zdjęcie ma ustaloną proporcję
+ * 906 na 1014 px. Przy połowie szerokości okna daje to 56% jego szerokości -
+ * czyli mniej niż wysokość ekranu. Wcześniej zdjęcie miało
+ * `min-height: clamp(360px, 44vw, 700px)` razem z `height: 100%`, więc pas
+ * rozciągał się na tyle, ile zajmował tekst, i jedna osoba wychodziła poza
+ * ekran.
+ */
+/*
+ * `min-height: 100%` zamiast `height: 100%`. Wysokość pasa bierze się
+ * z proporcji zdjęcia, bo w przebiegu liczenia rozmiaru procent zachowuje się
+ * jak `auto` - ale gdy opis okaże się wyższy niż zdjęcie, pas rośnie i zdjęcie
+ * dociąga się do jego wysokości. Przy samym `aspect-ratio` zostawało wtedy
+ * krótsze i pod nim wychodził biały pas.
+ */
+.team-photo img {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  aspect-ratio: 906 / 1014;
+  object-fit: cover;
+  background: color-mix(in srgb, var(--baba-red) 8%, var(--baba-white));
+}
+
+/*
+ * Makieta: tekst zaczyna się 152 px od krawędzi okna (8,9%) i kończy 129 px
+ * przed zdjęciem (7,55%). Wcześniej boczny padding szedł na
+ * `clamp(28px, 5vw, 88px)`, czyli przy oknie 1708 px na 85 px - i to była
+ * uwaga o zbyt małym powietrzu z lewej.
+ *
+ * Tekst jest wyśrodkowany w pionie względem zdjęcia. Pionowy padding jest
+ * zapasem dla długiego opisu: gdy tekst nie mieści się w wysokości zdjęcia,
+ * pas rośnie, zamiast pozwolić literom wyjść za krawędź.
+ */
 .team-copy {
-  padding: clamp(40px, 6vw, 96px) clamp(28px, 5vw, 88px);
+  display: grid;
+  align-content: center;
+  padding: 4vw 7.55vw 4vw 8.9vw;
 }
 
+/*
+ * Makieta: imię i nazwisko wersalikami. Podany rozmiar 18, czyli 0,77
+ * podstawy skali; na eksporcie wersaliki mają 23 px, co przy kroju
+ * zastępczym (Arial Black) wypada o 2 px niżej - zostaje podana liczba, bo
+ * ten sam stopień pisma mają "18" na FAQ i adres na stronie kontaktu.
+ *
+ * Wcześniej stopień pisma szedł na `clamp(1.15rem, 1.6vw, 1.5rem)`.
+ */
 .team-copy h2 {
-  margin: 0 0 clamp(18px, 2.5vw, 30px);
-  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  /* Makieta: 22 px (1,27%) do pierwszego wiersza opisu. */
+  margin: 0 0 1.27vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.77);
   font-weight: 700;
   letter-spacing: 0.02em;
+  line-height: 1.2;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
-  color: var(--baba-red);
 }
 
+/*
+ * Makieta: 22,3 px stopnia pisma (podane 14), interlinia 29 px - ten sam rytm
+ * co opisy na saunie i barze. Akapity rozdziela 28 px (1,64%).
+ */
 .team-copy p {
-  margin: 0 0 18px;
-  font-size: clamp(0.92rem, 1.05vw, 1rem);
-  line-height: 1.7;
+  margin: 0 0 1.64vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.31;
   text-align: justify;
-  color: color-mix(in srgb, var(--baba-red) 88%, transparent);
+  text-wrap: pretty;
 }
 
 .team-copy p:last-child {
   margin-bottom: 0;
 }
 
-.team-photo {
-  align-self: stretch;
-}
-
-.team-photo img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: clamp(360px, 44vw, 700px);
-  object-fit: cover;
-  background: color-mix(in srgb, var(--baba-red) 8%, var(--baba-white));
-}
-
 /* Co druga osoba ma zdjęcie po lewej stronie. */
 .team-row-reversed .team-photo {
   order: -1;
+}
+
+/*
+ * W odwróconym pasie kolumna z tekstem stoi po prawej, więc jej dopełnienia
+ * trzeba zamienić stronami - inaczej większe powietrze (8,9%) trafiało na
+ * krawędź przy zdjęciu, a mniejsze na krawędź okna, i zewnętrzny margines
+ * tekstu skakał co osobę.
+ */
+.team-row-reversed .team-copy {
+  padding-right: 8.9vw;
+  padding-left: 7.55vw;
 }
 
 @media (max-width: 900px) {
@@ -104,14 +154,26 @@
     order: -1;
   }
 
-  /* Kwadrat zamiast 3:4 - przy 3:4 zdjęcie zajmowało cały ekran telefonu
-     i nazwisko było widoczne dopiero po przewinięciu. */
+  /* Kwadrat zamiast 906:1014 - przy tej proporcji zdjęcie zajmowało cały
+     ekran telefonu i nazwisko było widoczne dopiero po przewinięciu. */
   .team-photo img {
-    min-height: 0;
     aspect-ratio: 1;
   }
 
+  /* Proporcje z makiety przestają tu obowiązywać: 8,9% szerokości to na
+     telefonie 34 px, a kolumna ma już całą szerokość ekranu. */
+  .team-copy {
+    padding: 34px 20px 40px;
+  }
+
+  .team-copy h2 {
+    margin-bottom: 14px;
+    font-size: 1.15rem;
+  }
+
   .team-copy p {
+    margin-bottom: 16px;
+    font-size: 1rem;
     text-align: left;
   }
 }

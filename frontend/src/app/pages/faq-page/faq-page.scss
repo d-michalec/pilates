@@ -10,10 +10,14 @@
   background: var(--baba-white);
 }
 
+/*
+ * Makieta: lista pytań idzie od 335 px do 1375 px, czyli zajmuje 60,95%
+ * szerokości okna. Wcześniej sekcja miała `max-width: 920px`.
+ */
 .faq-shell {
-  width: min(100% - 56px, 920px);
+  width: 60.95vw;
   margin: 0 auto;
-  padding: clamp(64px, 9vw, 120px) 0 clamp(74px, 10vw, 132px);
+  padding: 5.75vw 0 7.44vw;
 }
 
 h1,
@@ -21,13 +25,23 @@ p {
   margin: 0;
 }
 
+/*
+ * "FAQ" jest w makiecie etykietą sekcji: wersaliki o wysokości 15-16 px na
+ * eksporcie, czyli rozmiar 13 na płótnie projektu - ten sam stopień pisma co
+ * "O MARCE" czy "SAUNA". Wcześniej szło to na `clamp(5rem, 16vw, 13rem)`,
+ * czyli przy oknie 1708 px na 208 px.
+ *
+ * Powietrze nad napisem i pod nim jest w projekcie takie samo (98 i 99 px).
+ */
 h1 {
-  margin-bottom: clamp(50px, 7vw, 82px);
-  font-family: var(--baba-serif);
-  font-size: clamp(5rem, 16vw, 13rem);
-  font-weight: 400;
-  line-height: 0.78;
+  margin-bottom: 5.77vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   text-align: center;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
@@ -35,26 +49,30 @@ h1 {
   display: grid;
 }
 
+/*
+ * Makieta: kreska jest pod każdym pytaniem, nad pierwszym jej nie ma.
+ * Wcześniej kreska szła nad każdym elementem plus jedna pod ostatnim.
+ */
 .faq-item {
-  border-top: 1px solid var(--baba-red);
+  /* Makieta: kreski listy mają tę samą grubość co kreska pod nagłówkiem - 2 px. */
+  border-bottom: 2px solid var(--baba-red);
 }
 
-.faq-item:last-child {
-  border-bottom: 1px solid var(--baba-red);
-}
-
+/*
+ * Makieta: pytania szeryfowe, małymi literami, 29,4 px stopnia pisma (podane
+ * 18), z 14 px światła nad i pod wierszem - wiersz listy ma w sumie 67 px.
+ * Wcześniej pytania szły wersalikami bezszeryfowymi w rozmiarze podstawowym.
+ */
 .faq-item summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
+  gap: 1.4vw;
   align-items: center;
-  min-height: 58px;
+  padding: 0.8vw 0 0.78vw;
   cursor: pointer;
-  font-weight: 700;
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.33;
   list-style: none;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
 }
 
 .faq-item summary::-webkit-details-marker {
@@ -69,49 +87,79 @@ h1 {
   transform: rotate(45deg);
 }
 
+/*
+ * Odpowiedzi nie ma w makiecie rozwiniętej żadnej, więc stopień pisma idzie
+ * z resztą treści na stronie - 22,3 px (podane 14). Wcześniej odpowiedź szła
+ * rozmiarem domyślnym i była wyraźnie drobniejsza od pytania.
+ */
 .faq-item p {
-  max-width: 780px;
-  padding: 0 58px 28px 0;
+  max-width: 46vw;
+  padding: 0 3.4vw 1.6vw 0;
   color: var(--baba-brown);
-  line-height: 1.68;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.5;
 }
 
+/*
+ * Makieta: dwa wiersze przy prawej krawędzi listy, szeryfowe, tym samym
+ * stopniem pisma co pytania. Od ostatniej kreski 87 px (5,08%).
+ */
 .faq-contact {
   display: grid;
   justify-items: end;
-  gap: 8px;
-  margin-top: clamp(34px, 5vw, 58px);
+  margin-top: 5.08vw;
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.33;
   text-align: right;
 }
 
-.faq-contact p {
-  font-weight: 700;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
-}
-
+/*
+ * Odnośnik jest podkreślony na stałe, nie tylko pod kursorem. Wcześniej miał
+ * `text-decoration: none` i nie było po nim widać, że da się w niego kliknąć -
+ * w makiecie wszystkie odnośniki w tekście są podkreślone.
+ */
 .faq-contact a {
-  color: var(--baba-red);
-  text-decoration: none;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
-.faq-contact a:hover {
-  text-decoration: underline;
+@media (max-width: 1080px) {
+  /* Poniżej 1080 px `--skala-tekstu` opiera się o swoje minimum, więc odstępy
+     schodzą ze skalowanych szerokością okna na stałe. */
+  .faq-shell {
+    width: calc(100% - 40px);
+    padding: 44px 0 52px;
+  }
+
+  h1 {
+    margin-bottom: 30px;
+    font-size: 0.84rem;
+  }
+
+  .faq-item summary {
+    gap: 18px;
+    padding: 14px 0;
+  }
+
+  .faq-contact {
+    margin-top: 34px;
+  }
+
+  /* Miara odpowiedzi też schodzi ze `vw` na pełną szerokość kolumny - inaczej
+     przy oknie 1000 px tekst łamał się na 460 px w listwie szerokiej na 945. */
+  .faq-item p {
+    max-width: none;
+    padding: 0 0 18px;
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 620px) {
   .faq-shell {
-    width: min(100% - 28px, 920px);
+    width: calc(100% - 28px);
   }
 
-  .faq-item summary {
-    min-height: 64px;
-  }
-
-  .faq-item p {
-    padding-right: 0;
-  }
 
   .faq-contact {
     justify-items: start;

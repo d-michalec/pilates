@@ -26,14 +26,16 @@ class LandingService {
 				.orElseGet(() -> LandingHeroResponse.from(LandingHero.defaults()));
 	}
 
+	/**
+	 * Zapisuje tylko to, co panel naprawdę wysyła. Główny napis zastąpiło logo
+	 * z pliku, a opisu hero panel nigdy nie edytował - te kolumny zostają więc
+	 * z dotychczasową wartością.
+	 */
 	@Transactional
 	LandingHeroResponse updateHero(
-			String title,
 			String ctaLabel,
 			String ctaUrl,
 			String imageAlt,
-			String titleEn,
-			String descriptionEn,
 			String ctaLabelEn,
 			String imageAltEn,
 			MultipartFile heroImage
@@ -45,15 +47,15 @@ class LandingService {
 		}
 
 		hero.update(
-				title.trim(),
+				hero.getTitle(),
 				hero.getEyebrow(),
 				hero.getDescription(),
 				ctaLabel.trim(),
 				ctaUrl.trim(),
 				imageAlt.trim(),
-				trimToNull(titleEn),
+				hero.getTitleEn(),
 				hero.getEyebrowEn(),
-				trimToNull(descriptionEn),
+				hero.getDescriptionEn(),
 				trimToNull(ctaLabelEn),
 				trimToNull(imageAltEn),
 				asset

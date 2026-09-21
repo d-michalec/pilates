@@ -8,12 +8,13 @@ import { VenueService } from '../../core/venue.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { isExternalUrl } from '../../core/cta-link';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-sauna-page',
-  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe],
+  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe],
   templateUrl: './sauna-page.html',
   styleUrl: './sauna-page.scss',
   host: { ngSkipHydration: 'true' }

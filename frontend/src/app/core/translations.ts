@@ -23,6 +23,9 @@ export const TRANSLATIONS = {
   'menu.events': { pl: 'Wydarzenia', en: 'Events' },
   'menu.bar': { pl: 'Bar', en: 'Bar' },
   'menu.schedule': { pl: 'Grafik', en: 'Schedule' },
+  // Cennik prowadzi na tę samą podstronę co grafik: wybór cennika jest
+  // zakładką wewnątrz widgetu Fitssey, nie osobnym widokiem strony.
+  'menu.pricing': { pl: 'Cennik', en: 'Pricing' },
   'menu.team': { pl: 'Zespół', en: 'Team' },
   'menu.faq': { pl: 'FAQ', en: 'FAQ' },
   'menu.contact': { pl: 'Kontakt', en: 'Contact' },
@@ -78,8 +81,12 @@ export const TRANSLATIONS = {
     pl: 'Napisz do nas albo od razu przejdź do grafiku.',
     en: 'Write to us, or go straight to the schedule.'
   },
-  'landing.questions.faq': { pl: 'Sprawdź FAQ', en: 'Read the FAQ' },
-  'landing.questions.schedule': { pl: 'Grafik zajęć', en: 'Class schedule' },
+  /*
+   * W makiecie podkreślony jest wyłącznie skrót "FAQ", nie całe zdanie - stąd
+   * osobny prefiks, a samo "FAQ" stoi w szablonie jako odnośnik (brzmi tak samo
+   * w obu językach).
+   */
+  'landing.questions.faqPrefix': { pl: 'Sprawdź', en: 'Read the' },
 
   // Formularz kontaktowy
   'contact.name': { pl: 'Imię i nazwisko', en: 'Full name' },
@@ -89,6 +96,8 @@ export const TRANSLATIONS = {
   'contact.message': { pl: 'Wiadomość', en: 'Message' },
   'contact.website': { pl: 'Strona internetowa', en: 'Website' },
   'contact.send': { pl: 'Wyślij wiadomość', en: 'Send message' },
+  /* Krótsza etykieta na stronie głównej - w makiecie przycisk ma tam samo "WYŚLIJ". */
+  'contact.sendShort': { pl: 'Wyślij', en: 'Send' },
   'contact.invalid': { pl: 'Uzupełnij poprawnie formularz kontaktowy.', en: 'Please complete the form correctly.' },
   'contact.success': {
     pl: 'Dziękujemy za wiadomość. Odezwemy się tak szybko, jak to możliwe.',
@@ -128,7 +137,21 @@ export const TRANSLATIONS = {
     en: 'TO BE CONFIRMED BEFORE THE STUDIO OPENS.'
   },
   'legal.questions': { pl: 'Masz pytania?', en: 'Any questions?' },
-  'legal.contactLink': { pl: 'Napisz do nas', en: 'Write to us' },
+  'legal.contactLink': { pl: 'Napisz do nas!', en: 'Write to us!' },
+  'legal.error': {
+    pl: 'Nie udało się pobrać treści dokumentu. Odśwież stronę albo napisz do nas.',
+    en: 'Could not load the document. Refresh the page or write to us.'
+  },
+  'seo.terms.title': { pl: 'Regulamin | BABA Studio', en: 'Terms and conditions | BABA Studio' },
+  'seo.terms.description': {
+    pl: 'Zasady korzystania ze studia BABA: zapisy, odwoływanie zajęć i sprawy bezpieczeństwa.',
+    en: 'How BABA Studio works: bookings, cancellations and safety.'
+  },
+  'seo.privacy.title': { pl: 'Polityka prywatności | BABA Studio', en: 'Privacy policy | BABA Studio' },
+  'seo.privacy.description': {
+    pl: 'Jakie dane zbiera strona BABA Studio, po co i jak długo je przechowujemy.',
+    en: 'What data the BABA Studio website collects, why, and how long we keep it.'
+  },
 
   // Zgody
   'consent.newsletter': {
@@ -185,6 +208,9 @@ export const TRANSLATIONS = {
   'schedule.title': { pl: 'Grafik', en: 'Schedule' },
   'schedule.loading': { pl: 'Ładujemy grafik rezerwacji...', en: 'Loading the booking schedule...' },
   'schedule.frameTitle': { pl: 'Grafik zajęć BABA Studio', en: 'BABA Studio class schedule' },
+  'pricing.title': { pl: 'Cennik', en: 'Pricing' },
+  'pricing.loading': { pl: 'Ładujemy cennik...', en: 'Loading the pricing...' },
+  'pricing.frameTitle': { pl: 'Cennik BABA Studio', en: 'BABA Studio pricing' },
   'team.empty': { pl: 'Kadra pojawi się wkrótce.', en: 'Our team will appear here soon.' },
   'team.srHeading': { pl: 'Kadra BABA Studio', en: 'BABA Studio team' },
   'events.upcoming': { pl: 'Harmonogram wydarzeń', en: 'Upcoming events' },
@@ -232,6 +258,13 @@ export const TRANSLATIONS = {
   // Wydarzenia
   'event.join': { pl: 'Weź udział', en: 'Take part' },
   'event.notFound': { pl: 'Nie udało się pobrać wydarzenia.', en: 'Could not load the event.' },
+  // Makieta: podpis stoi po lewej stronie imienia prowadzącej, na jej linii bazowej.
+  'event.host': { pl: 'prowadząca', en: 'host' },
+  'event.factDate': { pl: 'Data:', en: 'Date:' },
+  'event.factPlace': { pl: 'Miejsce:', en: 'Place:' },
+  'event.factDuration': { pl: 'Czas trwania:', en: 'Duration:' },
+  'event.factCapacity': { pl: 'Liczba miejsc:', en: 'Capacity:' },
+  'event.factPrice': { pl: 'Cena:', en: 'Price:' },
   'events.error': { pl: 'Nie udało się pobrać wydarzeń.', en: 'Could not load events.' },
   'team.error': { pl: 'Nie udało się pobrać listy kadry.', en: 'Could not load the team.' },
   'classes.error': { pl: 'Nie udało się pobrać zajęć.', en: 'Could not load classes.' },
@@ -257,6 +290,11 @@ export const TRANSLATIONS = {
   'seo.bar.description': {
     pl: 'Kawiarnia w BABA Studio w Łodzi. Sprawdź godziny otwarcia i wpadnij na kawę.',
     en: 'The cafe at BABA Studio in Lodz. Check the opening hours and drop in for a coffee.'
+  },
+  'seo.pricing.title': { pl: 'Cennik | BABA Studio', en: 'Pricing | BABA Studio' },
+  'seo.pricing.description': {
+    pl: 'Cennik zajęć i karnetów BABA Studio w Łodzi.',
+    en: 'Class and pass pricing at BABA Studio in Łódź.'
   },
   'seo.schedule.title': { pl: 'Grafik | BABA Studio', en: 'Schedule | BABA Studio' },
   'seo.schedule.description': {

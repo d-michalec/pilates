@@ -24,11 +24,9 @@ export class LandingService {
 
   updateHero(input: UpdateLandingHeroInput) {
     const formData = new FormData();
-    formData.append('title', input.title);
     formData.append('ctaLabel', input.ctaLabel);
     formData.append('ctaUrl', input.ctaUrl);
     formData.append('imageAlt', input.imageAlt);
-    formData.append('titleEn', input.titleEn ?? '');
     formData.append('ctaLabelEn', input.ctaLabelEn ?? '');
     formData.append('imageAltEn', input.imageAltEn ?? '');
 

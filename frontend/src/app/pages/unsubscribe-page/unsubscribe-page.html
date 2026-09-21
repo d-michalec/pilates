@@ -27,7 +27,7 @@
       ></button>
 
       @if (errorMessage()) {
-        <p class="unsubscribe-error">{{ errorMessage() }}</p>
+        <p class="unsubscribe-error">{{ errorMessage() | typo }}</p>
       }
     }
 

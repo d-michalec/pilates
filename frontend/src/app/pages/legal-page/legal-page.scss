@@ -26,20 +26,31 @@ ul {
   margin: 0;
 }
 
+/*
+ * Stopnie pisma na tej podstronie idą z tej samej skali co reszta strony
+ * (`--skala-tekstu`), a nie z osobnych `clamp`-ów i rozmiarów w `rem`:
+ *
+ *   1,206 -> 46 px  tytuł dokumentu (tyle samo co "MASZ PYTANIA?")
+ *   0,770 -> 29 px  odnośnik do kontaktu na końcu (tyle samo co pytania na FAQ)
+ *   0,620 -> 24 px  nagłówki sekcji i data aktualizacji
+ *   0,583 -> 22 px  tekst dokumentu (podstawowa wielkość na stronie)
+ *
+ * Tytuł idzie wersalikami bezszeryfowymi, bo jest nagłówkiem, a nie tekstem
+ * ciągłym - tak jak nagłówki na pozostałych podstronach.
+ */
 h1 {
-  font-family: var(--baba-serif);
-  /* Mniejszy niż na pozostałych podstronach - "POLITYKA PRYWATNOŚCI" w rozmiarze
-     nagłówka z FAQ zajęłaby na telefonie cały ekran. */
-  font-size: clamp(2.6rem, 9vw, 5.4rem);
-  font-weight: 400;
-  line-height: 0.88;
+  font-size: calc(var(--skala-tekstu) * 1.206);
+  font-weight: 700;
+  line-height: 1.05;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
 .legal-updated {
-  margin-top: 18px;
+  margin-top: 1.05vw;
   color: var(--baba-brown);
-  font-size: 0.86rem;
+  font-size: calc(var(--skala-tekstu) * 0.62);
   letter-spacing: 0.04em;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
@@ -48,10 +59,10 @@ h1 {
 
 .legal-intro {
   max-width: 62ch;
-  margin-top: 30px;
+  margin-top: 1.76vw;
   color: var(--baba-brown);
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.5;
 }
 
 .legal-body {
@@ -66,9 +77,10 @@ h1 {
 }
 
 h2 {
-  font-size: 1rem;
+  font-size: calc(var(--skala-tekstu) * 0.62);
   font-weight: 700;
   letter-spacing: 0.02em;
+  line-height: 1.2;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
@@ -78,13 +90,21 @@ h2 {
 .legal-section li {
   max-width: 68ch;
   color: var(--baba-brown);
-  line-height: 1.72;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.5;
 }
 
 .legal-section ul {
   display: grid;
   gap: 10px;
   padding-left: 22px;
+}
+
+/* Stan ładowania i błędu - jeden wiersz na miejscu dokumentu. */
+.legal-state {
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.5;
 }
 
 /* Znacznik braku treści. Celowo krzykliwy - ma zwrócić uwagę przy przeglądaniu
@@ -105,24 +125,66 @@ h2 {
   border-top: 1px solid var(--baba-red);
 }
 
+/*
+ * Blok kontaktowy na końcu dokumentu wygląda tak samo jak ten na FAQ:
+ * szeryfowo, 29 px stopnia pisma, z podkreślonym odnośnikiem.
+ */
+.legal-contact {
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.33;
+}
+
 .legal-contact p {
-  font-weight: 700;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
+  font-weight: 400;
 }
 
+/*
+ * Odnośnik jest podkreślony na stałe, nie tylko pod kursorem. Wcześniej miał
+ * `text-decoration: none` i nie było po nim widać, że da się w niego kliknąć.
+ */
 .legal-contact a {
-  color: var(--baba-red);
-  text-decoration: none;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
 }
 
-.legal-contact a:hover {
-  text-decoration: underline;
+@media (max-width: 1080px) {
+  /*
+   * Poniżej 1080 px `--skala-tekstu` opiera się o swoje minimum 24 px, więc
+   * stopnie pisma przestają maleć razem z oknem - odstępy schodzą tutaj ze
+   * skalowanych szerokością okna na stałe.
+   */
+  h1 {
+    font-size: clamp(2rem, 6vw, 2.9rem);
+  }
+
+  .legal-updated {
+    margin-top: 14px;
+    font-size: 0.84rem;
+  }
+
+  .legal-intro {
+    margin-top: 24px;
+    font-size: 1rem;
+  }
+
+  h2 {
+    font-size: 0.95rem;
+  }
+
+  .legal-section p,
+  .legal-section li,
+  .legal-state {
+    font-size: 1rem;
+  }
+
+  .legal-contact {
+    font-size: 1.05rem;
+  }
 }
 
 @media (max-width: 620px) {
   .legal-shell {
-    width: min(100% - 28px, 760px);
+    width: calc(100% - 28px);
   }
 }

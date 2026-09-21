@@ -10,13 +10,18 @@
   background: var(--baba-red);
 }
 
+/*
+ * Odstępy z makiety (eksport 1708 px): od kreski pod nagłówkiem do etykiety
+ * 114 px (6,67%), od etykiety do tekstu 76 px (4,45%), a nad przyciskiem
+ * i pod nim po tyle samo - 67 i 64 px, czyli 3,83%. To była uwaga o różnych
+ * odległościach nad i pod przyciskiem.
+ */
 .pilates-hero {
   display: grid;
   justify-items: center;
-  gap: 22px;
-  width: min(100% - 56px, 860px);
+  width: min(100% - 56px, 50vw);
   margin: 0 auto;
-  padding: clamp(68px, 10vw, 122px) 0 clamp(42px, 7vw, 80px);
+  padding: 6.67vw 0 3.83vw;
   text-align: center;
 }
 
@@ -26,114 +31,180 @@ p {
   margin: 0;
 }
 
+/*
+ * "PILATES" jest w makiecie etykietą sekcji, nie wielkim napisem: wersaliki
+ * o wysokości 15 px na eksporcie, dokładnie jak "O MARCE" na stronie głównej.
+ * W przeliczeniu na płótno projektu daje to 13 px - czyli podany rozmiar.
+ *
+ * Wcześniej szło to na `clamp(5.5rem, 18vw, 15.5rem)`, czyli do 248 px.
+ */
 .pilates-hero h1 {
-  font-family: var(--baba-serif);
-  font-size: clamp(5.5rem, 18vw, 15.5rem);
-  font-weight: 400;
-  line-height: 0.78;
-  text-transform: uppercase;
-}
-
-.pilates-hero p {
-  max-width: 560px;
-  line-height: 1.55;
-}
-
-.pilates-hero a,
-.class-card {
-  color: inherit;
-  text-decoration: none;
-}
-
-.pilates-hero a {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  background: var(--baba-olive);
-  padding: 0 22px;
-  color: var(--baba-white);
-  font-size: 0.82rem;
+  margin-bottom: 4.45vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
   font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
-.classes-section {
-  width: min(100% - 56px, 1080px);
-  margin: 0 auto;
-  padding-bottom: clamp(70px, 10vw, 132px);
+/*
+ * Makieta: 27 px stopnia pisma, czyli podane 17 na płótnie projektu.
+ *
+ * Miara 34,4% szerokości okna wzięta z projektu (najdłuższy wiersz ma tam
+ * 587 px). Przy szerszej mierze zdanie łamało się w środku odnośnika
+ * "Skontaktuj się z nami" - tutaj cały odnośnik schodzi do drugiego wiersza,
+ * jak w makiecie.
+ */
+.pilates-hero p {
+  max-width: 36vw;
+  margin-bottom: 3.83vw;
+  font-size: calc(var(--skala-tekstu) * 0.707);
+  line-height: 1.37;
 }
 
+/* Makieta: podkreślony odnośnik w środku zdania. */
+.pilates-hero p a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.pilates-cta,
+.class-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+/*
+ * Proporcje z makiety, w `em`. Przycisk ma tam 333 na 60 px, a wersaliki
+ * wysokość 18 px - czyli 25,5 px stopnia pisma (podany rozmiar 16), wysokość
+ * 2,35 stopnia pisma i po 1,25 stopnia pisma powietrza z boków. Dokładnie tak
+ * samo jest zmierzony przycisk na stronie "sauna", więc oba mają teraz jedne
+ * proporcje.
+ *
+ * Wcześniej stopień pisma szedł na `clamp(1.02rem, 1.68vw, 1.6rem)`, czyli przy
+ * oknie 1708 px na 28,7 px - o rozmiar za duży wobec projektu.
+ *
+ * Własna klasa, a nie `.pilates-hero a`: w akapicie nad przyciskiem jest teraz
+ * odnośnik do kontaktu i tamten selektor ubierał go w przycisk.
+ */
+.pilates-cta {
+  display: inline-flex;
+  /* `max` pilnuje, żeby na telefonie przycisk nie zszedł pod 44 px wysokości dotyku. */
+  min-height: max(2.35em, 44px);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--baba-radius);
+  background: var(--baba-olive);
+  padding: 0 1.25em;
+  /* Makieta: litery na tym przycisku są ciemne, nie białe. */
+  color: var(--baba-brown);
+  font-size: calc(var(--skala-tekstu) * 0.667);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
+  text-transform: uppercase;
+}
+
+/*
+ * Makieta: karty zaczynają się 161 px od lewej krawędzi i kończą 142 px przed
+ * prawą, czyli zajmują 82,3% szerokości okna. Wcześniej sekcja miała
+ * `max-width: 1080px`, więc przy oknie 1708 px zostawało po 314 px powietrza
+ * z każdej strony - i to była uwaga o zbyt szerokich marginesach.
+ */
+.classes-section {
+  width: min(100% - 48px, 82.3vw);
+  margin: 0 auto;
+  padding-bottom: 6vw;
+}
+
+/* Makieta: przerwa między kartami 27 px w poziomie (1,58%) i 39 px w pionie (2,28%). */
 .classes-grid,
 .fallback-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(18px, 3vw, 34px);
+  column-gap: 1.58vw;
+  row-gap: 2.28vw;
 }
 
+/*
+ * KARTA ZAJĘĆ - wymiary i rozkład tekstu zmierzone na makiecie.
+ *
+ * Karta ma tam 450 na 497 px, czyli proporcja 450:497. Wcześniej stało
+ * `min-height: clamp(290px, 30vw, 410px)` przy węższej siatce, więc karta była
+ * wyższa w stosunku do swojej szerokości niż w projekcie.
+ *
+ * Tekst nie leci jeden pod drugim: nazwa zaczyna się 92 px od góry karty, opis
+ * 178 px, a poziom trudności stoi przy dolnej krawędzi. Stąd siatka z trzema
+ * rzędami - nazwa w rzędzie stałej wysokości, opis rozpycha się w środku,
+ * poziom na dole.
+ */
 .class-card {
   position: relative;
   display: grid;
-  min-height: clamp(290px, 30vw, 410px);
+  grid-template-rows: 5.04vw 1fr auto;
+  aspect-ratio: 450 / 497;
   overflow: hidden;
   isolation: isolate;
   background: var(--baba-white);
   color: var(--baba-red);
-  padding: clamp(22px, 3vw, 30px);
+  padding: 5.03vw 3.51vw 5.68vw 2.28vw;
 }
 
 .class-card-image {
   color: var(--baba-white);
 }
 
-.class-card-image::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.66));
-}
-
+/*
+ * Zdjęcie idzie na kartę takie, jakie zostało wgrane - bez odbarwiania
+ * i bez gradientu. Wcześniej stało tu `filter: grayscale(1)`, a na zdjęcie
+ * nachodził jeszcze gradient od 34 do 66% czerni.
+ *
+ * Konsekwencja: czytelność białego napisu zależy od tego, jak ciemne jest
+ * wgrane zdjęcie.
+ */
 .class-card img {
   position: absolute;
   inset: 0;
   z-index: -2;
   width: 100%;
   height: 100%;
-  filter: grayscale(1);
   object-fit: cover;
 }
 
-.class-card div {
-  display: grid;
-  align-content: end;
+/* Makieta: nazwa 28,6 px stopnia pisma, czyli podane 18 na płótnie projektu. */
+.class-card h2 {
+  align-self: start;
+  font-size: calc(var(--skala-tekstu) * 0.749);
+  line-height: 1.12;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
+  text-transform: uppercase;
 }
 
+/*
+ * Makieta: opis 15,9 px stopnia pisma, czyli podane 10 na płótnie projektu,
+ * wyrównany do obu krawędzi - w projekcie widać rozstrzelone odstępy między
+ * słowami w wierszach, które sięgają prawej krawędzi.
+ */
+.class-card p {
+  align-self: start;
+  font-size: calc(var(--skala-tekstu) * 0.416);
+  line-height: 1.42;
+  text-align: justify;
+  text-wrap: pretty;
+}
+
+/* Poziom trudności: ten sam stopień pisma co opis, do lewej, przy dolnej krawędzi. */
 .class-card span {
   display: block;
-  margin-bottom: 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
-}
-
-.class-card h2 {
-  max-width: 260px;
-  margin-bottom: 16px;
-  font-size: clamp(1.55rem, 3.2vw, 2.7rem);
-  line-height: 0.96;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
-}
-
-.class-card p {
-  max-width: 320px;
-  line-height: 1.55;
+  align-self: end;
+  font-size: calc(var(--skala-tekstu) * 0.416);
+  line-height: 1.42;
 }
 
 .state {
@@ -146,21 +217,71 @@ p {
   color: var(--baba-blue);
 }
 
+/*
+ * Poniżej 860 px karty schodzą do dwóch w rzędzie, a poniżej 620 px do jednej.
+ * Przy innej liczbie kolumn proporcja 450:497 z makiety przestaje mieć sens -
+ * karta w jednej kolumnie byłaby wtedy wyższa niż ekran. Wysokość dobiera tam
+ * treść, a rozkład tekstu wraca do zwykłego przepływu.
+ */
 @media (max-width: 860px) {
+  .pilates-hero {
+    width: min(100% - 40px, 620px);
+    padding: 48px 0 34px;
+  }
+
+  .pilates-hero h1 {
+    margin-bottom: 26px;
+    font-size: 0.84rem;
+  }
+
+  .pilates-hero p {
+    max-width: none;
+    margin-bottom: 34px;
+    font-size: 1.05rem;
+  }
+
+  .classes-section {
+    width: min(100% - 40px, 100%);
+    padding-bottom: 64px;
+  }
+
   .classes-grid,
   .fallback-grid {
     grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+    row-gap: 20px;
+  }
+
+  .class-card {
+    aspect-ratio: auto;
+    grid-template-rows: auto 1fr auto;
+    row-gap: 18px;
+    min-height: 300px;
+    padding: 24px 22px 26px;
+  }
+
+  .class-card h2 {
+    font-size: 1.3rem;
+  }
+
+  .class-card p,
+  .class-card span {
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 620px) {
   .pilates-hero,
   .classes-section {
-    width: min(100% - 28px, 1080px);
+    width: min(100% - 28px, 100%);
   }
 
   .classes-grid,
   .fallback-grid {
     grid-template-columns: 1fr;
+  }
+
+  .class-card {
+    min-height: 0;
   }
 }

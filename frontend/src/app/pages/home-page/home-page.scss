@@ -7,12 +7,33 @@
 
 .landing-page {
   overflow: clip;
+
+  /*
+   * Powietrze między zdjęciem hero a napisem "O MARCE": ta sama wartość nad
+   * i pod pasmem zdjęć, żeby karuzela stała dokładnie w środku tej przestrzeni.
+   * Sekcja galerii i sekcja "o marce" mają to samo czerwone tło, więc granica
+   * między nimi jest niewidoczna i liczy się wyłącznie suma odstępów - dlatego
+   * cały dolny odstęp bierze na siebie górny padding sekcji "o marce",
+   * a galeria ma na dole zero.
+   *
+   * Wcześniej galeria miała 46 px z obu stron, więc od góry zostawało 46 px,
+   * a od dołu 46 + 150 px paddingu sekcji "o marce" - pasmo zdjęć siedziało
+   * przyklejone do zdjęcia hero.
+   */
+  --powietrze-galerii: clamp(72px, 11vw, 150px);
+
+  /* Podstawa skali pisma (`--skala-tekstu`) stoi w `styles.scss` - korzysta z niej też stopka. */
 }
 
+/*
+ * Pierwszy ekran zajmuje całe okno. W makiecie hero kończy się dokładnie tam,
+ * gdzie kończy się widok - nic z następnej sekcji nie podgląda od dołu.
+ * Wcześniej było 94dvh, więc na dole zostawał czerwony pasek karuzeli.
+ */
 .hero {
   position: relative;
   display: grid;
-  min-height: 94dvh;
+  min-height: 100dvh;
   isolation: isolate;
   background: var(--baba-brown);
   color: var(--baba-white);
@@ -43,9 +64,7 @@
   display: none;
 }
 
-.hero-cta,
-.outline-link,
-.solid-link {
+.hero-cta {
   border: 0;
   color: inherit;
   font: inherit;
@@ -56,20 +75,35 @@
   text-transform: uppercase;
 }
 
+/*
+ * Makieta rozkłada pierwszy ekran na dwa punkty: logo w pionowym środku okna
+ * i przycisk nisko, na wysokości około 87% ekranu. Stąd dwa rzędy siatki -
+ * pierwszy rozpycha się i centruje w sobie logo, drugi trzyma przycisk.
+ */
 .hero-content {
-  display: flex;
+  display: grid;
+  grid-template-rows: 1fr auto;
   width: min(100% - 48px, 1280px);
-  margin: auto auto 64px;
-  align-items: center;
-  flex-direction: column;
+  min-height: 100dvh;
+  /*
+   * `margin-inline: auto`, bo `.hero` jest siatką bez `justify-items`, a ten blok
+   * ma jawną szerokość - domyślne `stretch` degraduje się wtedy do `start`
+   * i cała zawartość hero przyklejała się do lewej krawędzi.
+   */
+  margin-inline: auto;
+  justify-items: center;
+  padding: clamp(104px, 17vh, 210px) 0 clamp(44px, 8.5vh, 104px);
   text-align: center;
 }
 
-.hero-content h1 {
-  font-family: var(--baba-serif);
-  font-size: clamp(7rem, 26vw, 23rem);
-  font-weight: 400;
-  line-height: 0.78;
+/*
+ * Szerokość logo z makiety: 224 px na eksporcie 1708 px, czyli 13,1% szerokości
+ * okna. Dolna granica ratuje telefony, gdzie 13% to już mniej niż pięćdziesiąt
+ * pikseli, górna nie pozwala mu puchnąć na monitorach panoramicznych.
+ */
+.hero-logo {
+  width: clamp(168px, 13.1vw, 300px);
+  align-self: center;
 }
 
 h1,
@@ -79,24 +113,40 @@ p {
   margin: 0;
 }
 
+/*
+ * Proporcje wzięte z makiety, gdzie przycisk ma 352x59 px na eksporcie o
+ * szerokości 1708 px. Przeliczone na typowe okno 1440 px to około 297x50 px
+ * przy literach wysokości ~19 px - czyli litery zajmują blisko połowę wysokości
+ * przycisku, a nie jedną czwartą jak przy wcześniejszym 0.82rem w 46 px.
+ * Wysokość i odstępy podajemy w `em`, żeby ta proporcja trzymała się sama
+ * przy każdej szerokości okna.
+ */
 .hero-cta {
   display: inline-flex;
-  min-height: 46px;
+  /* `max` pilnuje, żeby na telefonie przycisk nie zszedł pod 44 px wysokości dotyku. */
+  min-height: max(2.1em, 44px);
   align-items: center;
   justify-content: center;
-  margin-top: 28px;
-  border-radius: 0;
+  align-self: end;
+  border-radius: var(--baba-radius);
   background: var(--baba-olive);
-  padding: 0 22px;
+  padding: 0 1.2em;
   color: var(--baba-white);
-  font-size: 0.82rem;
+  font-size: clamp(1.02rem, 1.68vw, 1.6rem);
+  letter-spacing: 0.01em;
+  line-height: 1;
+  transition: background 160ms ease;
+}
+
+.hero-cta:hover {
+  background: color-mix(in srgb, var(--baba-olive) 84%, var(--baba-brown));
 }
 
 .gallery-section {
   position: relative;
   display: grid;
   background: var(--baba-red);
-  padding: clamp(22px, 4vw, 46px) 0;
+  padding: var(--powietrze-galerii) 0 0;
 }
 
 .gallery-viewport {
@@ -118,7 +168,9 @@ p {
   display: grid;
   grid-auto-columns: clamp(260px, 31vw, 540px);
   grid-auto-flow: column;
-  gap: clamp(12px, 1.35vw, 20px);
+  /* Makieta: między kadrami karuzeli jest 55 px przy oknie 1708, czyli 3,22%
+     szerokości. Wcześniej górna granica ucinała ten odstęp na 20 px. */
+  gap: clamp(20px, 3.22vw, 60px);
   width: max-content;
   contain: layout paint;
 }
@@ -132,7 +184,11 @@ p {
 /* Makieta: kwadratowe białe przyciski przy samych krawędziach, w pionie na środku. */
 .gallery-controls {
   position: absolute;
-  inset: 0;
+  /*
+   * Od góry odliczamy powietrze sekcji, żeby strzałki stały na środku pasma
+   * zdjęć, a nie na środku sekcji razem z jej górnym odstępem.
+   */
+  inset: var(--powietrze-galerii) 0 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -155,6 +211,12 @@ p {
   object-fit: cover;
 }
 
+/*
+ * Biel z przeziernością 80%, zmierzona na makiecie: tam wypełnienie kwadratu
+ * ma 217 przy tle 92 i 233 przy tle 131, co w obu miejscach wychodzi na biel
+ * krytą w około 78-83%. Wcześniej przyciski były kryte w stu procentach
+ * i wycinały w zdjęciu białe kwadraty.
+ */
 .gallery-controls button {
   display: inline-grid;
   width: 46px;
@@ -162,15 +224,30 @@ p {
   place-items: center;
   pointer-events: auto;
   border: 0;
-  background: var(--baba-white);
+  background: color-mix(in srgb, var(--baba-white) 80%, transparent);
   color: var(--baba-brown);
   cursor: pointer;
+  transition: background 160ms ease;
+}
+
+/* Pod kursorem przycisk kryje mocniej - inaczej trudno wyczuć, że reaguje. */
+.gallery-controls button:hover {
+  background: color-mix(in srgb, var(--baba-white) 94%, transparent);
 }
 
 .brand-story {
   background: var(--baba-red);
   color: var(--baba-white);
-  padding: clamp(72px, 11vw, 150px) max(24px, calc((100vw - 1180px) / 2));
+  /* Górny padding to całe powietrze pod pasmem zdjęć - patrz `--powietrze-galerii`. */
+  /*
+   * Dolny odstęp też z makiety: czerwień kończy się tam 59 px pod kolumnami,
+   * czyli 3,45% szerokości okna. Wcześniej było 150 px, więc pod kolumnami
+   * zostawał pas czerwieni trzy razy szerszy niż w projekcie. Górny odstęp
+   * zostaje taki, jaki wyszedł z symetrii pasma zdjęć (`--powietrze-galerii`)
+   * - w makiecie to powietrze należy do galerii, nie do tego bloku tekstu.
+   */
+  padding: var(--powietrze-galerii) clamp(24px, 7.2vw, 210px) max(40px, 3.45vw);
+
 }
 
 .brand-story,
@@ -181,18 +258,23 @@ p {
   contain-intrinsic-size: 1px 640px;
 }
 
+/*
+ * Szerokość bloku wzięta z makiety: najdłuższy wiersz akapitu ma tam 1059 px
+ * na eksporcie 1708 px, czyli 62% szerokości okna. Szerokość podana w `vw`
+ * razem ze stopniem pisma w `vw` daje ten sam podział na wiersze przy każdej
+ * szerokości okna - akapit zawsze łamie się na trzy linijki, tak jak w projekcie.
+ */
 .story-intro {
-  max-width: 980px;
+  max-width: 63.5vw;
   margin: 0 auto;
   text-align: center;
 }
 
 .story-intro span,
-
-.newsletter-section span,
-.questions-section span {
+.newsletter-section span {
   display: block;
   margin-bottom: 18px;
+  /* Nadpisanie dla sekcji "o marce" jest niżej - tam odstęp idzie z makiety. */
   font-size: 0.84rem;
   font-weight: 700;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
@@ -200,37 +282,109 @@ p {
   text-transform: uppercase;
 }
 
-.story-intro p {
-  font-family: var(--baba-serif);
-  font-size: clamp(2.1rem, 5.4vw, 5.2rem);
-  line-height: 0.96;
+/*
+ * Etykieta sekcji. Pozostałe sekcje mają ją na sztywno 13,4 px i 18 px odstępu,
+ * tutaj oba wymiary idą z makiety, razem z resztą tej sekcji.
+ *
+ * Stopień pisma liczony z wysokości wersalików: w makiecie mają 15 px na
+ * eksporcie 1708 px, a wersalik Arial Black to 0,716 stopnia pisma, więc
+ * 15 / 0,716 / 38,2 = 0,548 podstawy. Przy 1080 px wychodzi z tego 13,2 px,
+ * czyli dokładnie tyle, ile etykieta ma w projekcie.
+ *
+ * Uwaga na przyszłość: w makiecie jest tu Neue Plak Bold, a strona podstawia
+ * Arial Black, który przy tej samej wysokości wersalików jest szerszy - napis
+ * wyjdzie około 105 px zamiast 90 px z projektu. Zrówna się to samo w dniu,
+ * w którym na serwer trafi wykupiony Neue Plak (patrz README, sekcja
+ * Typografia); dobieranie pod zamiennik mniejszego stopnia pisma zepsułoby
+ * proporcję względem akapitu poniżej.
+ *
+ * Odstęp do akapitu: makieta zostawia 74 px, czyli 4,33% szerokości okna
+ * (pozostałe sekcje mają 18 px).
+ */
+.brand-story .story-intro span {
+  font-size: calc(var(--skala-tekstu) * 0.548);
+  margin-bottom: max(18px, 4.33vw);
 }
 
+.story-intro p {
+  font-family: var(--baba-serif);
+  font-size: var(--skala-tekstu);
+  /* Makieta: odstęp linii 55 px przy stopniu pisma 38,2 px. */
+  line-height: 1.44;
+}
+
+/* 22,5 / 38,2 z makiety - ten sam stosunek, jaki dają podane 14 do 24. */
+.story-columns p {
+  font-size: calc(var(--skala-tekstu) * 0.589);
+  /* Makieta: odstęp linii 32,5 px przy stopniu pisma 22,5 px - ten sam rytm. */
+  line-height: 1.44;
+}
+
+/*
+ * Makieta: kolumny zaczynają się 123 px od krawędzi i kończą 123 px przed
+ * prawą, czyli zajmują 85,6% szerokości okna, z przerwą 92 px (5,4%) między
+ * nimi. Te 85,6% bierze na siebie poziomy padding sekcji (7,2% na stronę),
+ * więc kolumny wypełniają pole treści i nie mają już własnego ograniczenia
+ * - wcześniej ścinał je `max-width: 1060px`, czyli 73% szerokości przy 1440 px.
+ *
+ * Górny odstęp też z makiety: między dolną krawędzią akapitu a górną wierszy
+ * w kolumnach jest tam 66 px, czyli 3,86% szerokości.
+ *
+ * `min(...)` zatrzymuje szerokość kolumn przy 1560 px, w podobnym miejscu,
+ * w którym przestaje rosnąć stopień pisma - inaczej na monitorze 2560 px
+ * wiersz w kolumnie miałby ponad 130 znaków.
+ */
 .story-columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(28px, 7vw, 96px);
-  max-width: 1060px;
-  margin: clamp(42px, 8vw, 96px) auto 0;
+  gap: 5.4vw;
+  max-width: min(100%, 1560px);
+  margin: max(28px, 3.86vw) auto 0;
 }
 
-.story-columns p,
-.offer-grid p,
-.questions-section p {
+.story-columns p {
   line-height: 1.58;
+}
+
+/* Makieta: odstęp linii w karcie 32,5 px przy stopniu pisma 22,5 px. */
+.offer-grid p {
+  line-height: 1.44;
 }
 
 /*
  * Makieta: zdjęcie w tle z przyciemnieniem, na nim cztery białe karty.
  * Zdjęcie jest opcjonalne - bez niego zostaje jednolite tło.
  */
+/*
+ * Odstępy z makiety (eksport 1708 px): od górnej krawędzi sekcji do kart jest
+ * 274 px, a etykieta stoi w tej przestrzeni pośrodku - stąd 125 px nad nią
+ * i 125 px pod nią, czyli po 7,32% szerokości okna. Pod kartami zostaje 97 px
+ * (5,68%), a karty zaczynają się 57 px od krawędzi (3,34%).
+ *
+ * Wcześniej boczny padding wynosił `max(24px, (100vw - 1640px) / 2)`, czyli
+ * przy oknie 1440 px dokładnie 24 px - karty niemal dotykały krawędzi ekranu.
+ */
 .offer-section {
   position: relative;
   isolation: isolate;
+  /* Tło pod zdjęciem i jednolite tło, gdy zdjęcia nie ma. */
   background: var(--baba-brown);
-  padding: clamp(64px, 10vw, 132px) max(24px, calc((100vw - 1640px) / 2));
+  padding: 7.32vw 3.34vw 5.68vw;
 }
 
+/*
+ * Zdjęcie idzie na stronę takie, jakie zostało wgrane - bez odbarwiania i bez
+ * przyciemniania, tak samo jak zdjęcia w karuzeli.
+ *
+ * Wcześniej stało tu `filter: grayscale(1)`, a na zdjęcie nachodziła jeszcze
+ * warstwa `rgba(59, 29, 23, 0.62)`, czyli firmowy brąz kryjący w 62%. To ona
+ * robiła z każdego wgranego zdjęcia brązową plamę. Kolorystykę i przyciemnienie
+ * dobiera teraz osoba wgrywająca zdjęcie, a nie arkusz stylów.
+ *
+ * Konsekwencja: czytelność białej etykiety nad kartami zależy od tego, jak
+ * ciemne jest wgrane zdjęcie. W makiecie jest to zdjęcie czarno-białe
+ * i przyciemnione.
+ */
 .offer-background {
   position: absolute;
   inset: 0;
@@ -238,27 +392,25 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1);
-}
-
-.offer-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: rgba(59, 29, 23, 0.62);
 }
 
 .offer-inner {
   position: relative;
 }
 
+/*
+ * Etykieta: ta sama wysokość wersalików co "O MARCE" w sekcji wyżej (15 px na
+ * eksporcie 1708 px), więc ten sam współczynnik 0,548 przy podstawie.
+ *
+ * Bez `letter-spacing`. W makiecie tego rozstrzelenia nie ma - odstęp znaków
+ * wychodzi tam na 0,63 em, czyli na naturalną szerokość wersalików Neue Plak
+ * Bold. Dotychczasowe 0,12 em było dokładane od siebie.
+ */
 .offer-label {
   display: block;
-  margin-bottom: clamp(30px, 5vw, 62px);
-  font-size: 0.84rem;
+  margin-bottom: 7.32vw;
+  font-size: calc(var(--skala-tekstu) * 0.548);
   font-weight: 700;
-  letter-spacing: 0.12em;
   text-align: center;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
@@ -317,7 +469,7 @@ p {
   width: 100%;
   min-height: 46px;
   border: 1px solid color-mix(in srgb, var(--baba-white) 52%, transparent);
-  border-radius: 0;
+  border-radius: var(--baba-radius);
   background: transparent;
   color: var(--baba-white);
   font: inherit;
@@ -345,7 +497,7 @@ p {
 
 .newsletter-form button {
   justify-self: start;
-  border-radius: 0;
+  border-radius: var(--baba-radius);
   background: var(--baba-brown);
   border-color: var(--baba-brown);
   color: var(--baba-white);
@@ -355,112 +507,230 @@ p {
   text-transform: uppercase;
 }
 
-.questions-section h2 {
-  font-family: var(--baba-serif);
-  font-size: clamp(2.5rem, 7vw, 6.8rem);
-  font-weight: 400;
-  line-height: 0.92;
-}
-
+/* Makieta: przerwa między kartami 36 px na eksporcie 1708 px, czyli 2,11%. */
 .offer-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 2.11vw;
 }
 
+/*
+ * KSZTAŁT KARTY I ROZMIESZCZENIE TEKSTU - jedno i drugie zmierzone na makiecie.
+ *
+ * Karta ma tam 372 na 428 px, czyli jest wyższa niż szersza. Stąd
+ * `aspect-ratio`, a nie `min-height`: wcześniejsze `clamp(240px, 22vw, 300px)`
+ * dawało przy oknie 1440 px kartę 336 na 300 px, czyli leżącą - i to jest ta
+ * „dużo niższa" karta z uwagi.
+ *
+ * Tekst nie leci jeden pod drugim od górnej krawędzi. W makiecie nagłówek
+ * zaczyna się 80 px od góry karty, a treść zawsze 217 px od góry - niezależnie
+ * od tego, czy nagłówek zajmuje jedną linijkę ("sauna"), czy dwie ("kobieca
+ * społeczność"). Dlatego karta to siatka z pierwszym rzędem stałej wysokości:
+ * nagłówek siedzi w nim u góry, a treść startuje pod nim, zawsze w tym samym
+ * miejscu. Przy zwykłym `margin-bottom` karta z jednolinijkowym nagłówkiem
+ * miałaby treść wyżej niż pozostałe.
+ *
+ * 217 px od góry karty to 12,7% szerokości okna; górny padding to 4,22%,
+ * więc rząd nagłówka ma 12,7 - 4,22 = 8,48%.
+ */
 .offer-grid article {
-  min-height: clamp(240px, 22vw, 300px);
+  display: grid;
+  grid-template-rows: 8.48vw auto;
+  align-content: start;
+  aspect-ratio: 372 / 428;
   background: var(--baba-white);
-  padding: clamp(20px, 2vw, 30px);
-  color: var(--baba-brown);
+  padding: 4.22vw 2.11vw 2.5vw;
+  /*
+   * Czerń, nie firmowy brąz. W makiecie nagłówek karty ma dokładnie 0,0,0.
+   */
+  color: #000000;
 }
 
+/*
+ * Miara nagłówka z makiety. Nagłówki łamią się tam na dwie linijki, mimo że
+ * zmieściłyby się w jednej na całej szerokości karty: "trening pilates" ma
+ * 190 px, "oferta barowa" 182 px, a najdłuższa pojedyncza linijka
+ * ("społeczność") 152 px. Miara musi więc być między 152 a 182 px - stąd
+ * 9,7% szerokości okna, czyli 166 px na eksporcie makiety.
+ */
 .offer-grid h3 {
-  max-width: 200px;
-  margin-bottom: 20px;
+  max-width: 9.7vw;
+  align-self: start;
   font-family: var(--baba-serif);
-  font-size: clamp(1.5rem, 1.9vw, 2rem);
+  font-size: var(--skala-tekstu);
   font-weight: 400;
-  line-height: 1.08;
+  /* Makieta: odstęp linii nagłówka 43 px przy stopniu pisma 38,2 px. */
+  line-height: 1.13;
 }
 
 .offer-grid p {
-  font-size: 0.92rem;
+  font-size: calc(var(--skala-tekstu) * 0.589);
 }
 
+/*
+ * SEKCJA "MASZ PYTANIA?" - cała geometria zmierzona na eksporcie makiety
+ * o szerokości 1708 px i podana w procentach szerokości okna, tak jak
+ * w sekcjach wyżej.
+ *
+ * Układ: dwie kolumny. Po lewej tekst (od 69 px, czyli 4,04%), po prawej
+ * formularz o szerokości 800 px (46,84%), kończący się 84 px przed prawą
+ * krawędzią (4,9%). Przerwa między kolumnami 24 px (1,4%).
+ *
+ * Wcześniej formularz szedł przez całą szerokość pod tekstem i trzema
+ * przyciskami - stąd wrażenie, że sekcja nie ma nic wspólnego z projektem.
+ */
 .questions-section {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr) 46.84vw;
+  gap: 1.4vw;
   align-items: end;
   background: var(--baba-white);
-  padding: clamp(62px, 9vw, 120px) max(24px, calc((100vw - 1180px) / 2));
+  padding: 3.63vw 4.9vw 4.98vw 4.04vw;
 }
 
-.questions-section span {
+/*
+ * Kolumna z tekstem stoi nisko, przy dolnej krawędzi formularza. W makiecie
+ * jej ostatni wiersz kończy się 78 px (4,57%) nad dolną krawędzią przycisku
+ * "Wyślij" - stąd margines, bo samo `align-items: end` zrównałoby je co do piksela.
+ */
+.questions-copy {
+  margin-bottom: 4.57vw;
+}
+
+/*
+ * "Masz pytania?" to w makiecie największy element tej sekcji: wersaliki
+ * bezszeryfowe o wysokości 33 px, czyli 1,206 podstawy skali (33 / 0,716
+ * wysokości wersalika Arial Black / 38,2). Wcześniej ten napis był małą
+ * etykietą, a rolę nagłówka grało zdanie "Napisz do nas...".
+ */
+.questions-section h2 {
+  margin-bottom: 1.05vw;
   color: var(--baba-red);
+  font-family: var(--baba-sans);
+  font-size: calc(var(--skala-tekstu) * 1.206);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
 }
 
-.question-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+/* Wersaliki o wysokości 17 px na eksporcie, czyli 0,62 podstawy. */
+.questions-faq {
+  margin-bottom: 0.9vw;
+  color: var(--baba-red);
+  font-family: var(--baba-sans);
+  font-size: calc(var(--skala-tekstu) * 0.62);
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+/* W makiecie podkreślony jest tylko skrót, nie całe zdanie. */
+.questions-faq a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+/* Zmierzone 24,4 px na eksporcie, czyli 0,639 podstawy; odstęp linii 31/24,4. */
+.questions-lead {
+  max-width: 24vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.639);
+  line-height: 1.27;
 }
 
 .contact-form {
   position: relative;
   display: grid;
-  grid-column: 1 / -1;
-  gap: 18px;
-  max-width: 860px;
+  /* Makieta: 21 px między polami, czyli 1,23% szerokości okna. */
+  gap: 1.23vw;
 }
 
+/* Makieta: imię i telefon obok siebie, przerwa 24 px (1,4%). */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 1.4vw;
 }
 
+/* Makieta: etykieta nad polem, 11 px (0,64%) odstępu. */
 .contact-form label {
   display: grid;
-  gap: 8px;
+  gap: 0.64vw;
 }
 
+/*
+ * Etykiety pól są w makiecie szeryfowe i pisane małymi literami - inaczej niż
+ * etykiety sekcji i przyciski, które idą wersalikami bezszeryfowymi. Stąd
+ * `lowercase`: treść zostaje ta sama ("Imię i nazwisko", "Telefon"), zmienia się
+ * tylko zapis. Zmierzone 26 px na eksporcie, czyli 0,68 podstawy.
+ */
 .contact-form label > span {
   margin: 0;
-  color: var(--baba-brown);
-  font-size: 0.74rem;
+  color: var(--baba-red);
+  font-family: var(--baba-serif);
+  font-size: calc(var(--skala-tekstu) * 0.68);
+  line-height: 1.2;
+  text-transform: lowercase;
 }
 
+/*
+ * Pola: biel z czerwoną obwódką i delikatnie zaokrąglonymi rogami. Promień
+ * na makiecie wychodzi na 11 px przy szerokości 1708, czyli 9,3 px przy oknie
+ * 1440 - to dokładnie wspólny promień `--baba-radius`.
+ *
+ * Wcześniej obwódka była brązowa i kryta w 35%, więc pola ledwo się odcinały
+ * od bieli sekcji.
+ */
 .contact-form input,
 .contact-form textarea {
   width: 100%;
-  border: 1px solid color-mix(in srgb, var(--baba-brown) 35%, transparent);
-  border-radius: 0;
+  border: 1px solid var(--baba-red);
+  border-radius: var(--baba-radius);
   background: transparent;
   color: var(--baba-brown);
   font: inherit;
 }
 
+/* Makieta: pole 69 px wysokości (4,04%), obszar wiadomości 188 px (11,0%). */
 .contact-form input {
-  min-height: 46px;
+  min-height: max(46px, 4.04vw);
+  padding-inline: 1.05vw;
 }
 
 .contact-form textarea {
-  min-height: 150px;
+  min-height: max(150px, 11vw);
+  padding: 0.9vw 1.05vw;
   resize: vertical;
 }
 
+/*
+ * Przycisk: w makiecie obwiedziony, nie wypełniony - 136 na 62 px, czyli
+ * 7,96 na 3,63% szerokości okna. Bez piktogramu samolotu.
+ */
 .contact-form button {
   justify-self: start;
-  border-radius: 0;
-  background: var(--baba-brown);
-  border-color: var(--baba-brown);
-  color: var(--baba-white);
+  /* Makieta: 46 px (2,7%) od dolnej krawędzi obszaru wiadomości. */
+  margin-top: 1.47vw;
+  min-height: max(44px, 3.63vw);
+  border: 1px solid var(--baba-red);
+  border-radius: var(--baba-radius);
+  background: transparent;
+  padding-inline: 1.29vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.68);
   font-weight: 700;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.contact-form button:hover:not(:disabled) {
+  background: var(--baba-red);
+  color: var(--baba-white);
 }
 
 .honeypot {
@@ -471,32 +741,13 @@ p {
   overflow: hidden;
 }
 
-.outline-link,
-.solid-link {
-  display: inline-flex;
-  min-height: 46px;
-  align-items: center;
-  justify-content: center;
-  padding: 0 18px;
-  font-size: 0.82rem;
-}
-
-.outline-link {
-  border: 1px solid var(--baba-brown);
-}
-
-.solid-link {
-  background: var(--baba-brown);
-  color: var(--baba-white);
-}
-
 @media (max-width: 720px) {
   .hero-content {
     width: min(100% - 28px, 1280px);
   }
 
   .hero {
-    min-height: 86dvh;
+    min-height: 100dvh;
   }
 
   .gallery-track {
@@ -520,10 +771,91 @@ p {
     grid-template-columns: 1fr;
   }
 
+  /*
+   * Poniżej 720 px formularz nie ma obok czego stać, więc tekst wraca nad niego
+   * i wszystkie rozmiary schodzą ze skalowanych szerokością okna na stałe -
+   * 46,84% szerokości to na telefonie 180 px, czyli za mało na pole formularza.
+   */
+  .questions-section {
+    gap: 40px;
+    padding: 56px 24px 64px;
+  }
+
+  .questions-copy {
+    margin-bottom: 0;
+  }
+
+  .questions-section h2 {
+    margin-bottom: 14px;
+    font-size: clamp(1.9rem, 7vw, 2.6rem);
+  }
+
+  .questions-faq {
+    margin-bottom: 12px;
+    font-size: 0.86rem;
+  }
+
+  .questions-lead {
+    max-width: none;
+    font-size: 0.95rem;
+  }
+
+  .contact-form {
+    gap: 18px;
+  }
+
+  .contact-form label {
+    gap: 8px;
+  }
+
+  .contact-form label > span {
+    font-size: 1rem;
+  }
+
+  .contact-form input {
+    padding-inline: 14px;
+  }
+
+  .contact-form textarea {
+    padding: 12px 14px;
+  }
+
+  .contact-form button {
+    margin-top: 6px;
+    padding-inline: 20px;
+    font-size: 0.9rem;
+  }
+
+  /*
+   * Na telefonie miara akapitu wzięta z makiety (63,5% szerokości) zostawiłaby
+   * po bokach więcej powietrza niż tekstu - wiersz łamałby się po czterech
+   * słowach. Tutaj akapit dostaje całe pole treści sekcji.
+   */
+  .story-intro {
+    max-width: 100%;
+  }
+
   /* Cztery karty jedna pod drugą dają bardzo długą stronę, więc do 620 px
      schodzimy dopiero na jedną kolumnę, a wyżej trzymamy dwie. */
   .offer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  /*
+   * Przy dwóch kolumnach karta jest dwa razy szersza niż w makiecie, więc
+   * proporcja 372:428 zrobiłaby z niej słup wyższy niż ekran. Wysokość
+   * dobiera tu treść, a rozmieszczenie tekstu wraca do zwykłego przepływu.
+   */
+  .offer-grid article {
+    aspect-ratio: auto;
+    grid-template-rows: auto auto;
+    row-gap: 22px;
+    padding: 28px 24px 30px;
+  }
+
+  .offer-grid h3 {
+    max-width: none;
   }
 
   .newsletter-grid,
@@ -531,9 +863,23 @@ p {
     grid-template-columns: 1fr;
   }
 
-  /* Równa wysokość ma sens tylko przy kartach obok siebie. */
-  .offer-grid article {
-    min-height: 200px;
+  /* Poza makietą schodzimy z rozmiarów skalowanych szerokością okna na stałe. */
+  .offer-section {
+    padding: 64px 24px 68px;
+  }
+
+  /* Równy odstęp nad i pod etykietą obowiązuje też tutaj - tyle, ile górny padding sekcji. */
+  .offer-label {
+    margin-bottom: 64px;
+    font-size: 0.84rem;
+  }
+
+  .offer-grid h3 {
+    font-size: clamp(1.5rem, 3.4vw, 1.9rem);
+  }
+
+  .offer-grid p {
+    font-size: 0.95rem;
   }
 
 }
@@ -543,9 +889,10 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* W jednej kolumnie wymuszona wysokość zostawiała w kartach pustą przestrzeń. */
+  /* W jednej kolumnie karta ma wysokość swojej treści i nic więcej. */
   .offer-grid article {
-    min-height: 0;
+    aspect-ratio: auto;
+    row-gap: 18px;
   }
 }
 

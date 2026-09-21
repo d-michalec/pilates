@@ -15,7 +15,7 @@
       <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
         <div class="field">
           <label for="question">Pytanie</label>
-          <input id="question" pInputText type="text" formControlName="question" />
+          <input id="question" pInputText type="text" formControlName="question" appTypo="nazwa" />
           @if (form.controls.question.touched && form.controls.question.invalid) {
             <small class="field-error">Pytanie jest wymagane i może mieć do 400 znaków.</small>
           }
@@ -23,7 +23,7 @@
 
         <div class="field">
           <label for="answer">Odpowiedź</label>
-          <textarea id="answer" pTextarea formControlName="answer" rows="9"></textarea>
+          <textarea id="answer" pTextarea formControlName="answer" rows="9" appTypo="akapit"></textarea>
           @if (form.controls.answer.touched && form.controls.answer.invalid) {
             <small class="field-error">Odpowiedź jest wymagana i może mieć do 4000 znaków.</small>
           }
@@ -31,13 +31,13 @@
 
         <div class="field">
           <label for="questionEn">Pytanie po angielsku</label>
-          <input id="questionEn" pInputText type="text" formControlName="questionEn" />
+          <input id="questionEn" pInputText type="text" formControlName="questionEn" appTypo="nazwa" />
           <small class="field-hint">Puste pole oznacza, że na stronie angielskiej pokaże się wersja polska.</small>
         </div>
 
         <div class="field">
           <label for="answerEn">Odpowiedź po angielsku</label>
-          <textarea id="answerEn" pTextarea formControlName="answerEn" rows="9"></textarea>
+          <textarea id="answerEn" pTextarea formControlName="answerEn" rows="9" appTypo="akapit"></textarea>
         </div>
 
         @if (errorMessage()) {
@@ -93,12 +93,12 @@
 
               <div class="faq-admin-body">
                 <h3>
-                  {{ entry.question }}
+                  {{ entry.question | surowy }}
                   @if (!entry.questionEn || !entry.answerEn) {
                     <span class="translation-badge">brak EN</span>
                   }
                 </h3>
-                <p>{{ entry.answer }}</p>
+                <p>{{ entry.answer | surowy }}</p>
               </div>
 
               <div class="faq-admin-actions">
@@ -159,7 +159,7 @@
         (click)="$event.stopPropagation()"
       >
         <h2 id="confirm-title">Usunąć to pytanie?</h2>
-        <p class="confirm-question">{{ pendingEntry.question }}</p>
+        <p class="confirm-question">{{ pendingEntry.question | surowy }}</p>
         <p>Zniknie ze strony FAQ. Tej operacji nie da się cofnąć.</p>
 
         <div class="confirm-actions">

@@ -10,10 +10,12 @@ import { finalize } from 'rxjs';
 import { FaqEntry } from '../../core/faq';
 import { FaqService } from '../../core/faq.service';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
+import { SurowyTekstPipe } from '../../core/typografia.pipe';
 
 @Component({
   selector: 'app-admin-faq-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule, TypoPoleDirective, SurowyTekstPipe],
   templateUrl: './admin-faq-page.html',
   styleUrl: './admin-faq-page.scss'
 })

@@ -8,11 +8,12 @@ import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-faq-page',
-  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe],
+  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe],
   templateUrl: './faq-page.html',
   styleUrl: './faq-page.scss',
   host: { ngSkipHydration: 'true' }

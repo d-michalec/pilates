@@ -6,7 +6,7 @@
   @if (isLoading()) {
     <p class="state">{{ 'state.loading' | t }}</p>
   } @else if (errorMessage()) {
-    <p class="state state-error">{{ errorMessage() }}</p>
+    <p class="state state-error">{{ errorMessage() | typo }}</p>
   } @else if (team().length === 0) {
     <p class="state">{{ 'team.empty' | t }}</p>
   } @else {
@@ -14,15 +14,15 @@
       @for (member of team(); track member.id; let index = $index) {
         <article class="team-row" [class.team-row-reversed]="index % 2 === 1">
           <div class="team-copy">
-            <h2>{{ member.fullName }}</h2>
+            <h2>{{ member.fullName | typo }}</h2>
 
             @for (paragraph of paragraphs(content(member.description, member.descriptionEn)); track $index) {
-              <p>{{ paragraph }}</p>
+              <p>{{ paragraph | typo }}</p>
             }
           </div>
 
           <div class="team-photo">
-            <img [src]="member.image.url" [alt]="member.fullName" loading="lazy" decoding="async" />
+            <img [src]="member.image.url" [alt]="member.fullName | surowy" loading="lazy" decoding="async" />
           </div>
         </article>
       }

@@ -32,13 +32,16 @@ export interface LandingGalleryImage {
   image: MediaAsset;
 }
 
+/*
+ * Bez `title`: główny napis hero zastąpiło logo - plik PNG wgrany razem
+ * z kodem. Nie da się go już zmienić z panelu, więc pole zniknęło z formularza.
+ * W odpowiedzi API (`LandingContent`) kolumna zostaje, żeby nie ruszać bazy.
+ */
 export interface UpdateLandingHeroInput {
-  title: string;
   ctaLabel: string;
   ctaUrl: string;
   imageAlt: string;
   /** Pola opcjonalne - brak tłumaczenia jest normalnym stanem. */
-  titleEn?: string;
   ctaLabelEn?: string;
   imageAltEn?: string;
   heroImage?: File | null;

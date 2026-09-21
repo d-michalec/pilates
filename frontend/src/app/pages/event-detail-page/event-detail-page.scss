@@ -5,55 +5,6 @@
   color: var(--baba-brown);
 }
 
-.event-header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  border-bottom: 1px solid var(--baba-red);
-  padding: 34px max(28px, calc((100vw - 1240px) / 2));
-  color: var(--baba-red);
-}
-
-.old-event-header {
-  display: none;
-}
-
-.menu-link,
-.brand-link {
-  color: inherit;
-  font-weight: 700;
-  text-decoration: none;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
-}
-
-.menu-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  justify-self: start;
-  font-size: 0.72rem;
-}
-
-.menu-icon {
-  display: grid;
-  gap: 4px;
-  width: 24px;
-}
-
-.menu-icon span {
-  display: block;
-  height: 2px;
-  background: currentColor;
-}
-
-.brand-link {
-  font-family: var(--baba-serif);
-  font-size: clamp(2.6rem, 5vw, 4.2rem);
-  line-height: 0.85;
-}
-
 h1,
 h2,
 p,
@@ -62,24 +13,48 @@ dd {
   margin: 0;
 }
 
+/*
+ * WSZYSTKIE WYMIARY ZMIERZONE NA EKSPORCIE MAKIETY (1708 px szerokości)
+ * i podane w procentach szerokości okna, żeby proporcje trzymały się na
+ * każdym monitorze.
+ *
+ * Stopnie pisma są wielokrotnościami `--skala-tekstu` (38,2 px przy oknie
+ * 1708 px), tak jak na pozostałych podstronach:
+ *   0,583 -> 22,3 px (tekst podstawowy)
+ *   0,770 -> 29,4 px (data, "prowadząca", tekst większy, informacje na dole)
+ *   1,385 -> 52,9 px (imię prowadzącej i nazwa wydarzenia w nagłówku)
+ *   2,050 -> 78,3 px (imię prowadzącej na oliwkowym panelu)
+ */
+
+/*
+ * NAGŁÓWEK Z ZDJĘCIEM
+ *
+ * Makieta: zdjęcie na całą szerokość, 616 px wysokości (36,07%). Tekst
+ * zaczyna się 63 px od lewej krawędzi (3,69%), a data i przycisk kończą
+ * 64 px przed prawą (3,75%). Wcześniej treść siedziała w kolumnie
+ * `min(100% - 56px, 1180px)`, czyli przy oknie 1708 px z marginesami po
+ * 264 px - to była uwaga o zbyt szerokim powietrzu po bokach.
+ */
 .event-hero {
   position: relative;
   display: grid;
-  min-height: clamp(420px, 45vw, 620px);
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 36.07vw;
   align-items: end;
+  column-gap: 3vw;
   isolation: isolate;
   overflow: hidden;
+  padding: 0 3.75vw 2.78vw 3.69vw;
   color: var(--baba-white);
 }
 
-.event-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.18));
-}
-
+/*
+ * Zdjęcie idzie takie, jakie zostało wgrane - bez gradientu. Wcześniej
+ * nachodził na nie gradient od 58 do 18% czerni.
+ *
+ * Konsekwencja: czytelność białego napisu zależy od tego, jak ciemne jest
+ * wgrane zdjęcie.
+ */
 .event-hero img {
   position: absolute;
   inset: 0;
@@ -89,146 +64,273 @@ dd {
   object-fit: cover;
 }
 
-.event-hero-copy {
-  width: min(100% - 56px, 1180px);
-  margin: 0 auto 64px;
-}
-
-.event-hero-copy span {
+/*
+ * Makieta: imię prowadzącej szeryfowe, o wysokości x-ów 27 px - czyli 52,9 px
+ * stopnia pisma. Do nazwy wydarzenia 14 px. Wcześniej stopień pisma szedł na
+ * `clamp(2rem, 4vw, 3.5rem)`, czyli przy oknie 1708 px na 56 px, a nazwa
+ * wydarzenia na 86 px.
+ */
+/*
+ * Znak ">" jest tutaj istotny. Bez niego reguła obejmowała też spany
+ * z kawałkami nazwy wydarzenia, bo one też siedzą w .event-hero-copy -
+ * tylko zagnieżdżone w <h1>. Nazwa renderowała się wtedy krojem szeryfowym,
+ * z interlinią 1,2 zamiast 1,4, a `display: block` stawiał każdy wyróżniony
+ * fragment w osobnym wierszu: "SPORT" / "&" / "HORMONY" jedno pod drugim.
+ */
+.event-hero-copy > span {
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 0.81vw;
   font-family: var(--baba-serif);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: calc(var(--skala-tekstu) * 1.385);
+  line-height: 1.2;
 }
 
+/*
+ * Nazwa wydarzenia: wersaliki o wysokości 39 px, czyli ten sam stopień pisma
+ * co imię wyżej. Interlinia 74 px (1,4).
+ */
 .event-hero-copy h1 {
-  max-width: 820px;
-  color: var(--baba-blue);
-  font-size: clamp(2.6rem, 6vw, 5.4rem);
-  line-height: 1.02;
+  font-size: calc(var(--skala-tekstu) * 1.385);
+  font-weight: 700;
+  line-height: 1.4;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/*
+ * Nazwa jest domyślnie biała, a błękitne są tylko słowa zaznaczone w panelu
+ * (patrz core/event-title.ts). Wcześniej cała nazwa szła na `--baba-blue`.
+ */
+.event-title-highlight {
+  color: var(--baba-blue);
+}
+
+/*
+ * Makieta: dzień tygodnia, data i godzina w trzech wierszach wyrównanych do
+ * prawej, szeryfowo, 29,4 px stopnia pisma, interlinia 40,7 px (1,385).
+ * Pod nimi przycisk - 28 px od ostatniego wiersza.
+ *
+ * Kolumna z datą stoi 17 px niżej niż kolumna z tekstem (1,03%): w makiecie
+ * i przycisk, i drugi wiersz nazwy kończą się 65 px nad dolną krawędzią
+ * zdjęcia, a wiersz tekstu ma pod ostatnią linią bazową własne światło.
+ */
 .event-date-box {
-  position: absolute;
-  right: max(28px, calc((100vw - 1180px) / 2));
-  bottom: 58px;
   display: grid;
-  gap: 10px;
+  margin-bottom: -1.03vw;
   justify-items: end;
   text-align: right;
 }
 
-.event-date-box span,
-.event-date-box strong {
+.event-date-box > span {
   font-family: var(--baba-serif);
-  font-size: 1.25rem;
+  font-size: calc(var(--skala-tekstu) * 0.77);
   font-weight: 400;
+  line-height: 1.385;
 }
 
+/*
+ * Przyciski: te same proporcje co na pozostałych podstronach - 60 px
+ * wysokości przy 25,5 px stopnia pisma, czyli 2,35 stopnia pisma wysokości
+ * i po 1,25 z boków.
+ *
+ * Kolory z makiety: w nagłówku oliwkowy z czerwonymi literami, w informacjach
+ * na dole czerwony z białymi.
+ */
 .event-date-box a,
 .event-facts > a {
   display: inline-flex;
-  min-height: 46px;
+  /* `max` pilnuje, żeby na telefonie przycisk nie zszedł pod 44 px wysokości dotyku. */
+  min-height: max(2.35em, 44px);
   align-items: center;
   justify-content: center;
-  background: var(--baba-olive);
-  padding: 0 24px;
-  color: var(--baba-red);
+  /* Ten sam delikatnie zaokrąglony prostokąt co pozostałe przyciski. */
+  border-radius: var(--baba-radius);
+  padding: 0 1.25em;
+  font-size: calc(var(--skala-tekstu) * 0.667);
   font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
   text-decoration: none;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+.event-date-box a {
+  margin-top: 1.62vw;
+  background: var(--baba-olive);
+  color: var(--baba-red);
+}
+
+/*
+ * SEKCJA OPISU
+ *
+ * Makieta: akapit wprowadzający wyśrodkowany w mierze 911 px (53,34%),
+ * a tekst poniżej wyrównany do obu krawędzi w mierze 1376 px (80,56%).
+ * Od zdjęcia do pierwszego wiersza 184 px (10,77%), między akapitami
+ * 100 px (5,85%), do oliwkowego panelu 104 px (6,07%).
+ *
+ * Wcześniej sekcja miała `max-width: 1060px`, a cały tekst - także ten
+ * mniejszy - był wyśrodkowany.
+ */
 .event-description {
-  display: grid;
-  gap: 54px;
-  width: min(100% - 56px, 1060px);
+  width: 80.56vw;
   margin: 0 auto;
-  padding: clamp(70px, 8vw, 110px) 0;
+  padding: 10.77vw 0 6.07vw;
+}
+
+/* Makieta: 29,4 px stopnia pisma (wysokość x-ów 15 px), interlinia 41 px. */
+.event-description .lead {
+  max-width: 53.34vw;
+  margin: 0 auto 5.85vw;
+  font-family: var(--baba-serif);
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.39;
   text-align: center;
 }
 
-.event-description p {
-  line-height: 1.72;
+/*
+ * Makieta: 22,3 px stopnia pisma, interlinia 32,5 px (1,38), wyrównanie do
+ * obu krawędzi - w projekcie widać rozstrzelone odstępy w wierszach
+ * dochodzących do prawej krawędzi.
+ */
+.event-description .body-text {
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.38;
+  text-align: justify;
+  text-wrap: pretty;
 }
 
-.event-description .lead {
-  max-width: 780px;
-  margin: 0 auto;
-  font-family: var(--baba-serif);
-  font-size: clamp(1.6rem, 3vw, 2.45rem);
-  line-height: 1.22;
+.event-description .body-text + .body-text {
+  margin-top: 1.9vw;
 }
 
+/*
+ * PANEL PROWADZĄCEJ
+ *
+ * Makieta: zdjęcie po lewej, 672 px szerokości (39,34%) i 860 px wysokości,
+ * oliwkowy panel na pozostałe 60,66% - dociśnięty do prawej krawędzi okna.
+ * Wcześniej kolumny szły na `0.65fr` i `1fr`, a zdjęcie miało `min-height`
+ * bez związku z szerokością.
+ */
 .host-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+  grid-template-columns: 39.34vw minmax(0, 1fr);
   background: var(--baba-olive);
   color: var(--baba-white);
 }
 
 .host-section-no-image {
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
 }
 
+/*
+ * Portret idzie taki, jaki został wgrany. Wcześniej stało tu
+ * `filter: grayscale(1)` - w makiecie zdjęcie jest czarno-białe, ale
+ * o odbarwieniu decyduje plik, nie arkusz stylów.
+ */
 .host-section img {
+  display: block;
   width: 100%;
   height: 100%;
-  min-height: 560px;
-  filter: grayscale(1);
+  aspect-ratio: 672 / 860;
   object-fit: cover;
 }
 
-.host-section div {
+/*
+ * Makieta: tekst zaczyna się 226 px od lewej krawędzi panelu, a podpis
+ * "prowadząca" stoi PO LEWEJ stronie imienia, na jego linii bazowej -
+ * nie nad nim, jak było wcześniej. Stąd dwie kolumny: wąska na podpis
+ * (119 px, czyli 6,97%) i szeroka na imię oraz tekst, z przerwą 26 px.
+ *
+ * Kolumna podpisu ma stałą szerokość, bo imię musi zaczynać się w tym samym
+ * miejscu niezależnie od długości podpisu.
+ */
+.host-copy {
   display: grid;
-  align-content: center;
-  padding: clamp(48px, 8vw, 120px);
+  grid-template-columns: 6.97vw minmax(0, 1fr);
+  align-content: start;
+  align-items: baseline;
+  column-gap: 1.52vw;
+  padding: 7.28vw 7.44vw 10.63vw 4.74vw;
 }
 
-.host-section span {
-  color: var(--baba-white);
+/* Makieta: 29,4 px stopnia pisma, wyrównany do prawej krawędzi swojej kolumny. */
+.host-label {
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--baba-serif);
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.385;
+  text-align: right;
+  white-space: nowrap;
 }
 
-.host-section h2 {
-  margin: 8px 0 28px;
+/*
+ * Makieta: imię prowadzącej czerwone, szeryfowe, o wysokości x-ów 40 px -
+ * czyli 78,3 px stopnia pisma. Wcześniej `clamp(3rem, 7vw, 6rem)` dawało
+ * przy oknie 1708 px 96 px.
+ */
+.host-copy h2 {
+  grid-column: 2;
+  grid-row: 1;
   color: var(--baba-red);
   font-family: var(--baba-serif);
-  font-size: clamp(3rem, 7vw, 6rem);
+  font-size: calc(var(--skala-tekstu) * 2.05);
   font-weight: 400;
-  line-height: 0.92;
+  line-height: 1;
 }
 
-.host-section p {
-  max-width: 620px;
-  line-height: 1.68;
+/* Makieta: 22,3 px stopnia pisma, interlinia 32,5 px, do lewej krawędzi
+   (nie do obu, jak tekst w sekcji opisu). */
+.host-text {
+  grid-column: 2;
+  margin-top: 2.66vw;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.38;
 }
 
+.host-text + .host-text {
+  margin-top: 1.9vw;
+}
+
+/*
+ * INFORMACJE ORGANIZACYJNE
+ *
+ * Makieta: lista 66 px od lewej krawędzi (3,86%), przycisk kończy się 74 px
+ * przed prawą (4,33%) i stoi na wysokości pierwszego wiersza listy.
+ * Wiersze co 60 px, od góry sekcji 64 px, do stopki 75 px.
+ */
 .event-facts {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 34px;
-  padding: clamp(54px, 7vw, 86px) max(28px, calc((100vw - 1180px) / 2));
+  gap: 3vw;
+  padding: 3.76vw 4.33vw 4.4vw 3.86vw;
 }
 
 .event-facts dl {
   display: grid;
-  gap: 18px;
+  row-gap: 1.14vw;
 }
 
 .event-facts div {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  column-gap: 0.53vw;
+}
+
+/* Makieta: etykieta i wartość tym samym stopniem pisma (29,3 px), etykieta
+   bezszeryfowa w wersalikach, wartość szeryfowa. */
+.event-facts dt,
+.event-facts dd {
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.77);
+  line-height: 1.385;
 }
 
 .event-facts dt {
-  color: var(--baba-red);
   font-weight: 700;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
@@ -236,9 +338,7 @@ dd {
 }
 
 .event-facts dd {
-  color: var(--baba-red);
   font-family: var(--baba-serif);
-  font-size: 1.25rem;
 }
 
 .event-facts > a {
@@ -252,36 +352,121 @@ dd {
   text-align: center;
 }
 
-@media (max-width: 760px) {
-  .event-header {
-    grid-template-columns: 1fr auto;
+@media (max-width: 1080px) {
+  /*
+   * Poniżej 1080 px `--skala-tekstu` opiera się o swoje minimum 24 px, więc
+   * stopnie pisma przestają maleć razem z oknem. Odstępy schodzą wtedy ze
+   * skalowanych szerokością okna na stałe, inaczej tekst przestałby się
+   * mieścić w swoich kolumnach.
+   */
+  .event-hero {
+    min-height: 420px;
+    padding: 0 24px 40px;
   }
 
-  .brand-link {
-    justify-self: end;
-  }
-
-  .event-hero-copy {
-    width: min(100% - 28px, 1180px);
-    margin-bottom: 150px;
+  .event-hero-copy span {
+    margin-bottom: 8px;
   }
 
   .event-date-box {
-    right: 14px;
-    bottom: 34px;
+    margin-bottom: 0;
+  }
+
+  .event-date-box a {
+    margin-top: 20px;
   }
 
   .event-description {
-    width: min(100% - 28px, 1060px);
+    width: calc(100% - 48px);
+    padding: 56px 0 52px;
+  }
+
+  .event-description .lead {
+    max-width: 640px;
+    margin-bottom: 40px;
+  }
+
+  .event-description .body-text + .body-text,
+  .host-text + .host-text {
+    margin-top: 18px;
+  }
+
+  .host-section {
+    grid-template-columns: 34vw minmax(0, 1fr);
+  }
+
+  /*
+   * Wariant bez zdjęcia trzeba powtórzyć w każdym zapytaniu medialnym, które
+   * rusza kolumny: obie reguły mają tę samą szczegółowość, a zapytanie
+   * medialne jej nie podnosi - wygrywa więc ta późniejsza w arkuszu. Bez tego
+   * wydarzenie bez zdjęcia prowadzącej dostawało w tym przedziale pustą
+   * kolumnę o szerokości 34% okna.
+   */
+  .host-section-no-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .host-copy {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 44px 28px 48px;
+  }
+
+  .host-text {
+    margin-top: 24px;
+  }
+
+  .event-facts {
+    padding: 44px 24px 48px;
+  }
+
+  .event-facts dl {
+    row-gap: 12px;
+  }
+
+  .event-facts div {
+    column-gap: 8px;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Poniżej 760 px kolumny idą jedna pod drugą: zdjęcie, potem tekst. */
+  .event-hero {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+    padding: 0 20px 32px;
+  }
+
+  .event-date-box {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .event-description {
+    width: calc(100% - 40px);
+  }
+
+  .event-description .body-text {
+    text-align: left;
   }
 
   .host-section,
-  .event-facts {
-    grid-template-columns: 1fr;
+  .host-section-no-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .host-section img {
+    aspect-ratio: 4 / 5;
+    height: auto;
+  }
+
+  .host-copy {
+    padding: 34px 20px 40px;
   }
 
   .event-facts {
     align-items: flex-start;
     flex-direction: column;
+    padding: 34px 20px 40px;
   }
 }

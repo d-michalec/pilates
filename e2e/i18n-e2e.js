@@ -312,11 +312,9 @@ async function runE2E(konfiguracja = KONFIGURACJA) {
 			zadanie('/api/admin/landing/hero', {
 				method: 'PUT',
 				body: formularz({
-					title: landing.title,
 					ctaLabel: landing.ctaLabel,
 					ctaUrl: landing.ctaUrl,
 					imageAlt: landing.imageAlt,
-					titleEn: landing.titleEn ?? '',
 					ctaLabelEn: landing.ctaLabelEn ?? '',
 					imageAltEn: landing.imageAltEn ?? ''
 				})
@@ -351,11 +349,9 @@ async function runE2E(konfiguracja = KONFIGURACJA) {
 		await zadanie('/api/admin/landing/hero', {
 			method: 'PUT',
 			body: formularz({
-				title: landing.title,
 				ctaLabel: landing.ctaLabel,
 				ctaUrl: landing.ctaUrl,
 				imageAlt: landing.imageAlt,
-				titleEn: `${PREFIKS} Hero title`,
 				ctaLabelEn: `${PREFIKS} Book now`,
 				imageAltEn: `${PREFIKS} hero photo`
 			})

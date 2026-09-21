@@ -6,9 +6,11 @@
 } @else if (errorMessage()) {
   <p-message severity="error" [text]="errorMessage() ?? ''" />
 } @else {
-  @if (isLoading()) {
-    <p class="fitssey-loading">Ładowanie grafiku...</p>
-  }
+  <!--
+    Bez własnego napisu o ładowaniu: stan pokazuje strona osadzająca (grafik ma
+    swój szkielet). Wcześniej stał tu akapit "Ładowanie grafiku...", który
+    nachodził na ten szkielet - trzy komunikaty o ładowaniu naraz.
+  -->
   <div class="fitssey-widget-host">
     @if (widget === 'course') {
       <lb-course-widget

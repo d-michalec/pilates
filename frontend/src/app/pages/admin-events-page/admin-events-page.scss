@@ -75,7 +75,15 @@ h1 {
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /*
+   * `minmax(0, 1fr)`, a nie `1fr`: minimum kolumny `1fr` liczy się z zawartości,
+   * więc podgląd składu pod jednym polem rozpychał cały rząd poza kartę.
+   *
+   * `align-items: start` z tego samego powodu: bez niego pole w drugiej kolumnie
+   * rozciągałoby się na wysokość sąsiada razem z jego podglądem.
+   */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
   gap: 14px;
 }
 
@@ -113,7 +121,7 @@ textarea[pTextarea] {
 
 .preview-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
 }
 
@@ -184,6 +192,41 @@ textarea[pTextarea] {
   font-size: 0.8rem;
   line-height: 1.5;
   color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.field-hint code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--baba-brown) 10%, transparent);
+  font-size: 0.95em;
+}
+
+/* Pole razem z przyciskiem "Na błękitno" - przycisk nie ma się rozciągać. */
+.field-with-action {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+}
+
+/*
+ * Podgląd kolorów nazwy. Tło jest ciemne, bo na kafelku nazwa leży na zdjęciu -
+ * na białym tle panelu biały tekst byłby niewidoczny, a to właśnie on jest tu
+ * domyślny.
+ */
+.title-preview {
+  margin: 8px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--baba-radius);
+  background: var(--baba-brown);
+  color: var(--baba-white);
+  font-weight: 800;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.title-preview-highlight {
+  color: var(--baba-blue);
 }
 
 .link-button {

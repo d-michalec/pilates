@@ -11,6 +11,7 @@ import { CONTACT_DETAILS } from '../../core/contact-details';
 import { ContactPageContent, ContactService } from '../../core/contact.service';
 import { LanguageService } from '../../core/language.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
@@ -27,8 +28,7 @@ import { SiteHeader } from '../../layout/site-header/site-header';
     SiteFooter,
     SiteHeader,
     TextareaModule,
-    TranslatePipe
-  ],
+    TranslatePipe, TypografiaPipe],
   templateUrl: './contact-page.html',
   styleUrl: './contact-page.scss'
 })

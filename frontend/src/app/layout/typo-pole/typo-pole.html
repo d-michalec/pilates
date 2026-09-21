@@ -1,0 +1,88 @@
+<!--
+  Pasek jest celowo jednym rzędem dwóch przycisków: stoi pod każdym polem
+  tekstowym w panelu, więc każda dodatkowa linijka tłumaczenia powtarzałaby się
+  kilkadziesiąt razy. Wyjaśnienie siedzi w podpowiedziach przycisków, a dłuższa
+  instrukcja pokazuje się dopiero razem z podglądem.
+-->
+<div class="typo-pasek">
+  <button
+    type="button"
+    class="typo-akcja"
+    (click)="przelacz()"
+    title="Skleja albo rozdziela wyrazy przy kursorze, żeby nie rozeszły się na dwa wiersze (znacznik ~). Jednoliterowe wyrazy i krótkie przyimki sklejają się same."
+  >
+    <i class="pi pi-link" aria-hidden="true"></i>
+    nie rozdzielaj
+  </button>
+
+  <button
+    type="button"
+    class="typo-przelacznik"
+    [class.typo-wlaczony]="ustawienia.pokazujPodglad()"
+    (click)="ustawienia.pokazujPodglad.set(!ustawienia.pokazujPodglad())"
+    title="Pokazuje pod każdym polem, jak tekst złoży się na stronie: w tym kroju, stopniu pisma i szerokości kolumny co na wybranym ekranie."
+  >
+    <i class="pi pi-eye" aria-hidden="true"></i>
+    podgląd składu
+  </button>
+</div>
+
+@if (ustawienia.pokazujPodglad()) {
+  <div class="typo-podglad">
+    <p class="typo-podpowiedz">
+      Ustaw kursor przy spacji, której nie chcesz łamać, albo zaznacz cały zwrot,
+      i naciśnij „nie rozdzielaj”. Jednoliterowe wyrazy i krótkie przyimki
+      („do”, „na”, „i”, „w”) sklejają się same - tego nie musisz robić.
+    </p>
+
+    <div class="typo-wybor">
+      <span class="typo-wybor-etykieta">szerokość ekranu</span>
+
+      @for (szerokosc of szerokosci; track szerokosc.px) {
+        <button
+          type="button"
+          class="typo-szerokosc"
+          [class.typo-wybrana]="ustawienia.szerokoscEkranu() === szerokosc.px"
+          (click)="ustawienia.szerokoscEkranu.set(szerokosc.px)"
+        >
+          {{ szerokosc.etykieta }}
+          <small>{{ szerokosc.px }}</small>
+        </button>
+      }
+
+      <button
+        type="button"
+        class="typo-szerokosc typo-znaczniki"
+        [class.typo-wybrana]="ustawienia.pokazujTwardeSpacje()"
+        (click)="ustawienia.pokazujTwardeSpacje.set(!ustawienia.pokazujTwardeSpacje())"
+      >
+        pokaż sklejenia
+      </button>
+    </div>
+
+    <!--
+      Skład liczy się w prawdziwej szerokości kolumny i dopiero potem jest
+      zmniejszany (`zoom` skaluje cały układ, więc wiersze łamią się dokładnie
+      tam, gdzie na stronie). Dlatego to jest podgląd, a nie przybliżenie.
+    -->
+    <div class="typo-scena">
+      @if (akapity().length === 0) {
+        <p class="typo-pusto">Pole jest puste.</p>
+      } @else {
+        <div
+          class="typo-kartka"
+          [class.typo-sans]="nastawy().pismo === 'sans'"
+          [class.typo-wersaliki]="nastawy().wersaliki"
+          [class.typo-pokaz-twarde]="ustawienia.pokazujTwardeSpacje()"
+          [style.zoom]="skala()"
+          [style.width.px]="szerokoscTekstu()"
+          [style.fontSize.px]="stopienPisma()"
+        >
+          @for (akapit of akapity(); track $index) {
+            <p>@for (czesc of akapit; track $index) {<span [class.typo-twarda]="czesc.twarda">{{ czesc.tekst }}</span>}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

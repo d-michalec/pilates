@@ -14,12 +14,28 @@
   background: var(--baba-olive);
 }
 
+/*
+ * GEOMETRIA Z MAKIETY (eksport strony "kontakt" ma 1708 px szerokości).
+ *
+ * Zdjęcie zaczyna się 96 px od lewej krawędzi (5,62%) i ma 666 px szerokości
+ * (39%). Kolumna z danymi idzie od 926 px do 1585 px, czyli ma 660 px
+ * szerokości, a przerwa między nimi to 164 px (9,6%). Po prawej zostaje
+ * 122 px (7,14%). W pionie: od kreski pod nagłówkiem do góry zdjęcia 108 px
+ * (6,32%), od dołu zdjęcia do stopki 146 px (8,55%).
+ *
+ * Wcześniej sekcja stała na `max(24px, (100vw - 1320px) / 2)`, czyli przy
+ * oknie 1708 px z marginesami po 194 px.
+ *
+ * Ostatnia kolumna jest elastyczna, bo `vw` liczy się od pełnej szerokości
+ * okna, razem z paskiem przewijania, na który arkusz globalny rezerwuje
+ * miejsce - przy sumie kolumn równej 100vw ostatnia wychodziłaby za krawędź.
+ */
 .contact-hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(320px, 1fr);
-  gap: clamp(32px, 6vw, 90px);
+  grid-template-columns: 39vw minmax(0, 1fr);
+  column-gap: 9.6vw;
   align-items: start;
-  padding: clamp(40px, 7vw, 96px) max(24px, calc((100vw - 1320px) / 2)) clamp(64px, 9vw, 128px);
+  padding: 6.32vw 7.14vw 8.55vw 5.62vw;
   color: var(--baba-white);
 }
 
@@ -29,8 +45,13 @@
   img {
     display: block;
     width: 100%;
-    height: 100%;
-    aspect-ratio: 1 / 1.22;
+    /*
+     * Bez `height: 100%` - przy określonej wysokości kontenera wygrywałoby ono
+     * z proporcją i zdjęcie przestałoby być 4:5. Bar i sauna też ustawiają
+     * tylko szerokość.
+     */
+    /* Jedna proporcja na barze, saunie i kontakcie - patrz styles.scss. */
+    aspect-ratio: var(--proporcja-zdjecia);
     object-fit: cover;
     /* Makieta pokazuje zdjęcie czarno-białe. */
     filter: grayscale(1);
@@ -39,18 +60,28 @@
 
 .contact-image-placeholder {
   display: block;
-  aspect-ratio: 1 / 1.22;
+  aspect-ratio: var(--proporcja-zdjecia);
   background:
     linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
     linear-gradient(135deg, var(--baba-brown), var(--baba-olive));
 }
 
-/* Cała kolumna z danymi jest wyrównana do prawej krawędzi, tak jak w makiecie. */
+/*
+ * Kolumna z danymi nie ma jednego wyrównania: "KONTAKT" jest wyśrodkowany,
+ * pozycje kontaktowe do lewej, a adres do prawej - tak jest w makiecie.
+ * Wcześniej cała kolumna szła na `text-align: right`.
+ *
+ * Wysokość równa wysokości zdjęcia (39% szerokości okna przy proporcji 4:5
+ * daje 48,75%), żeby adres dał się zepchnąć w dół - w projekcie stoi wyraźnie
+ * niżej niż dane kontaktowe, a nie tuż pod nimi.
+ */
 .contact-copy {
-  display: grid;
-  gap: clamp(38px, 5vw, 64px);
-  padding-top: clamp(24px, 4vw, 56px);
-  text-align: right;
+  display: flex;
+  min-height: 48.75vw;
+  flex-direction: column;
+  /* Makieta: "KONTAKT" zaczyna się 18 px niżej niż górna krawędź zdjęcia. */
+  padding-top: 1.05vw;
+  text-align: left;
 }
 
 h1,
@@ -60,55 +91,84 @@ dd {
   margin: 0;
 }
 
-/* W makiecie "KONTAKT" to drobna etykieta, a nie wielki napis. */
+/*
+ * Makieta: "KONTAKT" to etykieta sekcji - wersaliki o wysokości 15 px, czyli
+ * podany rozmiar 13. Wyśrodkowana w swojej kolumnie.
+ */
 h1 {
-  font-size: 0.86rem;
+  /* Makieta: 110 px (6,42%) do pierwszej pozycji kontaktowej. */
+  margin-bottom: 6.42vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/* Makieta: 65 px (3,79%) między pozycjami kontaktowymi. */
 dl {
   display: grid;
-  gap: clamp(26px, 3vw, 40px);
+  row-gap: 3.79vw;
 }
 
+/*
+ * Makieta: "sprawy ogólne" i "współpraca i media" szeryfowo, małymi literami,
+ * 22,3 px stopnia pisma - podany rozmiar 14.
+ */
 dt {
-  margin-bottom: 10px;
+  /* Makieta: 10 px (0,56%) do adresu pod etykietą. */
+  margin-bottom: 0.56vw;
   font-family: var(--baba-serif);
-  font-size: clamp(0.95rem, 1.3vw, 1.12rem);
+  font-size: calc(var(--skala-tekstu) * 0.583);
   font-weight: 400;
   letter-spacing: 0.01em;
+  line-height: 1.38;
   /* Etykiety sekcji idą małą literą, szeryfowo - inaczej niż same dane. */
   text-transform: lowercase;
   opacity: 0.85;
 }
 
+/*
+ * Makieta: adresy mailowe i numer telefonu wersalikami o wysokości 15 px,
+ * czyli podany rozmiar 13 - ten sam stopień pisma co etykieta "KONTAKT".
+ */
 dd,
 dd a {
   color: inherit;
-  font-size: clamp(1.02rem, 1.5vw, 1.28rem);
+  font-size: calc(var(--skala-tekstu) * 0.542);
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.38;
   text-decoration: none;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+dd + dd {
+  /* Makieta: 9 px (0,53%) między adresem a telefonem. */
+  margin-top: 0.53vw;
+}
+
 dd a:hover {
   text-decoration: underline;
 }
 
-/* Adres jest lżejszy i wyraźnie oddzielony od reszty. */
+/*
+ * Makieta: adres szeryfowo, 29,4 px stopnia pisma (podany rozmiar 18),
+ * wyrównany do PRAWEJ krawędzi kolumny i zepchnięty w dół - kończy się
+ * 159 px (9,31%) nad dolną krawędzią zdjęcia.
+ */
 address {
-  margin-top: clamp(40px, 8vw, 120px);
+  margin-top: auto;
+  margin-bottom: 9.31vw;
   font-family: var(--baba-serif);
-  font-size: clamp(1.15rem, 1.9vw, 1.62rem);
+  font-size: calc(var(--skala-tekstu) * 0.77);
   font-style: normal;
-  line-height: 1.45;
+  line-height: 1.36;
+  text-align: right;
 }
 
 /* Sekcja formularza wraca na jasne tło - oliwka kończy się na danych kontaktowych. */
@@ -122,89 +182,129 @@ address {
   padding: clamp(64px, 9vw, 124px) max(24px, calc((100vw - 1180px) / 2));
 }
 
+/*
+ * Formularz dostaje te same wielkości liter i kształty pól co sekcja "masz
+ * pytania?" na stronie głównej - tam są zmierzone na makiecie, a tutaj stały
+ * na stałych pikselach i osobnych proporcjach.
+ */
 .contact-form-section > div > span {
   display: block;
-  margin-bottom: 16px;
-  font-size: 0.84rem;
+  margin-bottom: 0.9vw;
+  font-size: calc(var(--skala-tekstu) * 0.62);
   font-weight: 700;
+  line-height: 1.2;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/* Ten sam napis co "MASZ PYTANIA?" na stronie głównej - wersaliki o wysokości
+   33 px na eksporcie, czyli 1,206 podstawy skali. */
 h2 {
-  font-family: var(--baba-serif);
-  font-size: clamp(3.2rem, 9vw, 8rem);
-  font-weight: 400;
-  line-height: 0.86;
+  font-size: calc(var(--skala-tekstu) * 1.206);
+  font-weight: 700;
+  line-height: 1.05;
+  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
+  font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/* Zmierzone 24,4 px na eksporcie, czyli 0,639 podstawy. */
 .contact-form-section p {
-  max-width: 420px;
-  margin-top: 24px;
-  color: var(--baba-brown);
-  line-height: 1.62;
+  max-width: 24vw;
+  margin-top: 1.05vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.639);
+  line-height: 1.27;
 }
 
+/* Makieta: 21 px między polami, czyli 1,23% szerokości okna. */
 .contact-form {
   position: relative;
   display: grid;
-  gap: 16px;
+  gap: 1.23vw;
 }
 
+/* Makieta: imię i telefon obok siebie, przerwa 24 px (1,4%). */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 1.4vw;
 }
 
+/* Makieta: etykieta nad polem, 11 px (0,64%) odstępu. */
 .contact-form label {
   display: grid;
-  gap: 8px;
+  gap: 0.64vw;
 }
 
+/*
+ * Etykiety pól są w makiecie szeryfowe i pisane małymi literami - inaczej niż
+ * etykiety sekcji i przyciski, które idą wersalikami bezszeryfowymi.
+ * Zmierzone 26 px na eksporcie, czyli 0,68 podstawy.
+ */
 .contact-form label > span {
-  font-size: 0.76rem;
-  font-weight: 700;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
+  color: var(--baba-red);
+  font-family: var(--baba-serif);
+  font-size: calc(var(--skala-tekstu) * 0.68);
+  line-height: 1.2;
+  text-transform: lowercase;
 }
 
 .contact-form input,
 .contact-form textarea {
   width: 100%;
   border: 1px solid var(--baba-red);
-  border-radius: 0;
+  border-radius: var(--baba-radius);
   background: transparent;
   color: var(--baba-brown);
   font: inherit;
 }
 
+/* Makieta: pole 69 px wysokości (4,04%), obszar wiadomości 188 px (11,0%). */
 .contact-form input {
-  min-height: 46px;
+  min-height: max(46px, 4.04vw);
+  padding-inline: 1.05vw;
 }
 
 .contact-form textarea {
-  min-height: 150px;
+  min-height: max(150px, 11vw);
+  padding: 0.9vw 1.05vw;
   resize: vertical;
 }
 
+/*
+ * Przycisk: w makiecie obwiedziony, nie wypełniony - 136 na 62 px, czyli
+ * 7,96 na 3,63% szerokości okna. Tak samo jak na stronie głównej; wcześniej
+ * był tu wypełniony czerwienią.
+ */
 .contact-form button {
   justify-self: start;
-  border-radius: 0;
-  background: var(--baba-red);
-  border-color: var(--baba-red);
-  color: var(--baba-white);
+  /* Makieta: 46 px (2,7%) od dolnej krawędzi obszaru wiadomości. */
+  margin-top: 1.47vw;
+  min-height: max(44px, 3.63vw);
+  border: 1px solid var(--baba-red);
+  border-radius: var(--baba-radius);
+  background: transparent;
+  padding-inline: 1.29vw;
+  color: var(--baba-red);
+  font-size: calc(var(--skala-tekstu) * 0.68);
   font-weight: 700;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.contact-form button:hover:not(:disabled) {
+  background: var(--baba-red);
+  color: var(--baba-white);
 }
 
 /* Nota o prywatności pod przyciskiem. Reguła `.contact-form-section p` nadaje
-   akapitom margines 24px i szerokość 420px - tu obie wartości przeszkadzają,
+   akapitom górny margines i ograniczoną miarę - tu obie wartości przeszkadzają,
    bo to podpis pod formularzem, a nie akapit tekstu w kolumnie obok. */
 .contact-form .contact-privacy {
   max-width: none;
@@ -214,8 +314,11 @@ h2 {
   opacity: 0.8;
 }
 
+/* Każdy odnośnik w tekście jest podkreślony, żeby było widać, że da się
+   w niego kliknąć. */
 .contact-form .contact-privacy a {
   color: var(--baba-red);
+  text-decoration: underline;
   text-underline-offset: 3px;
 }
 
@@ -225,6 +328,86 @@ h2 {
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+/*
+ * Poniżej 1080 px `--skala-tekstu` opiera się o swoje minimum 24 px, więc
+ * stopnie pisma przestają maleć razem z oknem - a kolumna z danymi dalej się
+ * zwęża. Dlatego wielkości i odstępy schodzą tutaj, przy załamaniu skali,
+ * a nie dopiero przy rozpadzie układu na jedną kolumnę (820 px). Inaczej
+ * adres e-mail wersalikami wychodził przy 900 px mniejszy niż przy 800 px.
+ */
+@media (max-width: 1080px) {
+  h1 {
+    margin-bottom: 26px;
+    font-size: 0.84rem;
+  }
+
+  dl {
+    row-gap: 26px;
+  }
+
+  dt {
+    margin-bottom: 6px;
+    font-size: 1rem;
+  }
+
+  dd,
+  dd a {
+    font-size: 0.95rem;
+  }
+
+  dd + dd {
+    margin-top: 6px;
+  }
+
+  address {
+    font-size: 1.1rem;
+  }
+
+  .contact-form-section > div > span {
+    margin-bottom: 12px;
+    font-size: 0.84rem;
+  }
+
+  h2 {
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .contact-form-section p {
+    margin-top: 16px;
+    font-size: 1rem;
+  }
+
+  .contact-form {
+    gap: 16px;
+  }
+
+  .contact-grid {
+    gap: 16px;
+  }
+
+  .contact-form label {
+    gap: 8px;
+  }
+
+  .contact-form label > span {
+    font-size: 1rem;
+  }
+
+  .contact-form input {
+    padding-inline: 14px;
+  }
+
+  .contact-form textarea {
+    padding: 12px 14px;
+  }
+
+  .contact-form button {
+    margin-top: 12px;
+    padding-inline: 22px;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 820px) {
@@ -239,16 +422,27 @@ h2 {
   }
 
   .contact-hero {
-    padding-bottom: clamp(48px, 12vw, 80px);
+    padding: 34px 20px 40px;
   }
 
   .contact-copy {
-    /* Na wąskim ekranie wyrównanie do prawej jest męczące w czytaniu. */
-    text-align: left;
+    min-height: 0;
+    padding-top: 28px;
     overflow-wrap: anywhere;
   }
 
+  /* Na wąskim ekranie wyrównanie adresu do prawej jest męczące w czytaniu. */
   address {
-    margin-top: 8px;
+    margin-top: 28px;
+    margin-bottom: 0;
+    text-align: left;
+  }
+
+  .contact-form-section {
+    padding: 44px 20px 52px;
+  }
+
+  .contact-form-section p {
+    max-width: none;
   }
 }

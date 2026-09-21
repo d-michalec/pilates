@@ -1,6 +1,7 @@
 <main class="bar-page">
   <app-site-header tone="light" />
 
+  <!-- Makieta: bar ma zdjęcie po lewej, a tekst po prawej - odwrotnie niż sauna. -->
   <section class="bar-shell" aria-label="Bar">
     <div class="bar-image-wrapper">
       @if (bar(); as content) {
@@ -12,29 +13,34 @@
       }
     </div>
 
-    <span class="section-label">{{ 'bar.label' | t }}</span>
+    <!--
+      Kolumna z tekstem jest jednym polem siatki, żeby dała się rozciągnąć na
+      wysokość zdjęcia i zepchnąć godziny otwarcia do dołu - tak jak na saunie.
+    -->
+    <div class="bar-text">
+      <span class="section-label">{{ 'bar.label' | t }}</span>
 
-    <div class="bar-copy">
+      <div class="bar-copy">
+        @if (isLoading()) {
+          <p class="bar-paragraph">{{ 'state.loading' | t }}</p>
+        } @else if (bar(); as content) {
+          @for (paragraph of paragraphs(description(content)); track $index) {
+            <p class="bar-paragraph">{{ paragraph | typo }}</p>
+          }
 
-      @if (isLoading()) {
-        <p class="bar-paragraph">{{ 'state.loading' | t }}</p>
-      } @else if (bar(); as content) {
-        @for (paragraph of paragraphs(description(content)); track $index) {
-          <p class="bar-paragraph">{{ paragraph }}</p>
+          @if (openingHoursGroups().length > 0) {
+            <div class="bar-hours">
+              <h2>{{ 'bar.hours' | t }}</h2>
+
+              @for (group of openingHoursGroups(); track group.days) {
+                <p><span class="bar-days">{{ group.days | typo }}</span>: {{ group.hours | typo }}</p>
+              }
+            </div>
+          }
+        } @else {
+          <p class="bar-paragraph">{{ 'bar.error' | t }}</p>
         }
-
-        @if (openingHoursGroups().length > 0) {
-          <div class="bar-hours">
-            <h2>{{ 'bar.hours' | t }}</h2>
-
-            @for (group of openingHoursGroups(); track group.days) {
-              <p><span class="bar-days">{{ group.days }}</span>: {{ group.hours }}</p>
-            }
-          </div>
-        }
-      } @else {
-        <p class="bar-paragraph">{{ 'bar.error' | t }}</p>
-      }
+      </div>
     </div>
   </section>
 

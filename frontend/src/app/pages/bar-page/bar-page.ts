@@ -7,6 +7,7 @@ import { VenueService } from '../../core/venue.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { LanguageService } from '../../core/language.service';
 
 interface OpeningHoursGroup {
@@ -16,7 +17,7 @@ interface OpeningHoursGroup {
 
 @Component({
   selector: 'app-bar-page',
-  imports: [SiteFooter, SiteHeader, TranslatePipe],
+  imports: [SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe],
   templateUrl: './bar-page.html',
   styleUrl: './bar-page.scss',
   host: { ngSkipHydration: 'true' }

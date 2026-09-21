@@ -4,6 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 
 import { SITE_URL } from './language.service';
 import { localBusinessJsonLd } from './local-business';
+import { tekstSurowy } from './typografia';
 
 /** Identyfikator znacznika z danymi strukturalnymi - żeby dało się go podmieniać, a nie mnożyć. */
 const JSON_LD_ID = 'baba-json-ld';
@@ -37,10 +38,18 @@ export class SeoService {
   ) {}
 
   set(config: SeoConfig) {
-    this.title.setTitle(config.title);
-    this.meta.updateTag({ name: 'description', content: config.description });
-    this.meta.updateTag({ property: 'og:title', content: config.title });
-    this.meta.updateTag({ property: 'og:description', content: config.description });
+    /*
+     * Tytuły i opisy często składamy z tekstu wpisanego w panelu, a tam tylda
+     * znaczy "nie rozdzielaj tych słów". W zakładce przeglądarki i w wynikach
+     * wyszukiwania to tylko obcy znak, więc znaczniki tu zdejmujemy.
+     */
+    const title = tekstSurowy(config.title);
+    const description = tekstSurowy(config.description);
+
+    this.title.setTitle(title);
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ property: 'og:title', content: title });
+    this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:site_name', content: 'BABA Studio' });
 

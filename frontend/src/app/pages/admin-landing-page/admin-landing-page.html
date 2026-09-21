@@ -14,15 +14,14 @@
         <p class="empty-state">Ładowanie...</p>
       } @else {
         <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
-          <div class="field">
-            <label for="title">Główny napis</label>
-            <input id="title" pInputText type="text" formControlName="title" />
-          </div>
-
+          <!--
+            Głównego napisu tu nie ma: na pierwszym ekranie stoi logo wgrane
+            jako plik PNG razem z kodem strony, więc nie ma czego edytować.
+          -->
           <div class="form-row">
             <div class="field">
               <label for="ctaLabel">Tekst przycisku</label>
-              <input id="ctaLabel" pInputText type="text" formControlName="ctaLabel" />
+              <input id="ctaLabel" pInputText type="text" formControlName="ctaLabel" appTypo="etykieta" />
             </div>
 
             <div class="field">
@@ -41,16 +40,8 @@
             <p class="field-hint">Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.</p>
 
             <div class="field">
-              <label for="titleEn">Główny napis (EN)</label>
-              <input id="titleEn" pInputText type="text" formControlName="titleEn" />
-              @if (form.controls.titleEn.touched && form.controls.titleEn.invalid) {
-                <small class="field-error">Tłumaczenie może mieć do 120 znaków.</small>
-              }
-            </div>
-
-            <div class="field">
               <label for="ctaLabelEn">Tekst przycisku (EN)</label>
-              <input id="ctaLabelEn" pInputText type="text" formControlName="ctaLabelEn" />
+              <input id="ctaLabelEn" pInputText type="text" formControlName="ctaLabelEn" appTypo="etykieta" />
               @if (form.controls.ctaLabelEn.touched && form.controls.ctaLabelEn.invalid) {
                 <small class="field-error">Tłumaczenie może mieć do 80 znaków.</small>
               }
@@ -120,6 +111,7 @@
 
     <p-card styleClass="admin-card preview-card">
       <ng-template #title>Podgląd zdjęcia</ng-template>
+      <ng-template #subtitle>Logo BABA na pierwszym ekranie jest stałe - nakłada się na to zdjęcie od środka.</ng-template>
 
       <figure class="hero-preview">
         @if (previewUrl()) {
@@ -134,9 +126,6 @@
         }
       </figure>
 
-      <div class="content-preview">
-        <h2>{{ form.controls.title.value || 'BABA' }}</h2>
-      </div>
     </p-card>
   </section>
 

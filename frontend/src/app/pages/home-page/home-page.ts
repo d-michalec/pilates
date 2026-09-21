@@ -13,14 +13,16 @@ import { LandingOffer } from '../../core/faq';
 import { LandingContent, LandingGalleryImage } from '../../core/landing-content';
 import { LandingService } from '../../core/landing.service';
 import { SeoService } from '../../core/seo.service';
+import { BabaLogo } from '../../layout/baba-logo/baba-logo';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { SurowyTekstPipe, TypografiaPipe } from '../../core/typografia.pipe';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-home-page',
-  imports: [ButtonModule, InputTextModule, LocalizePathPipe, MessageModule, ReactiveFormsModule, RouterLink, SiteFooter, SiteHeader, TextareaModule, TranslatePipe],
+  imports: [BabaLogo, ButtonModule, InputTextModule, LocalizePathPipe, MessageModule, ReactiveFormsModule, RouterLink, SiteFooter, SiteHeader, TextareaModule, TranslatePipe, TypografiaPipe, SurowyTekstPipe],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss',
   // Treść pochodzi z API, więc prerenderowany markup i stan po starcie klienta mogą się
@@ -62,10 +64,11 @@ export class HomePage implements OnInit, AfterViewInit {
       nonNullable: true,
       validators: [Validators.maxLength(60)]
     }),
-    subject: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.maxLength(160)]
-    }),
+    /*
+     * Bez pola tematu: makieta przewiduje na stronie głównej cztery pola.
+     * Backend przyjmuje wiadomość bez tematu i składa wtedy tytuł e-maila
+     * z imienia nadawcy, żeby w skrzynce dało się je odróżnić.
+     */
     message: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(3000)]

@@ -1,13 +1,9 @@
 <main class="events-page">
+  <!--
+    Tło tej strony to błękit, a jej treść jest czerwona - stąd `red`, nie `light`.
+    Biały logotyp na błękicie ma kontrast około 1,45:1, czyli praktycznie znika.
+  -->
   <app-site-header tone="light" />
-
-  <header class="events-header old-events-header">
-    <a class="menu-link" [routerLink]="'/' | localizePath">
-      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span>Menu</span>
-    </a>
-    <a class="brand-link" [routerLink]="'/' | localizePath">BABA</a>
-  </header>
 
   <section class="events-shell" aria-label="Wydarzenia">
     <h1>{{ 'events.upcoming' | t }}</h1>
@@ -15,7 +11,7 @@
     @if (isLoading()) {
       <p class="empty-state">{{ 'state.loading' | t }}</p>
     } @else if (errorMessage()) {
-      <p class="empty-state">{{ errorMessage() }}</p>
+      <p class="empty-state">{{ errorMessage() | typo }}</p>
     } @else {
       @if (upcomingEvents().length === 0) {
         <p class="empty-state">{{ 'events.none' | t }}</p>
@@ -23,10 +19,18 @@
         <div class="events-grid">
           @for (event of upcomingEvents(); track event.id) {
             <a class="event-card" [routerLink]="'/event/' + event.id | localizePath">
-              <img [src]="imageUrl(event)" [alt]="content(event.title, event.titleEn)" loading="lazy" decoding="async" />
+              <img [src]="imageUrl(event)" [alt]="plainTitle(event)" loading="lazy" decoding="async" />
               <span class="event-date">{{ eventDate(event) }}<br />{{ eventTime(event) }}</span>
-              <span class="event-host">{{ event.hostName }}</span>
-              <strong>{{ content(event.title, event.titleEn) }}</strong>
+              <span class="event-host">{{ event.hostName | typo }}</span>
+              <strong>
+                <!--
+                  Nazwa idzie kawałkami, bo w makiecie część słów jest błękitna,
+                  a część biała. O tym, które to słowa, decyduje panel.
+                -->
+                @for (part of titleParts(event); track $index) {
+                  <span [class.event-title-highlight]="part.highlighted">{{ part.text | typo }}</span>
+                }
+              </strong>
             </a>
           }
         </div>
@@ -37,10 +41,14 @@
         <div class="events-grid past-events">
           @for (event of pagedPastEvents(); track event.id) {
             <a class="event-card" [routerLink]="'/event/' + event.id | localizePath">
-              <img [src]="imageUrl(event)" [alt]="content(event.title, event.titleEn)" loading="lazy" decoding="async" />
+              <img [src]="imageUrl(event)" [alt]="plainTitle(event)" loading="lazy" decoding="async" />
               <span class="event-date">{{ eventDate(event) }}<br />{{ eventTime(event) }}</span>
-              <span class="event-host">{{ event.hostName }}</span>
-              <strong>{{ content(event.title, event.titleEn) }}</strong>
+              <span class="event-host">{{ event.hostName | typo }}</span>
+              <strong>
+                @for (part of titleParts(event); track $index) {
+                  <span [class.event-title-highlight]="part.highlighted">{{ part.text | typo }}</span>
+                }
+              </strong>
             </a>
           }
         </div>

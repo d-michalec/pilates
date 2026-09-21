@@ -75,7 +75,15 @@ h1 {
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /*
+   * `minmax(0, 1fr)`, a nie `1fr`: minimum kolumny `1fr` liczy się z zawartości,
+   * więc podgląd składu pod jednym polem rozpychał cały rząd poza kartę.
+   *
+   * `align-items: start` z tego samego powodu: bez niego pole w drugiej kolumnie
+   * rozciągałoby się na wysokość sąsiada razem z jego podglądem.
+   */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
   gap: 14px;
 }
 

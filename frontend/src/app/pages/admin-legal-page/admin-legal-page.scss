@@ -1,0 +1,161 @@
+@use '../../layout/admin-header/admin-shell' as panel;
+
+@include panel.rama;
+
+.legal-admin {
+  display: grid;
+  gap: 20px;
+}
+
+/* Dwa dokumenty, więc przełącznik zakładek zamiast listy po lewej. */
+.doc-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.doc-tab {
+  border: 1px solid color-mix(in srgb, var(--baba-red) 30%, transparent);
+  border-radius: var(--baba-radius);
+  background: transparent;
+  padding: 10px 18px;
+  color: var(--baba-red);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.doc-tab:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--baba-red) 8%, transparent);
+}
+
+.doc-tab-active {
+  border-color: var(--baba-red);
+  background: var(--baba-red);
+  color: var(--baba-white);
+}
+
+.editor-form {
+  display: grid;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.field label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.field-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--baba-red) 60%, transparent);
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: var(--baba-red);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.field-group-en {
+  margin: 0;
+  border: 1px solid color-mix(in srgb, var(--baba-red) 14%, transparent);
+  border-radius: var(--baba-radius);
+  padding: 16px 18px 2px;
+}
+
+.field-group-en legend {
+  padding-inline: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.section-list {
+  display: grid;
+  gap: 18px;
+}
+
+.section-item {
+  border: 1px solid color-mix(in srgb, var(--baba-red) 16%, transparent);
+  border-radius: var(--baba-radius);
+  padding: 16px 18px 6px;
+}
+
+.section-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.section-number {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--baba-red) 10%, transparent);
+  font-weight: 700;
+}
+
+.section-move {
+  display: flex;
+  gap: 2px;
+}
+
+/* Okienko "do uzupełnienia" razem z opisem - sam checkbox nic nie mówi. */
+.section-pending {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 16px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.empty-state {
+  margin: 0 0 16px;
+  color: color-mix(in srgb, var(--baba-red) 62%, transparent);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/*
+ * Przycisk zapisu zostaje na ekranie: dokument prawny jest długi, a zapis
+ * dotyczy całości - bez tego trzeba by zjeżdżać na sam dół po każdej zmianie.
+ */
+.form-actions-sticky {
+  position: sticky;
+  bottom: 0;
+  /* Pasek kryje treść pod sobą - przez półprzezroczyste tło przebijały wcześniej
+     obwódki kart i wyglądało to na usterkę. */
+  border-top: 1px solid color-mix(in srgb, var(--baba-red) 14%, transparent);
+  background: var(--baba-white);
+  padding: 14px 2px;
+}
+
+.dirty-hint {
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--baba-red) 70%, transparent);
+}

@@ -10,59 +10,24 @@
   background: var(--baba-blue);
 }
 
-.events-header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  border-bottom: 1px solid var(--baba-white);
-  padding: 34px max(28px, calc((100vw - 1240px) / 2));
-  color: var(--baba-white);
-}
-
-.old-events-header {
-  display: none;
-}
-
-.menu-link,
-.brand-link {
-  color: inherit;
-  font-weight: 700;
-  text-decoration: none;
-  /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
-  font-family: var(--baba-sans);
-  text-transform: uppercase;
-}
-
-.menu-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  justify-self: start;
-  font-size: 0.72rem;
-}
-
-.menu-icon {
-  display: grid;
-  gap: 4px;
-  width: 24px;
-}
-
-.menu-icon span {
-  display: block;
-  height: 2px;
-  background: currentColor;
-}
-
-.brand-link {
-  font-family: var(--baba-serif);
-  font-size: clamp(2.6rem, 5vw, 4.2rem);
-  line-height: 0.85;
-}
-
+/*
+ * GEOMETRIA Z MAKIETY (eksport strony wydarzeń ma 1708 px szerokości).
+ *
+ * Kafelki zaczynają się 97 px od lewej krawędzi i kończą 94 px przed prawą,
+ * czyli powietrze po bokach to 5,56% szerokości okna. Wcześniej sekcja stała
+ * na `width: min(100% - 56px, 1160px)`, więc przy oknie 1708 px zostawało po
+ * 274 px z każdej strony - i to była uwaga o zbyt szerokich marginesach.
+ *
+ * Powietrze nad nagłówkiem i pod nim jest w projekcie takie samo: od białej
+ * kreski pod logo do wersalików nagłówka 106 px, od nagłówka do kafelków
+ * 110 px. Bierzemy 108 px dla obu, ale wiersz tekstu jest wyższy niż same
+ * wersaliki, więc odstęp od góry (5,93%) i od dołu (6,08%) różnią się o te
+ * kilka pikseli, które zajmuje pusta część wiersza.
+ */
 .events-shell {
-  width: min(100% - 56px, 1160px);
+  width: 88.88vw;
   margin: 0 auto;
-  padding: clamp(62px, 8vw, 118px) 0;
+  padding: 5.93vw 0 4.92vw;
 }
 
 h1,
@@ -71,8 +36,14 @@ p {
   margin: 0;
 }
 
+/* Makieta: oba nagłówki to etykiety - wersaliki o wysokości 15 px, czyli
+   podany rozmiar 13 na płótnie projektu. Ten sam stopień co "O MARCE". */
 h1,
 h2 {
+  font-size: calc(var(--skala-tekstu) * 0.542);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   text-align: center;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
@@ -80,27 +51,48 @@ h2 {
 }
 
 h1 {
-  margin-bottom: clamp(46px, 6vw, 82px);
-  font-size: 1rem;
+  margin-bottom: 6.08vw;
 }
 
+/* "MINIONE WYDARZENIA" ma nad sobą i pod sobą to samo powietrze co nagłówek
+   pierwszej grupy - 106 i 113 px na eksporcie. */
 h2 {
-  margin: clamp(64px, 8vw, 104px) 0 clamp(40px, 5vw, 64px);
-  font-size: 1rem;
+  margin: 5.93vw 0 6.08vw;
 }
 
+/* Makieta: przerwa między kafelkami to 79 px w poziomie (4,63%) i 94 px
+   w pionie (5,5%) - w pionie jest wyraźnie większa, więc nie jedno `gap`. */
 .events-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(26px, 4vw, 54px);
+  column-gap: 4.63vw;
+  row-gap: 5.5vw;
 }
 
+/*
+ * KAFELEK WYDARZENIA - wymiary i rozkład tekstu zmierzone na makiecie.
+ *
+ * Kafelek ma 453 na 297 px, czyli proporcję 453:297. Wcześniej stało
+ * `min-height: 220px`, więc wysokość nie miała nic wspólnego z szerokością.
+ *
+ * Trzy rzędy: data w prawym górnym rogu, pod nią imię i nazwisko
+ * prowadzącej, a nazwa wydarzenia przy dolnej krawędzi. Środkowy rząd jest
+ * elastyczny, więc nazwa rośnie w górę, gdy ma więcej wierszy - imię zostaje
+ * na swojej wysokości (105 px od góry kafelka), a to była uwaga o tym, że
+ * powinno być niżej.
+ *
+ * Wcześniej oba napisy wisiały przy dolnej krawędzi na `margin: auto 24px`
+ * z odstępami 68 i 24 px, więc imię przesuwało się razem z nazwą.
+ */
 .event-card {
   position: relative;
   display: grid;
-  min-height: 220px;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  aspect-ratio: 453 / 297;
   overflow: hidden;
   isolation: isolate;
+  /* Makieta: 20 px od góry, 28 px z prawej, 35 px od dołu, 33 px z lewej. */
+  padding: 1.19vw 1.64vw 2.05vw 1.93vw;
   color: var(--baba-white);
   text-decoration: none;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
@@ -108,51 +100,85 @@ h2 {
   text-transform: uppercase;
 }
 
-.event-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.24));
-}
-
+/*
+ * Zdjęcie idzie na kafelek takie, jakie zostało wgrane - bez odbarwiania
+ * i bez gradientu. Wcześniej stało tu `filter: grayscale(1)`, a na zdjęcie
+ * nachodził jeszcze gradient od 52 do 24% czerni, więc aktualne wydarzenia
+ * wychodziły czarno-białe.
+ *
+ * Konsekwencja: czytelność białych napisów zależy od tego, jak ciemne jest
+ * wgrane zdjęcie.
+ */
 .event-card img {
   position: absolute;
   inset: 0;
   z-index: -2;
   width: 100%;
   height: 100%;
-  filter: grayscale(1);
   object-fit: cover;
 }
 
+/*
+ * Makieta: data i godzina w dwóch wierszach, wyrównane do prawej, krojem
+ * szeryfowym. Cyfry mają 13 px wysokości, czyli 17,5 px stopnia pisma -
+ * podany rozmiar 11. Interlinia 25 px, czyli 1,4.
+ */
 .event-date {
-  position: absolute;
-  top: 18px;
-  right: 18px;
+  justify-self: end;
   font-family: var(--baba-serif);
-  font-size: 0.82rem;
-  line-height: 1.1;
+  font-size: calc(var(--skala-tekstu) * 0.458);
+  line-height: 1.4;
   text-align: right;
   text-transform: none;
 }
 
+/*
+ * Makieta: imię i nazwisko prowadzącej wersalikami o wysokości 16 px, czyli
+ * 22,3 px stopnia pisma - podany rozmiar 14. Od dolnej krawędzi daty 26 px.
+ */
 .event-host {
-  align-self: end;
-  margin: auto 24px 68px;
-  font-weight: 800;
+  margin-top: 1.54vw;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  font-weight: 700;
+  line-height: 1.39;
 }
 
+/*
+ * Makieta: nazwa wydarzenia tym samym stopniem pisma co prowadząca, przy
+ * dolnej krawędzi kafelka, interlinia 31 px (1,39).
+ *
+ * Ograniczenie do czterech wierszy jest zabezpieczeniem, nie elementem
+ * projektu: kafelek ma stałą proporcję, więc nazwa dłuższa niż miejsce pod nią
+ * rosłaby w górę i nachodziła na imię prowadzącej. Najdłuższa nazwa w makiecie
+ * ma trzy wiersze, a panel dopuszcza 220 znaków - piąty wiersz kończy się
+ * wielokropkiem zamiast nałożeniem.
+ */
 .event-card strong {
+  display: -webkit-box;
   align-self: end;
-  margin: auto 24px 24px;
-  color: var(--baba-blue);
-  font-size: clamp(1.08rem, 1.7vw, 1.5rem);
-  line-height: 1.14;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  font-weight: 700;
+  line-height: 1.39;
 }
 
-.past-events .event-card {
-  opacity: 0.58;
+/*
+ * Nazwa jest domyślnie biała, a błękitne są tylko słowa zaznaczone w panelu
+ * (patrz core/event-title.ts). Wcześniej cała nazwa szła na `--baba-blue`.
+ */
+.event-title-highlight {
+  color: var(--baba-blue);
+}
+
+/*
+ * Makieta: minione wydarzenia są czarno-białe - to jedyna różnica wobec
+ * aktualnych. Wcześniej wszystkie kafelki były czarno-białe, a minione
+ * dodatkowo przygaszone do 58% krycia.
+ */
+.past-events .event-card img {
+  filter: grayscale(1);
 }
 
 .empty-state {
@@ -160,23 +186,60 @@ h2 {
   text-align: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
+  /*
+   * Poniżej 1080 px kafelki idą po dwa w rzędzie, a poniżej 620 px po jednym.
+   * Proporcja 453:297 zostaje, ale odstępy i stopnie pisma schodzą ze
+   * skalowanych szerokością okna na stałe - 5,5% szerokości to na telefonie
+   * 20 px, czyli za mało na przerwę między kafelkami.
+   *
+   * Granica wypada na 1080 px, a nie na 900, bo `--skala-tekstu` opiera się
+   * o swoje minimum 24 px właśnie przy 1073 px szerokości okna. Poniżej tej
+   * granicy kafelek kurczy się dalej, a tekst już nie - przy trzech kolumnach
+   * nazwa wydarzenia przestawała się mieścić pod imieniem prowadzącej.
+   */
+  .events-shell {
+    width: calc(100% - 40px);
+    padding: 44px 0 40px;
+  }
+
+  h1 {
+    margin-bottom: 30px;
+    font-size: 0.84rem;
+  }
+
+  h2 {
+    margin: 40px 0 30px;
+    font-size: 0.84rem;
+  }
+
   .events-grid {
     grid-template-columns: 1fr 1fr;
+    column-gap: 18px;
+    row-gap: 24px;
+  }
+
+  .event-card {
+    padding: 14px 16px 18px 18px;
+  }
+
+  .event-date {
+    font-size: 0.78rem;
+  }
+
+  .event-host,
+  .event-card strong {
+    font-size: 0.95rem;
+  }
+
+  .event-host {
+    margin-top: 10px;
   }
 }
 
 @media (max-width: 620px) {
-  .events-header {
-    grid-template-columns: 1fr auto;
-  }
-
-  .brand-link {
-    justify-self: end;
-  }
-
   .events-shell {
-    width: min(100% - 28px, 1160px);
+    width: calc(100% - 28px);
   }
 
   .events-grid {
@@ -184,18 +247,21 @@ h2 {
   }
 }
 
-/* Numeracja stron minionych wydarzeń - pojawia się dopiero powyżej dwunastu pozycji. */
+/* Numeracja stron minionych wydarzeń - pojawia się dopiero powyżej dwunastu
+   pozycji. Makieta: 96 px nad numeracją i 84 px pod nią (4,92% - to jest
+   dolne dopełnienie sekcji). */
 .past-pagination {
   display: flex;
   gap: 8px;
   justify-content: center;
-  margin-top: 32px;
+  margin-top: 5.62vw;
 
   button {
     min-width: 38px;
     padding: 8px 10px;
     border: 1px solid color-mix(in srgb, var(--baba-red) 30%, transparent);
-    border-radius: 999px;
+    /* Ten sam kształt co pozostałe elementy sterujące - bez pigułek. */
+    border-radius: var(--baba-radius);
     background: transparent;
     color: var(--baba-red);
     font: inherit;

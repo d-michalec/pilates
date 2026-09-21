@@ -7,6 +7,7 @@ import { AdminLoginPage } from './pages/admin-login-page/admin-login-page';
 import { AdminContactPage } from './pages/admin-contact-page/admin-contact-page';
 import { AdminMessagesPage } from './pages/admin-messages-page/admin-messages-page';
 import { AdminFaqPage } from './pages/admin-faq-page/admin-faq-page';
+import { AdminLegalPage } from './pages/admin-legal-page/admin-legal-page';
 import { AdminSaunaPage } from './pages/admin-sauna-page/admin-sauna-page';
 import { AdminBarPage } from './pages/admin-bar-page/admin-bar-page';
 import { AdminLandingPage } from './pages/admin-landing-page/admin-landing-page';
@@ -54,6 +55,17 @@ const publicRoutes: Routes = [
   {
     path: 'grafik',
     component: SchedulePage
+  },
+  {
+    /*
+     * Cennik to ten sam komponent, tylko inny widok frontoffice Fitssey.
+     * Osobna trasa, a nie parametr w adresie grafiku: pozycja w menu ma swój
+     * adres do zakładki, własny tytuł strony i własny wpis w historii
+     * przeglądarki.
+     */
+    path: 'cennik',
+    component: SchedulePage,
+    data: { widok: 'cennik' }
   },
   {
     path: 'faq',
@@ -140,6 +152,11 @@ export const routes: Routes = [
   {
     path: 'admin/faq',
     component: AdminFaqPage,
+    canActivate: [adminGuard]
+  },
+  {
+    path: 'admin/regulamin',
+    component: AdminLegalPage,
     canActivate: [adminGuard]
   },
   {

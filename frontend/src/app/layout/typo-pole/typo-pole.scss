@@ -1,0 +1,150 @@
+/*
+ * Podgląd składa tekst w prawdziwej szerokości kolumny - a to bywa więcej, niż
+ * ma pole w panelu (np. "Tekst przycisku" i "Link przycisku" stoją w dwóch
+ * kolumnach `1fr`). Bez `min-width: 0` i `contain: inline-size` ta szerokość
+ * liczyłaby się rodzicowi jako minimalna i rozpychała cały rząd poza kartę.
+ */
+:host {
+  display: block;
+  min-width: 0;
+  margin-top: 6px;
+}
+
+.typo-pasek {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.typo-akcja,
+.typo-przelacznik,
+.typo-szerokosc {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--p-text-muted-color, #6b7280);
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--p-content-border-color, #e5e7eb);
+  border-radius: 999px;
+}
+
+.typo-akcja:hover,
+.typo-przelacznik:hover,
+.typo-szerokosc:hover {
+  color: var(--p-text-color, #111827);
+  border-color: var(--p-primary-color, #942319);
+}
+
+.typo-wlaczony,
+.typo-wybrana {
+  color: var(--p-primary-contrast-color, #ffffff);
+  background: var(--p-primary-color, #942319);
+  border-color: var(--p-primary-color, #942319);
+}
+
+/* Reguła najechania jest bardziej szczegółowa od samej klasy, więc włączony
+   przycisk trzeba wyjąć osobno - inaczej pod kursorem robił się ciemny napis
+   na ciemnym tle. */
+.typo-wlaczony:hover,
+.typo-wybrana:hover {
+  color: var(--p-primary-contrast-color, #ffffff);
+}
+
+.typo-podpowiedz {
+  margin: 0 0 8px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--p-text-muted-color, #6b7280);
+}
+
+.typo-podglad {
+  margin-top: 8px;
+  padding: 10px 0 0;
+  border-top: 1px dashed var(--p-content-border-color, #e5e7eb);
+}
+
+.typo-wybor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.typo-wybor-etykieta {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p-text-muted-color, #6b7280);
+}
+
+.typo-szerokosc small {
+  font-size: 0.68rem;
+  opacity: 0.7;
+}
+
+/*
+ * Scena ma dokładnie szerokość gospodarza - to ją mierzy komponent, żeby
+ * wyliczyć skalę. Dlatego bez poziomych marginesów i bez ramki po bokach.
+ */
+.typo-scena {
+  /* Szerokość liczona bez zawartości - podgląd nigdy nie rozpycha formularza. */
+  contain: inline-size;
+  overflow: hidden;
+  padding: 12px 0;
+  background: var(--baba-white, #ffffff);
+  border: 1px solid var(--p-content-border-color, #e5e7eb);
+  border-radius: 8px;
+}
+
+.typo-kartka {
+  /*
+   * `zoom` skaluje gotowy układ, więc łamanie wierszy zostaje takie, jakie
+   * wyszłoby w pełnej szerokości. `transform: scale` też by tak działał, ale
+   * nie zabiera miejsca w układzie i pod podglądem zostawałby pusty pas.
+   */
+  transform-origin: top left;
+  margin: 0 auto;
+  font-family: var(--baba-serif, "Instrument Serif", Georgia, serif);
+  line-height: 1.32;
+  color: var(--baba-red, #942319);
+}
+
+.typo-kartka p {
+  margin: 0 0 0.6em;
+}
+
+.typo-kartka p:last-child {
+  margin-bottom: 0;
+}
+
+.typo-sans {
+  font-family: var(--baba-sans, "Neue Plak", "Arial Black", Arial, sans-serif);
+}
+
+.typo-wersaliki {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/*
+ * Sklejenie zaznaczamy tłem, a nie kropką czy dodatkowym znakiem: znak zmieniłby
+ * szerokość wiersza, a wtedy podgląd przestałby pokazywać prawdziwe łamanie.
+ */
+.typo-pokaz-twarde .typo-twarda {
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--baba-blue, #b7cfe6) 70%, transparent);
+}
+
+.typo-pusto {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--p-text-muted-color, #6b7280);
+}

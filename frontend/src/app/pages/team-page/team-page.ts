@@ -7,11 +7,12 @@ import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { TranslatePipe } from '../../core/localize.pipe';
+import { SurowyTekstPipe, TypografiaPipe } from '../../core/typografia.pipe';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-team-page',
-  imports: [SiteFooter, SiteHeader, TranslatePipe],
+  imports: [SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe, SurowyTekstPipe],
   templateUrl: './team-page.html',
   styleUrl: './team-page.scss',
   host: { ngSkipHydration: 'true' }

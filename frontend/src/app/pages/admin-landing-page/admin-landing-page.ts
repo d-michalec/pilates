@@ -10,13 +10,14 @@ import { AdminHeader } from '../../layout/admin-header/admin-header';
 import { LandingOffer } from '../../core/faq';
 import { LandingContent, LandingGalleryImage } from '../../core/landing-content';
 import { LandingService } from '../../core/landing.service';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
 
 const MAX_IMAGE_SIZE_BYTES = 20 * 1024 * 1024;
 const MAX_GALLERY_UPLOAD_SIZE_BYTES = 80 * 1024 * 1024;
 
 @Component({
   selector: 'app-admin-landing-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TypoPoleDirective],
   templateUrl: './admin-landing-page.html',
   styleUrl: './admin-landing-page.scss'
 })
@@ -44,11 +45,12 @@ export class AdminLandingPage implements OnInit, OnDestroy {
   protected readonly offerMessage = signal<string | null>(null);
   protected readonly offerErrorMessage = signal<string | null>(null);
 
+  /*
+   * Bez pola głównego napisu: na pierwszym ekranie stoi teraz logo z pliku PNG,
+   * a nie tekst z bazy. Zostawienie pola w panelu znaczyłoby, że ktoś je zmienia
+   * i nic się nie dzieje.
+   */
   protected readonly form = new FormGroup({
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(120)]
-    }),
     ctaLabel: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(80)]
@@ -58,10 +60,6 @@ export class AdminLandingPage implements OnInit, OnDestroy {
       validators: [Validators.required, Validators.maxLength(255)]
     }),
     // Tłumaczenia są opcjonalne - puste pole zapisuje się jako brak tłumaczenia.
-    titleEn: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.maxLength(120)]
-    }),
     ctaLabelEn: new FormControl('', {
       nonNullable: true,
       validators: [Validators.maxLength(80)]
@@ -366,11 +364,9 @@ export class AdminLandingPage implements OnInit, OnDestroy {
         next: (landing) => {
           this.landing.set(landing);
           this.form.patchValue({
-            title: landing.title,
             ctaLabel: landing.ctaLabel,
             ctaUrl: landing.ctaUrl,
             imageAlt: landing.imageAlt,
-            titleEn: landing.titleEn ?? '',
             ctaLabelEn: landing.ctaLabelEn ?? '',
             imageAltEn: landing.imageAltEn ?? ''
           });

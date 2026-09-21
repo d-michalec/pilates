@@ -9,55 +9,139 @@
   color: var(--baba-white);
 }
 
-/* Makieta: tekst po lewej, zdjęcie po prawej. Bar ma to odwrócone. */
+/*
+ * GEOMETRIA Z MAKIETY (eksport strony "sauna" ma 1708 px szerokości).
+ *
+ * Kolumna z tekstem zaczyna się 112 px od lewej krawędzi (6,56%) i kończy
+ * na 791 px, czyli ma 679 px szerokości (39,75%). Zdjęcie idzie od 899 px
+ * do samej prawej krawędzi - 809 px (47,37%) - więc przerwa między kolumnami
+ * to 108 px (6,32%). Po prawej stronie nie ma marginesu: fotografia jest
+ * przyklejona do krawędzi okna.
+ *
+ * 6,56 + 39,75 + 6,32 + 47,37 = 100.
+ *
+ * Ostatnia kolumna jest elastyczna, a nie podana w procentach szerokości okna.
+ * `vw` liczy się od pełnej szerokości okna, razem z paskiem przewijania, a
+ * arkusz globalny na stałe rezerwuje na niego miejsce (`scrollbar-gutter`) -
+ * przy sumie kolumn równej 100vw ostatnia z nich wychodziła o szerokość paska
+ * za prawą krawędź treści. Elastyczna kolumna zjada tę różnicę sama.
+ *
+ * W pionie: od kreski pod nagłówkiem do góry zdjęcia 94 px (5,5%), od dołu
+ * zdjęcia do stopki 95 px (5,56%).
+ *
+ * Wcześniej sekcja stała na `width: min(100% - 56px, 1280px)` ze środkowaniem,
+ * więc przy oknie 1708 px zostawało po 214 px powietrza z obu stron, a zdjęcie
+ * nie dochodziło do krawędzi.
+ */
 .sauna-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(32px, 6vw, 96px);
+  grid-template-columns: 39.75vw minmax(0, 1fr);
+  column-gap: 6.32vw;
   align-items: start;
-  width: min(100% - 56px, 1280px);
-  margin: 0 auto;
-  padding: clamp(56px, 8vw, 104px) 0 clamp(72px, 10vw, 128px);
+  padding: 5.5vw 0 5.56vw 6.56vw;
 }
 
-/* Etykieta jest osobnym elementem siatki: na desktopie stoi nad kolumną z tekstem,
-   a na telefonie nad zdjęciem, żeby strona nie zaczynała się od samej fotografii. */
+h2,
+p {
+  margin: 0;
+}
+
+/*
+ * Kolumna tekstu ma w makiecie tyle samo wysokości co zdjęcie (901 px, czyli
+ * 52,75% szerokości okna). Dzięki temu godziny seansów stoją przy dolnej
+ * krawędzi fotografii, a opis może rosnąć w dół w miarę dodawania zdań -
+ * zjada wtedy puste miejsce nad godzinami, zamiast rozpychać całą sekcję.
+ */
+.sauna-text {
+  display: flex;
+  /*
+   * Tyle, ile ma teraz zdjęcie: 47,37% szerokości okna przy proporcji 4:5 daje
+   * 59,21%. Wcześniej stało 52,75% - wysokość zdjęcia przy starej proporcji
+   * 809:901.
+   */
+  min-height: 59.21vw;
+  flex-direction: column;
+}
+
+.sauna-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+/*
+ * "SAUNA" jest w makiecie etykietą sekcji: wersaliki o wysokości 15 px na
+ * eksporcie, czyli podany rozmiar 13 na płótnie projektu. Wyśrodkowana
+ * dokładnie w kolumnie tekstu (środek napisu wypada na 451,5 px, środek
+ * kolumny też).
+ *
+ * Do pierwszego wiersza opisu jest 66 px (3,89%) - wcześniej stało tu
+ * `clamp(28px, 4vw, 52px)` i opis był dalej od nagłówka niż w projekcie.
+ */
 .section-label {
-  grid-column: 1;
-  grid-row: 1;
   display: block;
-  margin-bottom: clamp(28px, 4vw, 52px);
-  font-size: 0.82rem;
+  margin-bottom: 3.89vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   text-align: center;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/*
+ * Makieta: 22,3 px stopnia pisma (podane 14 na płótnie projektu), interlinia
+ * 29 px, czyli 1,31. Akapity rozdziela 28 px (1,64%). Tekst wyrównany do obu
+ * krawędzi - w projekcie widać rozstrzelone odstępy w wierszach dochodzących
+ * do prawej krawędzi kolumny.
+ */
 .sauna-paragraph {
-  margin: 0 0 20px;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
-  line-height: 1.65;
+  margin: 0 0 1.64vw;
+  font-size: calc(var(--skala-tekstu) * 0.583);
+  line-height: 1.31;
   text-align: justify;
+  text-wrap: pretty;
 }
 
+.sauna-paragraph:last-of-type {
+  margin-bottom: 0;
+}
+
+/*
+ * Makieta: przycisk kończy się na prawej krawędzi kolumny (790 px), czyli stoi
+ * przy zdjęciu, a nie na środku - to była uwaga "bliżej zdjęcia, a nie na
+ * środku". Od ostatniego wiersza opisu 52 px (3,04%).
+ */
 .sauna-cta-row {
   display: flex;
-  justify-content: center;
-  margin: clamp(32px, 5vw, 56px) 0;
+  justify-content: flex-end;
+  margin-top: 3.04vw;
 }
 
+/*
+ * Ten sam przycisk co na stronie "pilates": makieta daje mu 317 na 60 px,
+ * wersaliki o wysokości 19 px - czyli 25,5 px stopnia pisma (podane 16),
+ * wysokość 2,35 stopnia pisma i po 1,25 stopnia pisma powietrza z boków.
+ */
 .sauna-cta {
-  padding: 16px 34px;
-  font-size: 0.9rem;
+  display: inline-flex;
+  /* `max` pilnuje, żeby na telefonie przycisk nie zszedł pod 44 px wysokości dotyku. */
+  min-height: max(2.35em, 44px);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--baba-radius);
+  padding: 0 1.25em;
+  font-size: calc(var(--skala-tekstu) * 0.667);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.01em;
+  line-height: 1;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
   text-decoration: none;
+  /* Makieta: litery na tym przycisku są ciemne, nie białe. */
   color: var(--baba-brown);
   background: var(--baba-olive);
   transition: filter 160ms ease;
@@ -67,25 +151,40 @@
   filter: brightness(1.08);
 }
 
+/*
+ * Godziny seansów stoją w makiecie przy dolnej krawędzi zdjęcia (50 px, czyli
+ * 2,93%, nad jego dołem), wyrównane do prawej krawędzi kolumny - tak samo jak
+ * przycisk. `margin-top: auto` w kolumnie fleksowej spycha je na dół, więc
+ * przerwa nad nimi rośnie i maleje razem z długością opisu.
+ */
 .sauna-sessions {
-  margin-top: clamp(36px, 6vw, 72px);
+  margin-top: auto;
+  margin-bottom: 2.93vw;
   text-align: right;
 }
 
+/* Makieta: ta sama etykieta co "SAUNA" - wersaliki 15 px, czyli rozmiar 13. */
 .sauna-sessions h2 {
-  margin: 0 0 16px;
-  font-size: 0.82rem;
+  /* Makieta: 20 px (1,17%) do pierwszego wiersza godzin. */
+  margin-bottom: 1.17vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
 }
 
+/* Makieta: 20,7 px stopnia pisma (podane 13), wiersze rozdzielone 19 px (1,11%). */
 .sauna-sessions p {
-  margin: 0 0 8px;
-  font-size: 1rem;
-  line-height: 1.6;
+  margin-bottom: 1.11vw;
+  font-size: calc(var(--skala-tekstu) * 0.542);
+  line-height: 1.3;
+}
+
+.sauna-sessions p:last-child {
+  margin-bottom: 0;
 }
 
 .sauna-days::first-letter {
@@ -94,16 +193,16 @@
   text-transform: uppercase;
 }
 
-.sauna-image-wrapper {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-}
-
+/*
+ * Makieta dawała tu 809 na 901 px, czyli proporcję 0,90 - inną niż na barze
+ * i kontakcie (0,81 i 0,80). Ustalona proporcja to 4:5, ta sama na wszystkich
+ * trzech podstronach; szerokość zostaje z makiety.
+ */
 .sauna-image-wrapper img,
 .sauna-image-placeholder {
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: var(--proporcja-zdjecia);
   object-fit: cover;
 }
 
@@ -112,17 +211,21 @@
 }
 
 @media (max-width: 900px) {
+  /*
+   * Poniżej 900 px kolumny idą jedna pod drugą: najpierw zdjęcie, potem cała
+   * kolumna z tekstem (etykieta jest teraz jej częścią, więc nie da się jej
+   * przestawić nad fotografię osobno). Proporcje z makiety przestają tu
+   * obowiązywać - 39,75% szerokości to na telefonie 150 px, czyli za mało na
+   * akapit, a wysokość kolumny dobiera treść, nie zdjęcie.
+   */
   .sauna-shell {
     grid-template-columns: minmax(0, 1fr);
-    width: min(100% - 28px, 1280px);
+    row-gap: 28px;
+    padding: 40px 20px 48px;
   }
 
-  /* Na wąskim ekranie: etykieta, zdjęcie, potem tekst. */
-  .section-label,
-  .sauna-copy,
-  .sauna-image-wrapper {
-    grid-column: 1;
-    grid-row: auto;
+  .sauna-text {
+    min-height: 0;
   }
 
   .sauna-image-wrapper {
@@ -130,14 +233,38 @@
   }
 
   .section-label {
-    order: -2;
+    margin-bottom: 24px;
+    font-size: 0.84rem;
   }
 
   .sauna-paragraph {
+    margin-bottom: 16px;
+    font-size: 1rem;
     text-align: left;
   }
 
+  .sauna-cta-row {
+    justify-content: flex-start;
+    margin-top: 28px;
+  }
+
+  .sauna-cta {
+    font-size: 1rem;
+  }
+
   .sauna-sessions {
+    margin-top: 34px;
+    margin-bottom: 0;
     text-align: left;
+  }
+
+  .sauna-sessions h2 {
+    margin-bottom: 14px;
+    font-size: 0.84rem;
+  }
+
+  .sauna-sessions p {
+    margin-bottom: 8px;
+    font-size: 1rem;
   }
 }

@@ -2,29 +2,68 @@
   display: block;
 }
 
+/*
+ * Cała geometria stopki zmierzona na eksporcie makiety o szerokości 1708 px
+ * i podana w procentach szerokości okna, tak jak sekcje strony głównej.
+ *
+ * Stopka ma tam 622 px wysokości, czyli 36,4% szerokości okna - była u nas
+ * blisko dwa razy niższa, bo trzymała stałe paddingi i małe stopnie pisma.
+ *
+ * Dwie kolumny: po lewej ikony i dane studia (od 81 px, czyli 4,74%),
+ * po prawej newsletter (583 px szerokości, czyli 34,1%, kończący się 88 px
+ * przed prawą krawędzią). Wcześniej siatka miała trzy kolumny, z osobną
+ * wąską kolumną na ikony.
+ */
+/*
+ * Stopka ma trzy warianty kolorystyczne (brąz, czerwień na saunie, oliwka
+ * w barze), a pole newslettera i przycisk "zapisz się" biorą z nich kolory.
+ * Dlatego oba kolory siedzą w zmiennych, a nie w regułach poszczególnych
+ * elementów - wystarczy je podmienić w wariancie.
+ */
 .site-footer {
+  --stopka-tlo: var(--baba-brown);
+  --stopka-tresc: var(--baba-white);
+
   display: grid;
-  grid-template-columns: 120px minmax(220px, 1fr) minmax(320px, 0.9fr);
-  gap: clamp(26px, 6vw, 96px);
+  grid-template-columns: minmax(0, 1fr) 34.1vw;
+  gap: 2vw;
   align-items: start;
-  background: var(--baba-brown);
-  color: var(--baba-white);
-  padding: clamp(38px, 6vw, 70px) max(24px, calc((100vw - 1180px) / 2));
+  background: var(--stopka-tlo);
+  color: var(--stopka-tresc);
+  padding: 3.98vw 5.15vw 5.97vw 4.74vw;
 }
 
+/*
+ * Makieta: dwa znaki o wysokości 54 px (3,16%) z przerwą 20 px (1,17%),
+ * bez obwódki. Wcześniej każdy siedział w kwadracie 34 px z ramką, czego
+ * w projekcie nie ma.
+ */
 .footer-socials {
   display: flex;
-  gap: 10px;
+  gap: 1.17vw;
 }
 
 .footer-socials a {
   display: inline-grid;
-  width: 34px;
-  height: 34px;
   place-items: center;
-  border: 1px solid currentColor;
   color: inherit;
+  line-height: 1;
   text-decoration: none;
+  transition: opacity 160ms ease;
+}
+
+/*
+ * Rozmiar musi siedzieć na samym znaku, nie na odnośniku: arkusz PrimeIcons
+ * ustawia `.pi { font-size: 1rem }`, więc stopień pisma z rodzica nigdy do
+ * niego nie dochodził i ikony zostawały przy 16 px.
+ */
+.footer-socials .pi {
+  font-size: max(24px, 3.16vw);
+  line-height: 1;
+}
+
+.footer-socials a:hover {
+  opacity: 0.72;
 }
 
 /*
@@ -36,19 +75,39 @@
  * prawdziwy adres studia jest o połowę dłuższy i rozjeżdżał stopkę na każdej
  * podstronie.
  */
+/*
+ * Makieta zostawia między ikonami i logiem 193 px pustej przestrzeni (11,3%)
+ * - to ona daje stopce wysokość z projektu. Odstęp wisi na parze selektorów,
+ * a nie na samym `.footer-brand`: bez uzupełnionych linków do social mediów
+ * ikony się nie renderują i stopka nie ma wtedy zaczynać się pustym pasem.
+ */
+.footer-socials + .footer-brand {
+  margin-top: 11.3vw;
+}
+
+/*
+ * Logo w stopce jest plikiem PNG, więc rozmiar ustawia szerokość, nie stopień
+ * pisma. Makieta: 161 px szerokości, czyli 9,43%.
+ */
+
 .footer-brand > a {
-  display: inline-block;
-  margin-bottom: 26px;
+  display: block;
+  width: max(124px, 9.43vw);
+  /* Makieta: 22 px (1,29%) od logo do pierwszej linijki danych. */
+  margin-bottom: 1.29vw;
   color: inherit;
-  font-family: var(--baba-serif);
-  font-size: clamp(2.8rem, 8vw, 5.4rem);
-  line-height: 0.82;
   text-decoration: none;
 }
 
-.footer-brand p,
+/* Makieta: dane studia tym samym stopniem pisma co treść kolumn wyżej (22,5 px). */
+.footer-brand p {
+  margin: 0 0 0.47vw;
+  font-size: calc(var(--skala-tekstu) * 0.589);
+  line-height: 1.42;
+}
+
 .footer-newsletter p {
-  margin: 0 0 8px;
+  margin: 0;
   line-height: 1.45;
 }
 
@@ -63,46 +122,82 @@
 .footer-newsletter {
   position: relative;
   display: grid;
-  gap: 14px;
+  justify-items: start;
 }
 
+/*
+ * "Newsletter" to w makiecie największy napis w stopce: szeryfowy, o wysokości
+ * x-ów 33,5 px, czyli 65,7 px stopnia pisma - 1,72 podstawy skali.
+ */
 .footer-newsletter > span {
   font-family: var(--baba-serif);
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-size: calc(var(--skala-tekstu) * 1.72);
+  line-height: 1.05;
+  /* Makieta: 24 px (1,4%) do akapitu poniżej. */
+  margin-bottom: 1.4vw;
 }
 
+/* Makieta: 18,6 px stopnia pisma, czyli 0,487 podstawy. */
+.footer-newsletter p {
+  font-size: calc(var(--skala-tekstu) * 0.487);
+}
+
+/* Makieta: pole i przycisk obok siebie, przerwa 18 px (1,05%), 40 px (2,34%) od akapitu. */
 .newsletter-row {
   display: flex;
-  gap: 8px;
+  gap: 1.05vw;
   align-items: stretch;
+  width: 100%;
+  margin-top: 2.34vw;
 }
 
 .newsletter-row label {
   flex: 1 1 auto;
 }
 
+/*
+ * Makieta: pole 60 px wysokości (3,51%), obwódka pełnym kolorem treści stopki,
+ * nie przygaszonym. Na czerwonej stopce sauny jest więc oliwkowa, a nie biała.
+ */
 .newsletter-row input {
   width: 100%;
-  min-height: 40px;
-  border: 1px solid color-mix(in srgb, var(--baba-white) 62%, transparent);
-  border-radius: 0;
+  min-height: max(44px, 3.51vw);
+  border: 1px solid var(--stopka-tresc);
+  border-radius: var(--baba-radius);
   background: transparent;
-  color: var(--baba-white);
+  padding-inline: 1.05vw;
+  color: var(--stopka-tresc);
+  font-size: calc(var(--skala-tekstu) * 0.487);
 }
 
 .newsletter-row input::placeholder {
-  color: color-mix(in srgb, var(--baba-white) 72%, transparent);
+  color: color-mix(in srgb, var(--stopka-tresc) 72%, transparent);
 }
 
+/*
+ * Przycisk jest wypełniony kolorem treści stopki, a litery ma w kolorze jej
+ * tła - nie odwrotnie. W makiecie na brązowej stopce jest więc biały z brązowymi
+ * literami, a na czerwonej stopce sauny oliwkowy z czerwonymi (sprawdzone na
+ * eksporcie strony "sauna": wypełnienie 148,148,116, litery 145,34,23).
+ *
+ * Wcześniej przycisk był na sztywno biały, z literami dobieranymi osobno dla
+ * każdego wariantu - na czerwonej stopce wychodził biały zamiast oliwkowego.
+ *
+ * Wymiary z makiety: 166 na 59 px (3,45%), wersaliki o wysokości 16 px.
+ */
 .newsletter-row button {
-  border-radius: 0;
-  background: var(--baba-red);
-  border-color: var(--baba-red);
-  color: var(--baba-white);
+  min-height: max(44px, 3.45vw);
+  border: 1px solid var(--stopka-tresc);
+  border-radius: var(--baba-radius);
+  background: var(--stopka-tresc);
+  padding-inline: 1.29vw;
+  color: var(--stopka-tlo);
+  font-size: calc(var(--skala-tekstu) * 0.62);
   font-weight: 700;
   /* Makieta: bezszeryfowy wyłącznie w wersalikach - etykiety, nawigacja, przyciski. */
   font-family: var(--baba-sans);
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /*
@@ -145,7 +240,13 @@
   opacity: 1;
 }
 
+/*
+ * Okienko zgody nie występuje w makiecie, ale RODO go wymaga - stąd odstęp
+ * dobrany tak, żeby nie kleiło się do pola i nie rozpychało kolumny.
+ */
 .newsletter-consent {
+  margin-top: 1.05vw;
+  max-width: 100%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
@@ -177,33 +278,81 @@
 }
 
 @media (max-width: 820px) {
+  /*
+   * Poniżej 820 px kolumny idą jedna pod drugą, a rozmiary schodzą ze
+   * skalowanych szerokością okna na stałe - 34,1% szerokości to na telefonie
+   * 130 px, czyli za mało na pole newslettera.
+   */
   .site-footer {
     grid-template-columns: 1fr;
+    gap: 44px;
+    padding: 48px 24px 56px;
+  }
+
+  .footer-socials {
+    gap: 14px;
+  }
+
+  .footer-socials .pi {
+    font-size: 30px;
+  }
+
+  .footer-socials + .footer-brand {
+    margin-top: 34px;
+  }
+
+  .footer-brand > a {
+    margin-bottom: 18px;
+  }
+
+  .footer-brand p {
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+  }
+
+  .footer-newsletter > span {
+    margin-bottom: 14px;
+    font-size: clamp(1.9rem, 8vw, 2.6rem);
+  }
+
+  .footer-newsletter p {
+    font-size: 0.92rem;
   }
 
   .newsletter-row {
     flex-direction: column;
+    gap: 12px;
+    margin-top: 22px;
+  }
+
+  .newsletter-row input {
+    padding-inline: 14px;
+    font-size: 1rem;
+  }
+
+  .newsletter-row button {
+    padding-inline: 22px;
+    font-size: 0.9rem;
+  }
+
+  .newsletter-consent {
+    margin-top: 16px;
   }
 }
 
-/* Makieta: stopka sauny jest czerwona, baru olwikowa, pozostałe brązowe. */
+/* Makieta: stopka sauny jest czerwona, baru oliwkowa, pozostałe brązowe. */
 .site-footer-red {
-  background: var(--baba-red);
-  color: var(--baba-olive);
+  --stopka-tlo: var(--baba-red);
+  --stopka-tresc: var(--baba-olive);
 }
 
 .site-footer-olive {
-  background: var(--baba-olive);
-  color: var(--baba-red);
+  --stopka-tlo: var(--baba-olive);
+  --stopka-tresc: var(--baba-red);
 }
 
 /*
- * Gdy właścicielka nie doda linków, znika cała pierwsza kolumna siatki.
- * Reguła musi być ograniczona do szerokich ekranów, bo ma wyższą specyficzność
- * niż mobilne zwijanie do jednej kolumny i nadpisywała je na telefonie.
+ * Siatka ma teraz dwie kolumny niezależnie od tego, czy linki do social mediów
+ * są uzupełnione - ikony siedzą w tej samej kolumnie co dane studia, więc nie
+ * ma już czego przestawiać przy ich braku.
  */
-@media (min-width: 821px) {
-  .site-footer:not(:has(.footer-socials)) {
-    grid-template-columns: minmax(220px, 1fr) minmax(320px, 0.9fr);
-  }
-}

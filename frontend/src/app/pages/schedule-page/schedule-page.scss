@@ -10,20 +10,36 @@
   background: var(--baba-white);
 }
 
+/*
+ * Makieta: grafik zajmuje kolumnę od 109 px do 1599 px, czyli 87,3% szerokości
+ * okna. Wcześniej sekcja stała na `max-width: 1180px`, więc przy oknie 1708 px
+ * zostawało po 264 px z każdej strony.
+ */
+/*
+ * Makieta: od białej kreski do pierwszej treści wtyczki jest 92 px, czyli
+ * 5,39% szerokości okna. Wcześniej stało tu 5,93% plus 6,08% marginesu
+ * widocznego nagłówka - bez niego wtyczka zaczyna się tam, gdzie w projekcie.
+ */
 .schedule-shell {
-  width: min(100% - 56px, 1180px);
+  width: 87.3vw;
   margin: 0 auto;
-  padding: clamp(58px, 8vw, 110px) 0 clamp(72px, 10vw, 132px);
+  padding: 5.39vw 0 6.5vw;
 }
 
-h1 {
-  margin: 0 0 clamp(40px, 6vw, 76px);
-  font-family: var(--baba-serif);
-  font-size: clamp(5rem, 16vw, 13rem);
-  font-weight: 400;
-  line-height: 0.78;
-  text-align: center;
-  text-transform: uppercase;
+/*
+ * Nagłówek strony jest ukryty - patrz komentarz w szablonie. Zostaje wyłącznie
+ * dla czytników ekranu, więc nie ma tu stopnia pisma ani odstępów.
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .schedule-frame-shell {
@@ -32,16 +48,84 @@ h1 {
   background: color-mix(in srgb, var(--baba-blue) 28%, var(--baba-white));
 }
 
+/*
+ * Widget Fitssey sam ustawia sobie wysokość pod treść, więc nie wolno mu jej
+ * narzucać. Zostaje tylko pozycjonowanie nad szkieletem ładowania.
+ */
+.schedule-widget {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+}
+
+/*
+ * Zapasowy iframe. Musi być wyraźnie wyższy niż dawne 720 px, bo grafik ma
+ * zwykle kilka dni pod sobą, a przy stałej wysokości reszta zostawała
+ * nieosiągalna. Tutaj przewija się cała strona.
+ */
 .schedule-frame {
   position: relative;
   z-index: 1;
   display: block;
   width: 100%;
-  min-height: 720px;
+  height: 1600px;
   border: 0;
   background: transparent;
   opacity: 0;
   transition: opacity 260ms ease-out;
+}
+
+/*
+ * Wysokość ramki cennika.
+ *
+ * Cennik nie jest, jak grafik, jedną tabelą na całą szerokość: to kafelki
+ * karnetów, których Fitssey mieści w wierszu jeden, dwa, trzy albo cztery -
+ * jego własne progi to szerokość *ramki* 767 / 991 / 1199 px (szerokość
+ * kafelka odpowiednio 350 px / 47,3% / 31,3% / 23,3%). Ta sama treść ma więc
+ * cztery różne wysokości, a w obrębie jednego progu rośnie wraz z szerokością,
+ * bo zdjęcie karnetu trzyma proporcję (wysokość = 0,46 szerokości kafelka).
+ *
+ * Stąd wysokość liczona z szerokości okna, a nie jedna liczba w pikselach.
+ * Wzór: `otoczka 660 px + wiersze`, gdzie wiersz pilatesu to
+ * `0,46 * szerokość kafelka + 253 px`, a wiersz sauny `+ 231 px`. Ramka ma
+ * 87,3vw, więc dla dzisiejszych 7 karnetów (5 pilates + 2 sauna) wychodzą
+ * poniższe zależności; w każdej jest jeszcze ok. 40 px zapasu.
+ *
+ * Kiedy w Fitssey pojawią się nowe karnety, liczbę wierszy w tym wzorze trzeba
+ * przeliczyć. Do tego czasu pilnuje tego `wysokoscRamki` w klasie strony:
+ * osadzona strona dopisuje ramce wysokość, gdy tylko poda ją Fitssey, i ramka
+ * może wtedy tylko rosnąć - nic nie zostanie ucięte na stałe.
+ */
+/* Podwójny selektor, bo `.schedule-frame` dostaje niżej własną wysokość
+   w zapytaniu o wąskie ekrany - przy równej ważności wygrałaby kolejność
+   w pliku, a nie to, o którą ramkę chodzi. */
+.schedule-frame.schedule-frame-pricing {
+  /* cztery kafelki w wierszu: 2 wiersze pilatesu + 1 sauny */
+  height: calc(1440px + 28.1vw);
+  min-height: 900px;
+}
+
+/* trzy kafelki w wierszu: też 2 wiersze pilatesu + 1 sauny, ale szersze */
+@media (max-width: 1372px) {
+  .schedule-frame.schedule-frame-pricing {
+    height: calc(1440px + 37.7vw);
+  }
+}
+
+/* dwa kafelki w wierszu: 3 wiersze pilatesu + 1 sauny */
+@media (max-width: 1134px) {
+  .schedule-frame.schedule-frame-pricing {
+    height: calc(1740px + 76vw);
+  }
+}
+
+/* jeden kafelek w wierszu - tu Fitssey trzyma kafelek na stałych 350 px,
+   więc wysokość przestaje zależeć od okna: 5 wierszy pilatesu + 2 sauny */
+@media (max-width: 806px) {
+  .schedule-frame.schedule-frame-pricing {
+    height: 3700px;
+  }
 }
 
 .schedule-frame-shell-ready {
@@ -146,14 +230,26 @@ h1 {
   }
 }
 
+@media (max-width: 1080px) {
+  /* Poniżej 1080 px `--skala-tekstu` opiera się o swoje minimum, więc odstępy
+     schodzą ze skalowanych szerokością okna na stałe. */
+  .schedule-shell {
+    width: calc(100% - 40px);
+    padding: 44px 0 48px;
+  }
+}
+
 @media (max-width: 620px) {
   .schedule-shell {
-    width: min(100% - 28px, 1180px);
+    width: calc(100% - 28px);
   }
 
-  .schedule-frame-shell,
-  .schedule-frame {
+  .schedule-frame-shell {
     min-height: 760px;
+  }
+
+  .schedule-frame {
+    height: 1900px;
   }
 
   .schedule-skeleton-row {

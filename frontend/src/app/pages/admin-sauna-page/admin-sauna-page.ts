@@ -10,6 +10,7 @@ import { finalize } from 'rxjs';
 import { DAY_NAMES, SaunaContent, SaunaSessionItem, dayName } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
 
 interface SessionsByDay {
   dayOfWeek: number;
@@ -19,7 +20,7 @@ interface SessionsByDay {
 
 @Component({
   selector: 'app-admin-sauna-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule, TypoPoleDirective],
   templateUrl: './admin-sauna-page.html',
   styleUrl: './admin-sauna-page.scss'
 })

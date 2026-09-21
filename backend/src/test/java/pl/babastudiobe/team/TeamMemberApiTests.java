@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -20,7 +21,17 @@ class TeamMemberApiTests {
 	@Autowired
 	private MockMvc mockMvc;
 
+	/*
+	 * Dodawanie kadry to endpoint administratora, a SecurityConfig wymaga dla
+	 * `/api/admin/**` roli ADMIN - bez uwierzytelnienia test dostawał 401
+	 * zamiast 201. Rola z `@WithMockUser` musi zgadzać się z `ADMIN_ROLE`
+	 * z SecurityConfig.
+	 *
+	 * Samo pobranie listy jest publiczne, więc druga część testu przeszłaby
+	 * i bez tego.
+	 */
 	@Test
+	@WithMockUser(roles = "ADMIN")
 	void createsAndListsTeamMember() throws Exception {
 		MockMultipartFile photo = new MockMultipartFile(
 				"photo",

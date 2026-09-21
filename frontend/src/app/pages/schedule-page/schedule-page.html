@@ -2,7 +2,14 @@
   <app-site-header tone="red" />
 
   <section class="schedule-shell" aria-label="Grafik zajęć">
-    <h1>{{ 'schedule.title' | t }}</h1>
+    <!--
+      Makieta nie ma nad wtyczką żadnego nagłówka - jej rolę gra własna
+      nawigacja Fitssey (GRAFIK / CENNIK / PROFIL) na górze osadzonego widoku.
+      Napis zostaje jednak w drzewie dokumentu, tylko ukryty: strona bez
+      nagłówka pierwszego poziomu jest dla czytnika ekranu bezimienna,
+      a tytuł zakładki i tak ustawia SeoService.
+    -->
+    <h1 class="sr-only">{{ widok.naglowek | t }}</h1>
 
     <div class="schedule-frame-shell" [class.schedule-frame-shell-ready]="isFrameReady()">
       @if (!isFrameReady()) {
@@ -25,18 +32,48 @@
 
       <p class="schedule-status" role="status" aria-live="polite">
         @if (!isFrameReady()) {
-          {{ 'schedule.loading' | t }}
+          {{ widok.komunikatLadowania | t }}
         }
       </p>
 
-      <iframe
-        class="schedule-frame"
-        [src]="scheduleUrl"
-        [title]="'schedule.frameTitle' | t"
-        loading="eager"
-        referrerpolicy="strict-origin-when-cross-origin"
-        (load)="onFrameLoad()"
-      ></iframe>
+      @if (hasWidgetFailed()) {
+        <!--
+          Ramka obsługuje dwa przypadki: cennik, który nie ma własnego elementu
+          widgetu, oraz grafik, gdy skryptu Fitssey nie dało się wczytać
+          (blokada, brak sieci).
+
+          Wysokość bierzemy z wiadomości, które osadzona strona Fitssey sama
+          wysyła rodzicowi - tak samo jak oficjalny widget grafiku. Dopóki nic
+          nie przyszło, obowiązuje wysokość ze stylów.
+        -->
+        <iframe
+          class="schedule-frame"
+          [class.schedule-frame-pricing]="!widok.obslugujeWidget"
+          [style.height.px]="wysokoscRamki()"
+          [src]="scheduleUrl"
+          [title]="widok.tytulRamki | t"
+          loading="eager"
+          referrerpolicy="strict-origin-when-cross-origin"
+          (load)="onFrameLoad()"
+        ></iframe>
+      } @else {
+        <!--
+          Oficjalne osadzenie grafiku: skrypt Fitssey sam dopasowuje wysokość
+          ramki do treści, więc przewija się cała strona i nic się nie ucina.
+          Wcześniej stał tu surowy iframe o stałej wysokości 720 px - grafik
+          jest wyższy, a jego wnętrza nie dało się przewinąć.
+
+          `hideHeader` na false, bo makieta pokazuje nad grafikiem własną
+          nawigację Fitssey (GRAFIK / CENNIK / PROFIL).
+        -->
+        <app-fitssey-widget
+          class="schedule-widget"
+          widget="schedule"
+          [hideHeader]="false"
+          (widgetReady)="onWidgetReady()"
+          (widgetFailed)="onWidgetFailed()"
+        />
+      }
     </div>
   </section>
 

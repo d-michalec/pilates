@@ -7,7 +7,17 @@
   min-height: 520px;
 }
 
-.fitssey-widget-host iframe {
+/*
+ * Skrypt Fitssey wstawia tu własny iframe i sam dopasowuje jego wysokość do
+ * treści grafiku. `min-height` zostaje tylko jako podłoga na czas ładowania -
+ * wyżej ramka rośnie sama, więc przewija się strona, a nie wnętrze ramki.
+ *
+ * `::ng-deep` jest tu konieczne. Angular dokleja do selektorów atrybut
+ * `_ngcontent-*` i dopasowuje go do elementów z szablonu, a ten iframe
+ * powstaje w czasie działania strony, poza szablonem - bez przebicia reguła
+ * nie dotykała go wcale i ramka zostawała przy domyślnych 300 px z obwódką.
+ */
+:host ::ng-deep .fitssey-widget-host iframe {
   display: block;
   width: 100%;
   min-height: 560px;

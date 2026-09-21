@@ -51,20 +51,26 @@ class LandingController {
 		return landingGalleryService.list();
 	}
 
+	/*
+	 * Bez `title` i `titleEn`: na pierwszym ekranie stoi logo wgrane jako plik PNG
+	 * razem z frontendem, nie napis z bazy. Panel nie ma już czego wysyłać, a
+	 * @NotBlank na tym parametrze odrzucałby każdy zapis. Kolumny w bazie zostają
+	 * z dotychczasową wartością - `LandingService` przepisuje je bez zmiany.
+	 *
+	 * Tak samo wypadł `descriptionEn`: panel nigdy go nie wysyłał, a mimo to był
+	 * tu przyjmowany i zapisywany - czyli każdy zapis hero czyścił kolumnę
+	 * `description_en` po cichu. Teraz zostaje przepisany bez zmiany.
+	 */
 	@PutMapping(path = "/admin/landing/hero", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	LandingHeroResponse updateHero(
-			@RequestParam @NotBlank @Size(max = 120) String title,
 			@RequestParam @NotBlank @Size(max = 80) String ctaLabel,
 			@RequestParam @NotBlank @Size(max = 255) String ctaUrl,
 			@RequestParam @NotBlank @Size(max = 180) String imageAlt,
-			@RequestParam(required = false) @Size(max = 120) String titleEn,
-			@RequestParam(required = false) @Size(max = 4000) String descriptionEn,
 			@RequestParam(required = false) @Size(max = 80) String ctaLabelEn,
 			@RequestParam(required = false) @Size(max = 180) String imageAltEn,
 			@RequestParam(required = false) MultipartFile heroImage
 	) {
-		return landingService.updateHero(
-				title, ctaLabel, ctaUrl, imageAlt, titleEn, descriptionEn, ctaLabelEn, imageAltEn, heroImage);
+		return landingService.updateHero(ctaLabel, ctaUrl, imageAlt, ctaLabelEn, imageAltEn, heroImage);
 	}
 
 	@PostMapping(path = "/admin/landing/gallery", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

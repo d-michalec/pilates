@@ -1,21 +1,37 @@
 import { Component, HostListener, Input, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { BabaLogo, BabaLogoVariant } from '../baba-logo/baba-logo';
 import { FitsseyWarmupService } from '../../core/fitssey-warmup.service';
 import { LanguageService } from '../../core/language.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
 
 type HeaderTone = 'light' | 'red' | 'brown';
 
+/** Logo dobiera wariant kolorystyczny do tła, na którym stoi nagłówek. */
+const WARIANT_LOGO: Record<HeaderTone, BabaLogoVariant> = {
+  light: 'white',
+  red: 'red',
+  brown: 'brown'
+};
+
 @Component({
   selector: 'app-site-header',
-  imports: [LocalizePathPipe, RouterLink, TranslatePipe],
+  imports: [BabaLogo, LocalizePathPipe, RouterLink, TranslatePipe],
   templateUrl: './site-header.html',
   styleUrl: './site-header.scss'
 })
 export class SiteHeader {
   @Input() tone: HeaderTone = 'red';
   @Input() floating = false;
+
+  /**
+   * Strona główna wyłącza logo w nagłówku, bo ten sam znak stoi na środku
+   * zdjęcia hero. Pozostałe podstrony nie mają hero, więc logo zostaje.
+   */
+  @Input() showBrand = true;
+
+  protected readonly brandVariant = () => WARIANT_LOGO[this.tone];
 
   protected readonly isMenuOpen = signal(false);
 

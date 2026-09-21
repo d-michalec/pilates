@@ -13,7 +13,7 @@
       <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput)">
         <div class="field">
           <label for="description">Opis</label>
-          <textarea id="description" pTextarea formControlName="description" rows="10"></textarea>
+          <textarea id="description" pTextarea formControlName="description" rows="10" appTypo="akapit"></textarea>
           <small class="field-hint">Pusta linia rozdziela akapity na stronie.</small>
         </div>
 
@@ -61,7 +61,7 @@
 
         <div class="field translation-block">
           <label for="descriptionEn">Opis po angielsku</label>
-          <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="8"></textarea>
+          <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="8" appTypo="akapit"></textarea>
           <small class="field-hint">Puste pola oznaczają, że na stronie angielskiej pokaże się wersja polska.</small>
         </div>
 

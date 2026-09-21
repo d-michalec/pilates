@@ -7,7 +7,7 @@
     @if (isLoading()) {
       <p class="faq-state">{{ 'state.loading' | t }}</p>
     } @else if (errorMessage()) {
-      <p class="faq-state">{{ errorMessage() }}</p>
+      <p class="faq-state">{{ errorMessage() | typo }}</p>
     } @else if (faqItems().length === 0) {
       <p class="faq-state">{{ 'faq.empty' | t }}</p>
     } @else {
@@ -15,10 +15,10 @@
       @for (item of faqItems(); track item.id; let isFirst = $first) {
         <details class="faq-item" [open]="isFirst">
           <summary>
-            <span>{{ question(item) }}</span>
+            <span>{{ question(item) | typo }}</span>
             <i class="pi pi-plus" aria-hidden="true"></i>
           </summary>
-          <p>{{ answer(item) }}</p>
+          <p>{{ answer(item) | typo }}</p>
         </details>
       }
     </div>

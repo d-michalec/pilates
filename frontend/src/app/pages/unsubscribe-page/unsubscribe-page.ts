@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 
 import { LanguageService } from '../../core/language.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { NewsletterService } from '../../core/newsletter.service';
 import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
@@ -20,7 +21,7 @@ import { SiteHeader } from '../../layout/site-header/site-header';
  */
 @Component({
 	selector: 'app-unsubscribe-page',
-	imports: [ButtonModule, LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe],
+	imports: [ButtonModule, LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe],
 	templateUrl: './unsubscribe-page.html',
 	styleUrl: './unsubscribe-page.scss',
 	host: { ngSkipHydration: 'true' }

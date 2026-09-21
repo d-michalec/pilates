@@ -55,3 +55,7 @@ uploads/*
 
 # Sklonowany przykład integracji Fitssey - materiał referencyjny z własnym repozytorium
 fitssey-widget-next-js-example/
+
+# Zrzuty i porównania z makietą robione w trakcie pracy z Claude - materiał
+# pomocniczy, waży kilka megabajtów i nie jest częścią projektu.
+Claude outputs/

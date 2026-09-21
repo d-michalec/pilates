@@ -5,14 +5,16 @@ import { finalize } from 'rxjs';
 import { EventService } from '../../core/event.service';
 import { SeoService } from '../../core/seo.service';
 import { StudioEvent } from '../../core/studio-event';
+import { plainEventTitle, splitEventTitle } from '../../core/event-title';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 import { LanguageService } from '../../core/language.service';
 
 @Component({
   selector: 'app-events-page',
-  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe],
+  imports: [LocalizePathPipe, RouterLink, SiteFooter, SiteHeader, TranslatePipe, TypografiaPipe],
   templateUrl: './events-page.html',
   styleUrl: './events-page.scss',
   host: { ngSkipHydration: 'true' }
@@ -77,6 +79,16 @@ export class EventsPage implements OnInit {
 
   protected imageUrl(event: StudioEvent) {
     return event.image.thumbnailUrl || event.image.url;
+  }
+
+  /** Kawałki nazwy razem z informacją, które są błękitne - patrz core/event-title.ts. */
+  protected titleParts(event: StudioEvent) {
+    return splitEventTitle(this.content(event.title, event.titleEn));
+  }
+
+  /** Nazwa bez gwiazdek - do atrybutu alt, gdzie znacznik byłby tylko śmieciem. */
+  protected plainTitle(event: StudioEvent) {
+    return plainEventTitle(this.content(event.title, event.titleEn));
   }
 
   protected showPastPage(strona: number) {

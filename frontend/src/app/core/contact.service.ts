@@ -8,7 +8,12 @@ export interface ContactRequest {
   name: string;
   email: string;
   phone: string;
-  subject: string;
+  /*
+   * Opcjonalny: formularz na stronie głównej nie ma pola tematu, bo makieta
+   * przewiduje tam cztery pola. Backend przyjmuje wiadomość bez tematu
+   * i sam składa wtedy tytuł e-maila z imienia nadawcy.
+   */
+  subject?: string;
   message: string;
   website: string;
 }

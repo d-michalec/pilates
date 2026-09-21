@@ -1,28 +1,31 @@
 <main class="event-page">
   <app-site-header tone="red" />
 
-  <header class="event-header old-event-header">
-    <a class="menu-link" [routerLink]="'/wydarzenia' | localizePath">
-      <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span>Wydarzenia</span>
-    </a>
-    <a class="brand-link" [routerLink]="'/' | localizePath">BABA</a>
-  </header>
-
   @if (isLoading()) {
     <p class="empty-state">{{ 'state.loading' | t }}</p>
   } @else if (errorMessage()) {
-    <p class="empty-state">{{ errorMessage() }}</p>
+    <p class="empty-state">{{ errorMessage() | typo }}</p>
   } @else if (event(); as event) {
     <section class="event-hero">
-      <img [src]="event.image.url" [alt]="content(event.title, event.titleEn)" decoding="async" fetchpriority="high" />
+      <img [src]="event.image.url" [alt]="plainTitle(event)" decoding="async" fetchpriority="high" />
       <div class="event-hero-copy">
-        <span>{{ event.hostName }}</span>
-        <h1>{{ content(event.title, event.titleEn) }}</h1>
+        <span>{{ event.hostName | typo }}</span>
+        <h1>
+          <!--
+            Nazwa idzie kawałkami, bo w makiecie część słów jest błękitna,
+            a część biała - tak samo jak na kafelkach w harmonogramie.
+            O tym, które to słowa, decyduje panel.
+          -->
+          @for (part of titleParts(event); track $index) {
+            <span [class.event-title-highlight]="part.highlighted">{{ part.text | typo }}</span>
+          }
+        </h1>
       </div>
       <aside class="event-date-box">
-        <span>{{ dateLine(event) }}</span>
-        <strong>{{ timeLine(event) }}</strong>
+        <!-- Makieta: dzień tygodnia, data i godzina w trzech osobnych wierszach. -->
+        <span>{{ weekdayLine(event) }}</span>
+        <span>{{ dayLine(event) }}</span>
+        <span>{{ timeLine(event) }}</span>
         @if (isExternalCta(signupUrl(event))) {
           <a [href]="signupUrl(event)" rel="noopener">{{ 'event.join' | t }}</a>
         } @else {
@@ -32,49 +35,58 @@
     </section>
 
     <section class="event-description">
-      <p class="lead">{{ content(event.shortDescription, event.shortDescriptionEn) }}</p>
-      <p>{{ content(event.description, event.descriptionEn) }}</p>
+      <p class="lead">{{ content(event.shortDescription, event.shortDescriptionEn) | typo }}</p>
+      @for (paragraph of paragraphs(content(event.description, event.descriptionEn)); track $index) {
+        <p class="body-text">{{ paragraph | typo }}</p>
+      }
     </section>
 
     <section class="host-section" [class.host-section-no-image]="!event.hostImage">
       @if (event.hostImage) {
-        <img [src]="event.hostImage.url" [alt]="event.hostName" loading="lazy" decoding="async" />
+        <img [src]="event.hostImage.url" [alt]="event.hostName | surowy" loading="lazy" decoding="async" />
       }
-      <div>
-        <span>prowadzi</span>
-        <h2>{{ event.hostName }}</h2>
-        <p>{{ content(event.hostDescription, event.hostDescriptionEn) || content(event.shortDescription, event.shortDescriptionEn) }}</p>
+      <div class="host-copy">
+        <!--
+          Podpis "prowadząca" stoi w makiecie po LEWEJ stronie imienia, na jego
+          linii bazowej - nie nad nim. Stąd wiersz siatki z dwiema kolumnami:
+          wąską na podpis i szeroką na imię oraz tekst.
+        -->
+        <p class="host-label">{{ 'event.host' | t }}</p>
+        <h2>{{ event.hostName | typo }}</h2>
+        @for (paragraph of paragraphs(hostText(event)); track $index) {
+          <p class="host-text">{{ paragraph | typo }}</p>
+        }
       </div>
     </section>
 
     <section class="event-facts">
       <dl>
         <div>
-          <dt>Data:</dt>
-          <dd>{{ dateLine(event) }}</dd>
+          <dt>{{ 'event.factDate' | t }}</dt>
+          <dd>{{ factDateLine(event) }}</dd>
         </div>
         @if (event.location) {
           <div>
-            <dt>Miejsce:</dt>
-            <dd>{{ content(event.location, event.locationEn) }}</dd>
+            <dt>{{ 'event.factPlace' | t }}</dt>
+            <dd>{{ content(event.location, event.locationEn) | typo }}</dd>
           </div>
         }
         @if (event.durationMinutes) {
           <div>
-            <dt>Czas trwania:</dt>
-            <dd>{{ event.durationMinutes }} min</dd>
+            <dt>{{ 'event.factDuration' | t }}</dt>
+            <dd>{{ event.durationMinutes }}&nbsp;min</dd>
           </div>
         }
         @if (event.capacity) {
           <div>
-            <dt>Liczba miejsc:</dt>
+            <dt>{{ 'event.factCapacity' | t }}</dt>
             <dd>{{ event.capacity }}</dd>
           </div>
         }
         @if (event.price) {
           <div>
-            <dt>Cena:</dt>
-            <dd>{{ content(event.price, event.priceEn) }}</dd>
+            <dt>{{ 'event.factPrice' | t }}</dt>
+            <dd>{{ content(event.price, event.priceEn) | typo }}</dd>
           </div>
         }
       </dl>

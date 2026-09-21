@@ -10,13 +10,15 @@ import { finalize } from 'rxjs';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
 import { PilatesClass } from '../../core/pilates-class';
 import { PilatesClassService } from '../../core/pilates-class.service';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
+import { SurowyTekstPipe } from '../../core/typografia.pipe';
 
 const MAX_IMAGE_SIZE_BYTES = 20 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 @Component({
   selector: 'app-admin-classes-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule, TypoPoleDirective, SurowyTekstPipe],
   templateUrl: './admin-classes-page.html',
   styleUrl: './admin-classes-page.scss'
 })

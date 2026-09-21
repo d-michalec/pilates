@@ -1,0 +1,202 @@
+<main class="admin-shell">
+  <app-admin-header
+    heading="Regulamin i polityka"
+    description="Treść obu dokumentów prawnych. Każdy zapis odkłada poprzednią wersję w historii zmian, więc da się odtworzyć, na co zgadzały się osoby zapisane wcześniej."
+    [previewLink]="activePreview()"
+  />
+
+  <section class="legal-admin" aria-label="Edycja dokumentów prawnych">
+    <!-- Dwa dokumenty, więc przełącznik zakładek zamiast listy. -->
+    <div class="doc-switch" role="tablist" aria-label="Dokument">
+      @for (dokument of dokumenty; track dokument.key) {
+        <button
+          type="button"
+          role="tab"
+          class="doc-tab"
+          [class.doc-tab-active]="dokument.key === activeKey()"
+          [attr.aria-selected]="dokument.key === activeKey()"
+          [disabled]="isSaving()"
+          (click)="selectDocument(dokument.key)"
+        >
+          {{ dokument.label }}
+        </button>
+      }
+    </div>
+
+    @if (isLoading()) {
+      <p class="empty-state">Ładowanie...</p>
+    } @else {
+      <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()">
+        <p-card styleClass="admin-card">
+          <ng-template #title>{{ activeLabel() }}</ng-template>
+          <ng-template #subtitle>
+            @if (lastUpdate(); as data) {
+              Ostatni zapis: {{ data }}.
+            } @else {
+              Dokument nie był jeszcze zapisywany z panelu.
+            }
+            @if (pendingSections() > 0) {
+              Sekcji oznaczonych jako „do uzupełnienia”: {{ pendingSections() }}.
+            }
+          </ng-template>
+
+          <div class="field">
+            <label for="title">Tytuł</label>
+            <input id="title" pInputText type="text" formControlName="title" appTypo="naglowek" />
+            @if (form.controls.title.touched && form.controls.title.invalid) {
+              <small class="field-error">Tytuł jest wymagany i może mieć do 200 znaków.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="intro">Wstęp</label>
+            <textarea id="intro" pTextarea formControlName="intro" rows="4" appTypo="akapit"></textarea>
+            <small class="field-hint">
+              Akapit nad spisem sekcji. Puste pole oznacza, że dokument zaczyna się od pierwszej sekcji.
+            </small>
+          </div>
+
+          <fieldset class="field-group-en">
+            <legend>Wersja angielska</legend>
+            <p class="field-hint">
+              Pola opcjonalne. Puste pole oznacza, że na stronie /en pokaże się tekst polski.
+            </p>
+
+            <div class="field">
+              <label for="titleEn">Tytuł (EN)</label>
+              <input id="titleEn" pInputText type="text" formControlName="titleEn" appTypo="naglowek" />
+            </div>
+
+            <div class="field">
+              <label for="introEn">Wstęp (EN)</label>
+              <textarea id="introEn" pTextarea formControlName="introEn" rows="4" appTypo="akapit"></textarea>
+            </div>
+          </fieldset>
+        </p-card>
+
+        <p-card styleClass="admin-card">
+          <ng-template #title>Sekcje</ng-template>
+          <ng-template #subtitle>
+            Kolejność na liście odpowiada kolejności na stronie. W treści pusta linia rozdziela akapity,
+            a wiersz zaczynający się od „- ” jest punktem listy wypunktowanej.
+          </ng-template>
+
+          @if (sections.length === 0) {
+            <p class="empty-state">Dokument nie ma jeszcze żadnej sekcji.</p>
+          }
+
+          <div class="section-list" formArrayName="sections">
+            <!--
+              `track sekcja`, a nie `track $index`. Przy śledzeniu po indeksie
+              przestawienie sekcji nie zmieniało wartości `[formGroupName]`,
+              więc Angular nie przypisywał wierszom nowych grup formularza:
+              pola zostawały przy starej treści, choć tablica formularza była
+              już przestawiona - i dalsza edycja trafiała nie w tę sekcję,
+              w którą widać.
+            -->
+            @for (sekcja of sections.controls; track sekcja; let index = $index; let first = $first; let last = $last) {
+              <article class="section-item" [formGroupName]="index">
+                <header class="section-item-head">
+                  <span class="section-number">{{ index + 1 }}</span>
+
+                  <div class="section-move">
+                    <p-button
+                      type="button"
+                      icon="pi pi-arrow-up"
+                      severity="secondary"
+                      [text]="true"
+                      ariaLabel="Przenieś wyżej"
+                      [disabled]="first || isSaving()"
+                      (click)="moveSection(index, -1)"
+                    />
+                    <p-button
+                      type="button"
+                      icon="pi pi-arrow-down"
+                      severity="secondary"
+                      [text]="true"
+                      ariaLabel="Przenieś niżej"
+                      [disabled]="last || isSaving()"
+                      (click)="moveSection(index, 1)"
+                    />
+                    <p-button
+                      type="button"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      [text]="true"
+                      ariaLabel="Usuń sekcję"
+                      [disabled]="isSaving() || !canRemoveSection()"
+                      (click)="removeSection(index)"
+                    />
+                  </div>
+                </header>
+
+                <div class="field">
+                  <label [for]="'heading-' + index">Nagłówek</label>
+                  <input [id]="'heading-' + index" pInputText type="text" formControlName="heading" appTypo="nazwa" />
+                </div>
+
+                <div class="field">
+                  <label [for]="'body-' + index">Treść</label>
+                  <textarea [id]="'body-' + index" pTextarea formControlName="body" rows="8" appTypo="akapit"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="field">
+                    <label [for]="'headingEn-' + index">Nagłówek (EN)</label>
+                    <input [id]="'headingEn-' + index" pInputText type="text" formControlName="headingEn" appTypo="nazwa" />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label [for]="'bodyEn-' + index">Treść (EN)</label>
+                  <textarea [id]="'bodyEn-' + index" pTextarea formControlName="bodyEn" rows="8" appTypo="akapit"></textarea>
+                </div>
+
+                <label class="section-pending">
+                  <p-checkbox formControlName="needsContent" [binary]="true" [inputId]="'pending-' + index" />
+                  <span>
+                    Do uzupełnienia - strona pokaże przy tej sekcji widoczny znacznik, żeby nie dało się
+                    opublikować pustych zasad.
+                  </span>
+                </label>
+              </article>
+            }
+          </div>
+
+          <div class="form-actions">
+            <p-button
+              type="button"
+              label="Dodaj sekcję"
+              icon="pi pi-plus"
+              severity="secondary"
+              [outlined]="true"
+              [disabled]="isSaving()"
+              (click)="addSection()"
+            />
+          </div>
+        </p-card>
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage() ?? ''" />
+        }
+
+        @if (successMessage()) {
+          <p-message severity="success" [text]="successMessage() ?? ''" />
+        }
+
+        <div class="form-actions form-actions-sticky">
+          <p-button
+            type="submit"
+            label="Zapisz dokument"
+            icon="pi pi-check"
+            [loading]="isSaving()"
+            [disabled]="isSaving()"
+          />
+          @if (form.dirty) {
+            <span class="dirty-hint">Masz niezapisane zmiany.</span>
+          }
+        </div>
+      </form>
+    }
+  </section>
+</main>

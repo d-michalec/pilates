@@ -11,21 +11,48 @@
       <ng-template #subtitle>
         {{
           isEditing()
-            ? 'Zmieniasz wydarzenie ' + (editedEvent()?.title ?? '') + '.'
+            ? 'Zmieniasz wydarzenie ' + plainTitle(editedEvent()?.title) + '.'
             : 'Zdjęcie, prowadzący, termin i informacje organizacyjne.'
         }}
       </ng-template>
 
       <form class="editor-form" [formGroup]="form" (ngSubmit)="submit(imageInput, hostImageInput)">
+        <!--
+          Nazwa wydarzenia jest na kafelku dwukolorowa: domyślnie biała, a
+          zaznaczone fragmenty błękitne. Zapis siedzi w tym samym polu - słowa
+          do wyróżnienia stoją między gwiazdkami. Przycisk obok otacza nimi
+          zaznaczony fragment, żeby nie trzeba było pamiętać składni.
+        -->
         <div class="field">
-          <label for="title">Tytuł</label>
-          <input id="title" pInputText type="text" formControlName="title" />
+          <label for="title">Nazwa wydarzenia</label>
+          <div class="field-with-action">
+            <input #titleInput id="title" pInputText type="text" formControlName="title" appTypo="nazwa" />
+            <p-button
+              type="button"
+              label="Na błękitno"
+              severity="secondary"
+              [outlined]="true"
+              (click)="oznaczNaBlekitno(titleInput, form.controls.title)"
+            />
+          </div>
+          <p class="field-hint">
+            Zaznacz słowo w polu i kliknij „Na błękitno” - w tekście pojawią się wokół niego gwiazdki
+            (<code>*słowo*</code>), a na kafelku będzie błękitne. Reszta nazwy zostaje biała.
+            Ponowne kliknięcie na zaznaczonym wyróżnieniu je zdejmuje.
+          </p>
+          @if (titlePreview().length > 0) {
+            <p class="title-preview" aria-label="Podgląd kolorów nazwy">
+              @for (part of titlePreview(); track $index) {
+                <span [class.title-preview-highlight]="part.highlighted">{{ part.text | surowy }}</span>
+              }
+            </p>
+          }
         </div>
 
         <div class="form-row">
           <div class="field">
             <label for="hostName">Prowadzący</label>
-            <input id="hostName" pInputText type="text" formControlName="hostName" />
+            <input id="hostName" pInputText type="text" formControlName="hostName" appTypo="nazwa" />
           </div>
 
           <div class="field">
@@ -36,28 +63,28 @@
 
         <div class="field">
           <label for="shortDescription">Krótki opis</label>
-          <textarea id="shortDescription" pTextarea formControlName="shortDescription" rows="3"></textarea>
+          <textarea id="shortDescription" pTextarea formControlName="shortDescription" rows="3" appTypo="akapit"></textarea>
         </div>
 
         <div class="field">
           <label for="description">Opis wydarzenia</label>
-          <textarea id="description" pTextarea formControlName="description" rows="7"></textarea>
+          <textarea id="description" pTextarea formControlName="description" rows="7" appTypo="akapit"></textarea>
         </div>
 
         <div class="field">
           <label for="hostDescription">Opis prowadzącego</label>
-          <textarea id="hostDescription" pTextarea formControlName="hostDescription" rows="5"></textarea>
+          <textarea id="hostDescription" pTextarea formControlName="hostDescription" rows="5" appTypo="akapit"></textarea>
         </div>
 
         <div class="form-row">
           <div class="field">
             <label for="location">Miejsce</label>
-            <input id="location" pInputText type="text" formControlName="location" />
+            <input id="location" pInputText type="text" formControlName="location" appTypo="nazwa" />
           </div>
 
           <div class="field">
             <label for="price">Cena</label>
-            <input id="price" pInputText type="text" formControlName="price" />
+            <input id="price" pInputText type="text" formControlName="price" appTypo="nazwa" />
           </div>
         </div>
 
@@ -84,7 +111,23 @@
 
           <div class="field">
             <label for="titleEn">Nazwa wydarzenia (EN)</label>
-            <input id="titleEn" pInputText type="text" formControlName="titleEn" />
+            <div class="field-with-action">
+              <input #titleEnInput id="titleEn" pInputText type="text" formControlName="titleEn" appTypo="nazwa" />
+              <p-button
+                type="button"
+                label="Na błękitno"
+                severity="secondary"
+                [outlined]="true"
+                (click)="oznaczNaBlekitno(titleEnInput, form.controls.titleEn)"
+              />
+            </div>
+            @if (titleEnPreview().length > 0) {
+              <p class="title-preview" aria-label="Podgląd kolorów nazwy angielskiej">
+                @for (part of titleEnPreview(); track $index) {
+                  <span [class.title-preview-highlight]="part.highlighted">{{ part.text | surowy }}</span>
+                }
+              </p>
+            }
             @if (form.controls.titleEn.touched && form.controls.titleEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 220 znaków.</small>
             }
@@ -92,7 +135,7 @@
 
           <div class="field">
             <label for="shortDescriptionEn">Krótki opis (EN)</label>
-            <textarea id="shortDescriptionEn" pTextarea formControlName="shortDescriptionEn" rows="3"></textarea>
+            <textarea id="shortDescriptionEn" pTextarea formControlName="shortDescriptionEn" rows="3" appTypo="akapit"></textarea>
             @if (form.controls.shortDescriptionEn.touched && form.controls.shortDescriptionEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 600 znaków.</small>
             }
@@ -100,7 +143,7 @@
 
           <div class="field">
             <label for="descriptionEn">Opis (EN)</label>
-            <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="6"></textarea>
+            <textarea id="descriptionEn" pTextarea formControlName="descriptionEn" rows="6" appTypo="akapit"></textarea>
             @if (form.controls.descriptionEn.touched && form.controls.descriptionEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 6000 znaków.</small>
             }
@@ -108,7 +151,7 @@
 
           <div class="field">
             <label for="hostDescriptionEn">O prowadzącej (EN)</label>
-            <textarea id="hostDescriptionEn" pTextarea formControlName="hostDescriptionEn" rows="4"></textarea>
+            <textarea id="hostDescriptionEn" pTextarea formControlName="hostDescriptionEn" rows="4" appTypo="akapit"></textarea>
             @if (form.controls.hostDescriptionEn.touched && form.controls.hostDescriptionEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 3000 znaków.</small>
             }
@@ -116,7 +159,7 @@
 
           <div class="field">
             <label for="locationEn">Miejsce (EN)</label>
-            <input id="locationEn" pInputText type="text" formControlName="locationEn" />
+            <input id="locationEn" pInputText type="text" formControlName="locationEn" appTypo="nazwa" />
             @if (form.controls.locationEn.touched && form.controls.locationEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 255 znaków.</small>
             }
@@ -124,7 +167,7 @@
 
           <div class="field">
             <label for="priceEn">Cena (EN)</label>
-            <input id="priceEn" pInputText type="text" formControlName="priceEn" />
+            <input id="priceEn" pInputText type="text" formControlName="priceEn" appTypo="nazwa" />
             @if (form.controls.priceEn.touched && form.controls.priceEn.invalid) {
               <small class="field-error">Tłumaczenie może mieć do 80 znaków.</small>
             }
@@ -206,7 +249,7 @@
           @if (isEditing() && editedEvent(); as edited) {
             @if (!previewUrl()) {
               <figure class="current-image">
-                <img [src]="imageUrl(edited)" [alt]="edited.title" />
+                <img [src]="imageUrl(edited)" [alt]="plainTitle(edited.title)" />
                 <figcaption>Obecne zdjęcie wydarzenia</figcaption>
               </figure>
             }
@@ -261,13 +304,13 @@
         <div class="event-list">
           @for (event of events(); track event.id) {
             <article class="event-list-item" [class.event-list-item-editing]="editedEventId() === event.id">
-              <img [src]="imageUrl(event)" [alt]="event.title" />
+              <img [src]="imageUrl(event)" [alt]="plainTitle(event.title)" />
 
               <div class="event-list-item-body">
                 <h3>
-                  <a [routerLink]="['/event', event.id]">{{ event.title }}</a>
+                  <a [routerLink]="['/event', event.id]">{{ plainTitle(event.title) }}</a>
                 </h3>
-                <p>{{ event.hostName }} · {{ eventDate(event) }}</p>
+                <p>{{ event.hostName | surowy }} · {{ eventDate(event) }}</p>
                 @if (!event.titleEn && !event.descriptionEn) {
                   <span class="missing-en" title="Brak tłumaczenia - na /en pokaże się tekst polski">brak EN</span>
                 }
@@ -309,7 +352,7 @@
         aria-labelledby="confirm-title"
         (click)="$event.stopPropagation()"
       >
-        <h2 id="confirm-title">Usunąć wydarzenie {{ pendingEvent.title }}?</h2>
+        <h2 id="confirm-title">Usunąć wydarzenie {{ plainTitle(pendingEvent.title) }}?</h2>
         <p>
           Zniknie z harmonogramu, a jego strona szczegółów przestanie istnieć. Zdjęcia wydarzenia
           i prowadzącego zostaną skasowane z dysku. Tej operacji nie da się cofnąć.

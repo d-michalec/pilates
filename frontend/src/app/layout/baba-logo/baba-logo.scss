@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  line-height: 0;
+}
+
+/*
+ * Rozmiar ustawia miejsce użycia - nagłówek, hero i stopka dają logu inną
+ * wielkość. Tutaj pilnujemy tylko, żeby obraz nie wychodził poza swój slot
+ * i zachował proporcje pliku.
+ */
+.baba-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}

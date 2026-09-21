@@ -6,24 +6,41 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { finalize } from 'rxjs';
 
+import { BabaLogo, BabaLogoVariant } from '../baba-logo/baba-logo';
 import { CONTACT_DETAILS } from '../../core/contact-details';
 import { LanguageService } from '../../core/language.service';
 import { NewsletterService } from '../../core/newsletter.service';
 import { SiteSettings } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { TypografiaPipe } from '../../core/typografia.pipe';
 
 /** Makieta używa różnych kolorów stopki na poszczególnych podstronach. */
 type FooterTone = 'brown' | 'red' | 'olive';
 
+/*
+ * Logo w stopce ma w makiecie kolor treści tej stopki, a nie zawsze biały:
+ * na brązowej jest białe, na czerwonej (sauna) oliwkowe, na oliwkowej (bar)
+ * czerwone. Skoro logo jest plikiem PNG, trzeba podmienić wariant, a nie kolor.
+ */
+const WARIANT_LOGO: Record<FooterTone, BabaLogoVariant> = {
+  brown: 'white',
+  red: 'olive',
+  olive: 'red'
+};
+
 @Component({
   selector: 'app-site-footer',
-  imports: [ButtonModule, InputTextModule, LocalizePathPipe, MessageModule, ReactiveFormsModule, RouterLink, TranslatePipe],
+  imports: [BabaLogo, ButtonModule, InputTextModule, LocalizePathPipe, MessageModule, ReactiveFormsModule, RouterLink, TranslatePipe, TypografiaPipe],
   templateUrl: './site-footer.html',
   styleUrl: './site-footer.scss'
 })
 export class SiteFooter implements OnInit {
   @Input() tone: FooterTone = 'brown';
+
+  protected get wariantLogo(): BabaLogoVariant {
+    return WARIANT_LOGO[this.tone];
+  }
 
   protected readonly kontakt = CONTACT_DETAILS;
 

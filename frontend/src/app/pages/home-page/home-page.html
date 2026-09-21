@@ -4,23 +4,26 @@
       <img
         class="hero-image"
         [src]="landing()?.heroImage?.url"
-        [alt]="content(landing()?.imageAlt, landing()?.imageAltEn)"
+        [alt]="content(landing()?.imageAlt, landing()?.imageAltEn) | surowy"
         decoding="async"
         fetchpriority="high"
       />
     }
 
-    <app-site-header tone="light" [floating]="true" />
+    <!-- Bez logo w nagłówku: na pierwszym ekranie znak stoi tylko raz, na środku zdjęcia. -->
+    <app-site-header tone="light" [floating]="true" [showBrand]="false" />
 
     <div class="hero-content">
-      <h1>{{ content(landing()?.title, landing()?.titleEn) || 'BABA' }}</h1>
+      <h1 class="hero-logo">
+        <app-baba-logo variant="white" [priority]="true" />
+      </h1>
       @if (isExternalCta()) {
         <a class="hero-cta" [href]="ctaUrl()" rel="noopener" (mouseenter)="warmSchedule()" (focus)="warmSchedule()">
-          {{ content(landing()?.ctaLabel, landing()?.ctaLabelEn) || ('landing.ctaFallback' | t) }}
+          {{ (content(landing()?.ctaLabel, landing()?.ctaLabelEn) | typo) || ('landing.ctaFallback' | t) }}
         </a>
       } @else {
         <a class="hero-cta" [routerLink]="ctaUrl()" (mouseenter)="warmSchedule()" (focus)="warmSchedule()">
-          {{ content(landing()?.ctaLabel, landing()?.ctaLabelEn) || ('landing.ctaFallback' | t) }}
+          {{ (content(landing()?.ctaLabel, landing()?.ctaLabelEn) | typo) || ('landing.ctaFallback' | t) }}
         </a>
       }
     </div>
@@ -69,7 +72,7 @@
 
   <section id="oferta" class="offer-section" aria-label="Co przygotowaliśmy">
     @if (offerImageUrl(); as backgroundUrl) {
-      <img class="offer-background" [src]="backgroundUrl" [alt]="offer()?.imageAlt ?? ''" loading="lazy" decoding="async" />
+      <img class="offer-background" [src]="backgroundUrl" [alt]="(offer()?.imageAlt ?? '') | surowy" loading="lazy" decoding="async" />
     }
 
     <div class="offer-inner">
@@ -99,20 +102,21 @@
     </div>
   </section>
 
+  <!--
+    Układ z makiety: po lewej tekst, po prawej formularz. Bez przycisków
+    "Kontakt" i "Grafik zajęć" - w projekcie jest tu wyłącznie podkreślony
+    odnośnik do FAQ. Formularz ma cztery pola, bez tematu.
+  -->
   <section id="kontakt" class="questions-section" aria-label="Kontakt">
-    <div>
-      <span>{{ 'landing.questions.label' | t }}</span>
-      <h2>{{ 'landing.questions.heading' | t }}</h2>
-    </div>
+    <div class="questions-copy">
+      <h2>{{ 'landing.questions.label' | t }}</h2>
 
-    <div class="question-actions">
-      <a class="outline-link" [routerLink]="'/faq' | localizePath">{{ 'landing.questions.faq' | t }}</a>
-      <a class="outline-link" [routerLink]="'/kontakt' | localizePath">{{ 'menu.contact' | t }}</a>
-      @if (isExternalCta()) {
-        <a class="solid-link" [href]="ctaUrl()" rel="noopener" (mouseenter)="warmSchedule()">{{ 'landing.questions.schedule' | t }}</a>
-      } @else {
-        <a class="solid-link" [routerLink]="ctaUrl()" (mouseenter)="warmSchedule()">{{ 'landing.questions.schedule' | t }}</a>
-      }
+      <p class="questions-faq">
+        {{ 'landing.questions.faqPrefix' | t }}
+        <a [routerLink]="'/faq' | localizePath">FAQ</a>
+      </p>
+
+      <p class="questions-lead">{{ 'landing.questions.heading' | t }}</p>
     </div>
 
     <form class="contact-form" [formGroup]="contactForm" (ngSubmit)="submitContact()">
@@ -123,20 +127,15 @@
         </label>
 
         <label>
-          <span>{{ 'contact.email' | t }}</span>
-          <input pInputText type="email" formControlName="email" autocomplete="email" />
-        </label>
-
-        <label>
           <span>{{ 'contact.phone' | t }}</span>
           <input pInputText type="tel" formControlName="phone" autocomplete="tel" />
         </label>
-
-        <label>
-          <span>{{ 'contact.subject' | t }}</span>
-          <input pInputText type="text" formControlName="subject" />
-        </label>
       </div>
+
+      <label>
+        <span>{{ 'contact.email' | t }}</span>
+        <input pInputText type="email" formControlName="email" autocomplete="email" />
+      </label>
 
       <label>
         <span>{{ 'contact.message' | t }}</span>
@@ -161,8 +160,7 @@
       <button
         pButton
         type="submit"
-        [label]="'contact.send' | t"
-        icon="pi pi-send"
+        [label]="'contact.sendShort' | t"
         [loading]="isSendingContact()"
         [disabled]="isSendingContact()"
       ></button>

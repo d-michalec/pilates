@@ -21,7 +21,16 @@
     <span>{{ 'menu.open' | t }}</span>
   </button>
 
-  <a class="brand-link" [routerLink]="'/' | localizePath" (click)="closeMenu()">BABA</a>
+  <!--
+    Logo jest plikiem PNG, nie napisem - to znak zaprojektowany dla marki.
+    Na stronie głównej nagłówek go nie pokazuje, bo to samo logo stoi już
+    na środku zdjęcia hero i w makiecie występuje tam tylko raz.
+  -->
+  @if (showBrand) {
+    <a class="brand-link" [routerLink]="'/' | localizePath" (click)="closeMenu()">
+      <app-baba-logo [variant]="brandVariant()" />
+    </a>
+  }
 
   <!-- Przełącznik prowadzi do tej samej strony w drugim języku, nie na stronę główną. -->
   <a
@@ -44,24 +53,49 @@
   (click)="closeMenu()"
 >
   <nav class="menu-panel" [attr.aria-label]="'menu.label' | t" (click)="$event.stopPropagation()">
-    <div class="menu-panel-header">
-      <span>BABA</span>
-      <button class="menu-close-button" type="button" [attr.aria-label]="'menu.closeAria' | t" (click)="closeMenu()">
-        <i class="pi pi-times"></i>
-      </button>
+    <!-- Makieta: w panelu nie ma logo, tylko znak zamknięcia w prawym górnym rogu. -->
+    <button class="menu-close-button" type="button" [attr.aria-label]="'menu.closeAria' | t" (click)="closeMenu()">
+      <i class="pi pi-times"></i>
+    </button>
+
+    <!--
+      Pozycje są w makiecie podzielone na cztery grupy rozdzielone pustą
+      przestrzenią, bez kresek: strona główna / miejsca w studiu / zapisy
+      i ludzie / kontakt.
+    -->
+    <div class="menu-groups">
+      <div class="menu-group">
+        <a [routerLink]="'/' | localizePath" (click)="closeMenu()">{{ 'menu.home' | t }}</a>
+      </div>
+
+      <div class="menu-group">
+        <a [routerLink]="'/pilates' | localizePath" (click)="closeMenu()">{{ 'menu.pilates' | t }}</a>
+        <a [routerLink]="'/sauna' | localizePath" (click)="closeMenu()">{{ 'menu.sauna' | t }}</a>
+        <a [routerLink]="'/wydarzenia' | localizePath" (click)="closeMenu()">{{ 'menu.events' | t }}</a>
+        <a [routerLink]="'/bar' | localizePath" (click)="closeMenu()">{{ 'menu.bar' | t }}</a>
+      </div>
+
+      <div class="menu-group">
+        <a [routerLink]="'/grafik' | localizePath" (mouseenter)="warmSchedule()" (click)="closeMenu()">
+          {{ 'menu.schedule' | t }}
+        </a>
+        <!--
+          Cennik otwiera od razu stronę cennika we frontoffice Fitssey.
+          Wcześniej prowadził na /grafik, czyli na widok grafiku - trzeba było
+          jeszcze kliknąć zakładkę wewnątrz wtyczki.
+        -->
+        <a [routerLink]="'/cennik' | localizePath" (mouseenter)="warmSchedule()" (click)="closeMenu()">
+          {{ 'menu.pricing' | t }}
+        </a>
+        <a [routerLink]="'/kadra' | localizePath" (click)="closeMenu()">{{ 'menu.team' | t }}</a>
+        <a [routerLink]="'/faq' | localizePath" (click)="closeMenu()">{{ 'menu.faq' | t }}</a>
+      </div>
+
+      <div class="menu-group">
+        <a [routerLink]="'/kontakt' | localizePath" (click)="closeMenu()">{{ 'menu.contact' | t }}</a>
+      </div>
     </div>
 
-    <a [routerLink]="'/' | localizePath" (click)="closeMenu()">{{ 'menu.home' | t }}</a>
-    <a [routerLink]="'/pilates' | localizePath" (click)="closeMenu()">{{ 'menu.pilates' | t }}</a>
-    <a [routerLink]="'/sauna' | localizePath" (click)="closeMenu()">{{ 'menu.sauna' | t }}</a>
-    <a [routerLink]="'/wydarzenia' | localizePath" (click)="closeMenu()">{{ 'menu.events' | t }}</a>
-    <a [routerLink]="'/bar' | localizePath" (click)="closeMenu()">{{ 'menu.bar' | t }}</a>
-    <a [routerLink]="'/grafik' | localizePath" (mouseenter)="warmSchedule()" (click)="closeMenu()">
-      {{ 'menu.schedule' | t }}
-    </a>
-    <a [routerLink]="'/kadra' | localizePath" (click)="closeMenu()">{{ 'menu.team' | t }}</a>
-    <a [routerLink]="'/faq' | localizePath" (click)="closeMenu()">{{ 'menu.faq' | t }}</a>
-    <a [routerLink]="'/kontakt' | localizePath" (click)="closeMenu()">{{ 'menu.contact' | t }}</a>
     <a
       class="menu-signup"
       [routerLink]="'/grafik' | localizePath"

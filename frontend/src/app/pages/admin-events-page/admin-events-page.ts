@@ -11,13 +11,16 @@ import { finalize } from 'rxjs';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
 import { EventService } from '../../core/event.service';
 import { StudioEvent } from '../../core/studio-event';
+import { plainEventTitle, splitEventTitle } from '../../core/event-title';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
+import { SurowyTekstPipe } from '../../core/typografia.pipe';
 
 const MAX_IMAGE_SIZE_BYTES = 20 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 @Component({
   selector: 'app-admin-events-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, RouterLink, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, RouterLink, TextareaModule, TypoPoleDirective, SurowyTekstPipe],
   templateUrl: './admin-events-page.html',
   styleUrl: './admin-events-page.scss'
 })
@@ -42,6 +45,14 @@ export class AdminEventsPage implements OnInit, OnDestroy {
     return id === null ? null : (this.events().find((item) => item.id === id) ?? null);
   });
   protected readonly isEditing = computed(() => this.editedEventId() !== null);
+
+  /*
+   * Podgląd kolorów nazwy pod polem. Sygnał, a nie `computed` po formularzu:
+   * `form.controls.title.value` nie jest sygnałem, więc nie odświeżałby widoku
+   * przy pisaniu. Wartość ustawia `valueChanges` w ngOnInit.
+   */
+  protected readonly titlePreview = signal(splitEventTitle(''));
+  protected readonly titleEnPreview = signal(splitEventTitle(''));
 
   protected readonly form = new FormGroup({
     title: new FormControl('', {
@@ -118,11 +129,115 @@ export class AdminEventsPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadEvents();
+
+    // Podgląd kolorów nazwy odświeża się przy każdym znaku, także po wczytaniu
+    // wydarzenia do edycji (`setValue` też przechodzi przez valueChanges).
+    this.titlePreview.set(splitEventTitle(this.form.controls.title.value));
+    this.form.controls.title.valueChanges.subscribe((value) => {
+      this.titlePreview.set(splitEventTitle(value));
+    });
+    this.form.controls.titleEn.valueChanges.subscribe((value) => {
+      this.titleEnPreview.set(splitEventTitle(value));
+    });
   }
 
   ngOnDestroy() {
     this.revokePreviewUrl();
     this.revokeHostPreviewUrl();
+  }
+
+  /** Nazwa bez gwiazdek - lista i dialogi mają pokazywać tekst, nie zapis formatowania. */
+  protected plainTitle(title: string | null | undefined) {
+    return plainEventTitle(title);
+  }
+
+  /*
+   * Otacza gwiazdkami fragment zaznaczony w polu, a jeśli zaznaczenie już jest
+   * wyróżnieniem - zdejmuje je. Bez zaznaczenia bierze słowo pod kursorem, bo
+   * to najczęstszy przypadek: ktoś klika w słowo i chce je pokolorować.
+   *
+   * Zapis idzie przez `setValue`, więc formularz zostaje jedynym źródłem
+   * prawdy, a nie przez podmianę `input.value`.
+   */
+  protected oznaczNaBlekitno(input: HTMLInputElement, control: FormControl<string>) {
+    const tekst = input.value ?? '';
+    let od = input.selectionStart ?? tekst.length;
+    let doKad = input.selectionEnd ?? od;
+
+    if (od === doKad) {
+      [od, doKad] = this.granicSlowa(tekst, od);
+    }
+
+    if (od === doKad) {
+      input.focus();
+      return;
+    }
+
+    const przed = tekst.slice(0, od);
+    const zaznaczony = tekst.slice(od, doKad);
+    const po = tekst.slice(doKad);
+
+    /*
+     * Zaznaczenie razem z gwiazdkami - zdejmujemy je. Warunek na brak gwiazdki
+     * w środku jest istotny: bez niego zaznaczenie obejmujące dwa wyróżnienia
+     * ("*SPORT* i *HORMONY*", na przykład po Ctrl+A) traciło tylko skrajną parę
+     * i kolory wychodziły odwrotnie - wyróżnione zostawało to, co było między
+     * nimi.
+     */
+    const srodek = zaznaczony.slice(1, -1);
+    if (zaznaczony.startsWith('*') && zaznaczony.endsWith('*') && srodek.length > 0 && !srodek.includes('*')) {
+      this.ustawTytul(input, control, przed, srodek, po);
+      return;
+    }
+
+    // Zaznaczenie dokładnie w środku pary gwiazdek - też zdejmujemy.
+    if (przed.endsWith('*') && po.startsWith('*') && !zaznaczony.includes('*')) {
+      this.ustawTytul(input, control, przed.slice(0, -1), zaznaczony, po.slice(1));
+      return;
+    }
+
+    /*
+     * Wyróżnienie nie może zawierać gwiazdek, bo para musi obejmować ciągły
+     * tekst. Zaznaczenie z wieloma wyróżnieniami scalamy więc w jedno -
+     * to, czego oczekuje ktoś, kto zaznaczył całość i kliknął przycisk.
+     */
+    this.ustawTytul(input, control, przed, `*${zaznaczony.replace(/\*/g, '')}*`, po);
+  }
+
+  /** Granice słowa pod kursorem; spacje i gwiazdki są separatorami. */
+  private granicSlowa(tekst: string, pozycja: number): [number, number] {
+    const separator = /[\s*]/;
+    let od = Math.min(pozycja, tekst.length);
+    let doKad = od;
+
+    while (od > 0 && !separator.test(tekst[od - 1])) {
+      od -= 1;
+    }
+    while (doKad < tekst.length && !separator.test(tekst[doKad])) {
+      doKad += 1;
+    }
+
+    return [od, doKad];
+  }
+
+  private ustawTytul(
+    input: HTMLInputElement,
+    control: FormControl<string>,
+    przed: string,
+    srodek: string,
+    po: string
+  ) {
+    control.setValue(przed + srodek + po);
+    control.markAsDirty();
+    // Bez `markAsTouched` komunikat o przekroczeniu 220 znaków pokazałby się
+    // dopiero po wyjściu z pola, choć długość zmienił przycisk.
+    control.markAsTouched();
+
+    // Zaznaczenie zostaje na tym samym fragmencie, więc kolejne kliknięcie
+    // przycisku zdejmuje wyróżnienie, które właśnie powstało.
+    const start = przed.length;
+    input.focus();
+    input.setSelectionRange(start, start + srodek.length);
   }
 
   protected onImageSelected(event: Event) {
@@ -262,7 +377,7 @@ export class AdminEventsPage implements OnInit, OnDestroy {
         next: () => {
           this.events.update((events) => events.filter((item) => item.id !== studioEvent.id));
           this.eventPendingDeletion.set(null);
-          this.successMessage.set(`Usunięto wydarzenie ${studioEvent.title}.`);
+          this.successMessage.set(`Usunięto wydarzenie ${plainEventTitle(studioEvent.title)}.`);
 
           if (this.editedEventId() === studioEvent.id) {
             this.cancelEditing(imageInput, hostImageInput);

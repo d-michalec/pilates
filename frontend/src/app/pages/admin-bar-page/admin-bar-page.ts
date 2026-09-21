@@ -10,10 +10,11 @@ import { finalize } from 'rxjs';
 import { BarContent, DAY_NAMES, dayName } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
 
 @Component({
   selector: 'app-admin-bar-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TextareaModule, TypoPoleDirective],
   templateUrl: './admin-bar-page.html',
   styleUrl: './admin-bar-page.scss'
 })

@@ -1,56 +1,66 @@
 <main class="legal-page">
   <app-site-header tone="red" />
 
-  <section class="legal-shell" [attr.aria-label]="tekst(dokument().title)">
-    <h1>{{ tekst(dokument().title) }}</h1>
+  <section class="legal-shell" [attr.aria-label]="tytul()">
+    @if (isLoading()) {
+      <p class="legal-state">{{ 'state.loading' | t }}</p>
+    } @else if (errorMessage()) {
+      <p class="legal-state">{{ errorMessage() | typo }}</p>
+    } @else if (dokument(); as dokument) {
+      <h1>{{ tytul() | typo }}</h1>
 
-    <p class="legal-updated">{{ 'legal.updated' | t }} {{ dataAktualizacji() }}</p>
+      <p class="legal-updated">{{ 'legal.updated' | t }} {{ dataAktualizacji() }}</p>
 
-    @if (dokument().intro; as intro) {
-      <p class="legal-intro">{{ tekst(intro) }}</p>
-    }
-
-    <div class="legal-body">
-      @for (sekcja of dokument().sections; track $index) {
-        <section class="legal-section">
-          @if (sekcja.heading; as naglowek) {
-            <h2>{{ tekst(naglowek) }}</h2>
-          }
-
-          @for (akapit of sekcja.paragraphs ?? []; track $index) {
-            <p>{{ tekst(akapit) }}</p>
-          }
-
-          @if (sekcja.bullets?.length) {
-            <ul>
-              @for (punkt of sekcja.bullets ?? []; track $index) {
-                <li>{{ tekst(punkt) }}</li>
-              }
-            </ul>
-          }
-
-          <!--
-            Widoczny znacznik zamiast cichej pustki. Dokument prawny z pustym
-            punktem wygląda jak niedopatrzenie dopiero wtedy, gdy ktoś to zauważy -
-            a zauważa zwykle klientka, nie właścicielka.
-          -->
-          @if (sekcja.doUzupelnienia) {
-            <p class="legal-todo">
-              @if (czyPusta(sekcja)) {
-                {{ 'legal.missing' | t }}
-              } @else {
-                {{ 'legal.check' | t }}
-              }
-            </p>
-          }
-        </section>
+      @if (tekst(dokument.intro, dokument.introEn); as intro) {
+        <p class="legal-intro">{{ intro | typo }}</p>
       }
-    </div>
 
-    <div class="legal-contact">
-      <p>{{ 'legal.questions' | t }}</p>
-      <a [routerLink]="'/kontakt' | localizePath">{{ 'legal.contactLink' | t }}</a>
-    </div>
+      <div class="legal-body">
+        @for (sekcja of dokument.sections; track sekcja.sortOrder) {
+          <section class="legal-section">
+            @if (tekst(sekcja.heading, sekcja.headingEn); as naglowek) {
+              <h2>{{ naglowek | typo }}</h2>
+            }
+
+            <!--
+              Akapity i listy idą w kolejności, w jakiej je wpisano: pusta linia
+              rozdziela akapity, a wiersz od "- " jest punktem listy.
+            -->
+            @for (blok of bloki(sekcja); track $index) {
+              @if (blok.kind === 'list') {
+                <ul>
+                  @for (punkt of blok.items; track $index) {
+                    <li>{{ punkt | typo }}</li>
+                  }
+                </ul>
+              } @else {
+                <p>{{ blok.items[0] | typo }}</p>
+              }
+            }
+
+            <!--
+              Widoczny znacznik zamiast cichej pustki. Dokument prawny z pustym
+              punktem wygląda jak niedopatrzenie dopiero wtedy, gdy ktoś to zauważy -
+              a zauważa zwykle klientka, nie właścicielka.
+            -->
+            @if (sekcja.needsContent) {
+              <p class="legal-todo">
+                @if (czyPusta(sekcja)) {
+                  {{ 'legal.missing' | t }}
+                } @else {
+                  {{ 'legal.check' | t }}
+                }
+              </p>
+            }
+          </section>
+        }
+      </div>
+
+      <div class="legal-contact">
+        <p>{{ 'legal.questions' | t }}</p>
+        <a [routerLink]="'/kontakt' | localizePath">{{ 'legal.contactLink' | t }}</a>
+      </div>
+    }
   </section>
 
   <app-site-footer />

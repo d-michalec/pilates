@@ -8,6 +8,49 @@
   --baba-blue: #b7cfe6;
   --baba-olive: #949474;
   --baba-white: #ffffff;
+  /*
+   * Jeden promień dla wszystkich elementów sterujących. Makieta nie używa
+   * pigułek ani ostrych kantów - przyciski, przełącznik języka i pola
+   * formularzy mają ten sam, delikatnie zaokrąglony prostokąt.
+   */
+  --baba-radius: 10px;
+
+  /*
+   * Zdjęcie sekcyjne na podstronach "bar", "sauna" i "kontakt" ma jedną
+   * proporcję - 1080 na 1350 px, czyli 4:5. W makiecie bar i kontakt miały
+   * 0,81 i 0,80, a sauna 0,90, więc slot na każdej podstronie był trochę
+   * inny. Szerokość zostaje ta z projektu, osobna dla każdej podstrony.
+   */
+  --proporcja-zdjecia: 4 / 5;
+
+  /*
+   * PODSTAWA SKALI PISMA NA STRONIE PUBLICZNEJ.
+   *
+   * Makieta jest jednym rysunkiem o stałej szerokości, więc rozmiary liczymy
+   * jako procent szerokości okna - inaczej na szerokim monitorze litery
+   * zostałyby w miejscu, a odstępy wokół nich rosły, i proporcja z projektu
+   * by się rozjechała.
+   *
+   * Zmierzone na eksporcie makiety o szerokości 1708 px (wysokość x-ów kroju
+   * Instrument Serif to 0,51 em, stąd przeliczenie na stopień pisma):
+   *
+   *   sekcja "o marce", akapit      x-height 19,5 -> 38,2 px = 2,236% szerokości
+   *   sekcja "o marce", kolumny     x-height 11,5 -> 22,5 px = 1,317%
+   *   sekcja oferty, nagłówek karty x-height 19,5 -> 38,2 px   (ten sam stopień)
+   *   sekcja oferty, treść karty    x-height 11,5 -> 22,5 px   (ten sam stopień)
+   *
+   * Sekcje chodzą więc na dwóch stopniach pisma, a nie czterech - stąd
+   * jedna podstawa dla całej strony i stałe współczynniki przy niej. Stosunek
+   * 38,2 / 22,5 = 1,70, czyli dokładnie podane 24 do 14; te 24 i 14 wypadają
+   * przy oknie około 1080 px, na tyle rysowano projekt (1708 / 38,2 * 24 = 1073).
+   *
+   * Jedna zmienna z mnożnikami, a nie kilka niezależnych `clamp`: inaczej
+   * proporcja rozjechałaby się na krańcach - na telefonie i na monitorze
+   * panoramicznym. Dolna granica to podane 24 px, górna zatrzymuje wzrost
+   * przy około 1970 px.
+   */
+  --skala-tekstu: clamp(24px, 2.236vw, 44px);
+
   --baba-serif: "Instrument Serif", Georgia, serif;
   --baba-sans: "Neue Plak", "Arial Black", Arial, sans-serif;
 
@@ -44,4 +87,38 @@ html {
 
 body {
   margin: 0;
+}
+
+/*
+ * ŁAMANIE WIERSZY
+ *
+ * Sierotki (krótki wyraz na końcu wiersza) załatwia `zlozTekst` w kodzie -
+ * skleja je z następnym słowem spacją nierozdzielającą. Zostaje druga połowa
+ * problemu: wiersze o bardzo różnej długości i pojedyncze słowo w ostatnim
+ * wierszu. Tego nie da się zapisać w treści, bo zależy od szerokości okna,
+ * a strona jest płynna - i dokładnie do tego są te dwie własności.
+ *
+ * `balance` wyrównuje długość wierszy w nagłówkach (nie zadziała powyżej
+ * kilku wierszy, bo przeglądarki same się tu pilnują), `pretty` w akapitach
+ * pilnuje ostatniego wiersza i nie zostawia w nim jednego słowa. Tam, gdzie
+ * przeglądarka tego nie zna, po prostu nic się nie dzieje - układ zostaje taki
+ * jak dziś.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd,
+dt,
+address,
+figcaption,
+blockquote {
+  text-wrap: pretty;
 }

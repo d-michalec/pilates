@@ -11,12 +11,14 @@ import { finalize } from 'rxjs';
 import { AdminHeader } from '../../layout/admin-header/admin-header';
 import { TeamMember } from '../../core/team-member';
 import { TeamService } from '../../core/team.service';
+import { TypoPoleDirective } from '../../layout/typo-pole/typo-pole.directive';
+import { SurowyTekstPipe } from '../../core/typografia.pipe';
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 @Component({
   selector: 'app-admin-team-page',
-  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TagModule, TextareaModule],
+  imports: [AdminHeader, ButtonModule, CardModule, InputTextModule, MessageModule, ReactiveFormsModule, TagModule, TextareaModule, TypoPoleDirective, SurowyTekstPipe],
   templateUrl: './admin-team-page.html',
   styleUrl: './admin-team-page.scss'
 })

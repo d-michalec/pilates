@@ -39,7 +39,7 @@ p {
 }
 
 button {
-  border-radius: 0;
+  border-radius: var(--baba-radius);
   background: var(--baba-red);
   border-color: var(--baba-red);
   color: var(--baba-white);
