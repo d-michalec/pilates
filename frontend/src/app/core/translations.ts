@@ -43,43 +43,52 @@ export const TRANSLATIONS = {
   // Landing
   'landing.ctaFallback': { pl: 'Zarezerwuj sesję', en: 'Book a session' },
   'landing.about.label': { pl: 'O marce', en: 'About us' },
+  /*
+   * Teksty sekcji "o marce", oferty, pytań i newslettera są autorstwa
+   * właścicielki - nie skracać ani nie przestawiać bez jej zgody. Tłumaczenia
+   * angielskie są nasze i czekają na jej potwierdzenie.
+   *
+   * Podział na trzy bloki wynika z makiety: pierwszy akapit stoi wyśrodkowany
+   * większym stopniem pisma, dwa kolejne idą pod nim w dwóch kolumnach.
+   */
   'landing.about.intro': {
-    pl: 'BABA to miejsce dla ruchu, regeneracji i wspólnoty. Łączymy pilates, spokojne tempo i codzienne rytuały, które pomagają wracać do ciała z czułością.',
-    en: 'BABA is a place for movement, recovery and community. We bring together pilates, an unhurried pace and everyday rituals that help you come back to your body with kindness.'
+    pl: 'BABY nie da się zamknąć w kilku słowach. To, co najlepsze, wydarza się gdzieś między wersami. Między „napnij” a „puść”, w przelotnie łapanych spojrzeniach i długich wieczornych spotkaniach w gronie innych BAB.',
+    en: 'BABA cannot be summed up in a few words. The best of it happens somewhere between the lines. Between “engage” and “release”, in glances caught in passing and long evening gatherings among other BABAs.'
   },
   'landing.about.first': {
-    pl: 'Pracujemy w kameralnych grupach, z uwagą na technikę i oddech. To studio ma być blisko ludzi, nie trendów.',
-    en: 'We work in small groups, with attention to technique and breath. This studio is meant to stay close to people, not to trends.'
+    pl: 'Tworząc BABĘ, wyszłyśmy od ciała — zrozumienia jego dynamiki, rytmu, w którym się porusza, ale też potrzeby totalnego bezruchu. Wiedziałyśmy, że te dwa światy nie są swoimi przeciwieństwami. Potrzebują siebie nawzajem.',
+    en: 'We started BABA from the body — from understanding how it moves, the rhythm it keeps, and its need for complete stillness. We knew that these two worlds are not opposites. They need each other.'
   },
   'landing.about.second': {
-    pl: 'W planie są zajęcia pilates, sauna, wydarzenia, kobieca społeczność i oferta barowa jako naturalne przedłużenie wizyty.',
-    en: 'We offer pilates classes, a sauna, events, a womens community and a cafe as a natural extension of your visit.'
+    pl: 'Tak powstała BABA. Nie tylko studio pilatesu, lecz miejsce, w którym ruch spotyka się z odprężeniem, skupienie z rozmową, a bezwstydnie dobre ciasto popijamy zdrowym koktajlem. W BABIE nic nie jest na siłę, a dobra rozmowa toczy się sama.',
+    en: 'That is how BABA came to be. Not just a pilates studio, but a place where movement meets ease, focus meets conversation, and shamelessly good cake is washed down with a healthy smoothie. Nothing here is forced, and good conversation takes care of itself.'
   },
-  'landing.offer.label': { pl: 'Co przygotowaliśmy?', en: 'What we offer' },
-  'landing.offer.pilates.title': { pl: 'trening pilates', en: 'pilates training' },
+  /* Forma żeńska - tak jak w tekstach właścicielki. */
+  'landing.offer.label': { pl: 'Co przygotowałyśmy?', en: 'What we have prepared' },
+  'landing.offer.pilates.title': { pl: 'reformer pilates', en: 'reformer pilates' },
   'landing.offer.pilates.text': {
-    pl: 'Kameralne zajęcia prowadzone w rytmie, który daje siłę bez presji.',
-    en: 'Small group classes at a pace that builds strength without pressure.'
+    pl: 'Pilates robi dla naszego ciała zaskakująco dużo dobrego. Wzmacnia, poprawia postawę i przynosi ulgę plecom. Może być łagodnym ruchem albo treningiem, po którym odkryjesz mięśnie, o których istnieniu nie miałaś pojęcia.',
+    en: 'Pilates does a surprising amount of good for the body. It strengthens, improves posture and brings relief to your back. It can be gentle movement, or a workout that introduces you to muscles you had no idea existed.'
   },
   'landing.offer.sauna.title': { pl: 'sauna', en: 'sauna' },
   'landing.offer.sauna.text': {
-    pl: 'Regeneracja po treningu albo osobny rytuał wyciszenia.',
-    en: 'Recovery after training, or a quiet ritual of its own.'
+    pl: 'Rozgrzeje Cię, pomoże mięśniom się zregenerować i pozwoli na kilkanaście minut naprawdę nic nie robić. Możesz wejść do niej po treningu albo zupełnie bez okazji. Dla zdrowia, lepszego samopoczucia i czystej przyjemności.',
+    en: 'It warms you up, helps your muscles recover and lets you do absolutely nothing for a good quarter of an hour. Come in after training, or for no reason at all. For your health, your mood and pure pleasure.'
   },
-  'landing.offer.community.title': { pl: 'kobieca społeczność', en: 'womens community' },
-  'landing.offer.community.text': {
-    pl: 'Warsztaty, spotkania i przestrzeń do bycia razem.',
-    en: 'Workshops, meetups and space to be together.'
+  'landing.offer.coffee.title': { pl: 'kawa', en: 'coffee' },
+  'landing.offer.coffee.text': {
+    pl: 'Świeżo palona kawa, coś słodkiego, coś słonego i stolik, przy którym możesz zostać trochę dłużej. Złap coś przed treningiem albo usiądź po nim razem ze swoją BABĄ i na chwilę zapomnij, co miałaś zrobić później.',
+    en: 'Freshly roasted coffee, something sweet, something salty and a table you can linger at. Grab something before training, or sit down afterwards with your BABA and forget for a moment what you were supposed to do next.'
   },
-  'landing.offer.bar.title': { pl: 'oferta barowa', en: 'cafe menu' },
-  'landing.offer.bar.text': {
-    pl: 'Kawa, napary i rzeczy, które dobrze domykają wizytę.',
-    en: 'Coffee, infusions and small things that round off a visit.'
+  'landing.offer.workshops.title': { pl: 'warsztaty', en: 'workshops' },
+  'landing.offer.workshops.text': {
+    pl: 'Dorosłe życie daje nam coraz mniej okazji do poznawania nowych ludzi. Dlatego chcemy stwarzać ich trochę więcej – zdobywać wiedzę, próbować nowych rzeczy i prowadzić rozmowy, które otwierają głowę.',
+    en: 'Adult life gives us fewer and fewer chances to meet new people. So we want to create a few more – to learn, to try new things and to have conversations that open your head.'
   },
   'landing.questions.label': { pl: 'Masz pytania?', en: 'Any questions?' },
   'landing.questions.heading': {
-    pl: 'Napisz do nas albo od razu przejdź do grafiku.',
-    en: 'Write to us, or go straight to the schedule.'
+    pl: 'A może po prostu wolisz napisać? Śmiało, czekamy po drugiej stronie.',
+    en: 'Or would you rather just write? Go ahead, we are on the other side.'
   },
   /*
    * W makiecie podkreślony jest wyłącznie skrót "FAQ", nie całe zdanie - stąd
@@ -112,8 +121,8 @@ export const TRANSLATIONS = {
   // Newsletter w stopce
   'newsletter.title': { pl: 'Newsletter', en: 'Newsletter' },
   'newsletter.lead': {
-    pl: 'Informacje o zajęciach, wydarzeniach i spokojnych nowościach.',
-    en: 'News about classes, events and quiet updates.'
+    pl: 'O ruchu, zdrowiu, nowych wydarzeniach i wszystkim, co aktualnie chodzi nam po głowie!',
+    en: 'About movement, health, new events and whatever is on our minds right now!'
   },
   'newsletter.emailPlaceholder': { pl: 'e-mail', en: 'email' },
   'newsletter.submit': { pl: 'Zapisz się', en: 'Subscribe' },

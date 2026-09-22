@@ -70,7 +70,7 @@
     </div>
   </section>
 
-  <section id="oferta" class="offer-section" aria-label="Co przygotowaliśmy">
+  <section id="oferta" class="offer-section" aria-label="Co przygotowałyśmy">
     @if (offerImageUrl(); as backgroundUrl) {
       <img class="offer-background" [src]="backgroundUrl" [alt]="(offer()?.imageAlt ?? '') | surowy" loading="lazy" decoding="async" />
     }
@@ -90,13 +90,13 @@
         </article>
 
         <article>
-          <h3>{{ 'landing.offer.community.title' | t }}</h3>
-          <p>{{ 'landing.offer.community.text' | t }}</p>
+          <h3>{{ 'landing.offer.coffee.title' | t }}</h3>
+          <p>{{ 'landing.offer.coffee.text' | t }}</p>
         </article>
 
         <article>
-          <h3>{{ 'landing.offer.bar.title' | t }}</h3>
-          <p>{{ 'landing.offer.bar.text' | t }}</p>
+          <h3>{{ 'landing.offer.workshops.title' | t }}</h3>
+          <p>{{ 'landing.offer.workshops.text' | t }}</p>
         </article>
       </div>
     </div>

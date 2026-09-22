@@ -510,7 +510,11 @@ p {
 /* Makieta: przerwa między kartami 36 px na eksporcie 1708 px, czyli 2,11%. */
 .offer-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /*
+   * `minmax(0, 1fr)`, a nie `1fr`: minimum kolumny `1fr` liczy się z zawartości,
+   * więc karta z długim tekstem potrafiła rozepchnąć siatkę poza sekcję.
+   */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 2.11vw;
 }
 
@@ -537,7 +541,16 @@ p {
   display: grid;
   grid-template-rows: 8.48vw auto;
   align-content: start;
-  aspect-ratio: 372 / 428;
+  /*
+   * Makieta: karta 372 na 428 px przy oknie 1708, czyli 21,78% i 25,06%
+   * szerokości okna. Stoi tu `min-height`, a nie `aspect-ratio`, bo proporcja
+   * przy dłuższym tekście przenosiła wymaganą wysokość na minimalną *szerokość*
+   * karty: kolumny robiły się po 423 px zamiast 368 i czwarta karta wychodziła
+   * poza ekran. Przy krótkim tekście karta ma wymiary z makiety, przy dłuższym
+   * rośnie w dół, a wszystkie cztery i tak trzymają jedną wysokość, bo stoją
+   * w jednym rzędzie siatki.
+   */
+  min-height: 25.06vw;
   background: var(--baba-white);
   padding: 4.22vw 2.11vw 2.5vw;
   /*
