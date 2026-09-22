@@ -33,12 +33,19 @@
  * więc przy oknie 1708 px zostawało po 214 px powietrza z obu stron, a zdjęcie
  * nie dochodziło do krawędzi.
  */
+/*
+ * Zdjęcie ma wspólną szerokość z barem i kontaktem (`--szerokosc-zdjecia`), a
+ * pasmo równe powietrze nad nim i pod nim. Wcześniej kolumna zdjęcia brała całą
+ * resztę wiersza i przy braku prawego marginesu zdjęcie dochodziło do samej
+ * krawędzi okna - w makiecie zostaje przy niej 91 px.
+ */
 .sauna-shell {
   display: grid;
-  grid-template-columns: 39.75vw minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) var(--szerokosc-zdjecia);
   column-gap: 6.32vw;
   align-items: start;
-  padding: 5.5vw 0 5.56vw 6.56vw;
+  padding: var(--powietrze-zdjecia) var(--powietrze-zdjecia) var(--powietrze-zdjecia)
+    6.56vw;
 }
 
 h2,
@@ -54,12 +61,8 @@ p {
  */
 .sauna-text {
   display: flex;
-  /*
-   * Tyle, ile ma teraz zdjęcie: 47,37% szerokości okna przy proporcji 4:5 daje
-   * 59,21%. Wcześniej stało 52,75% - wysokość zdjęcia przy starej proporcji
-   * 809:901.
-   */
-  min-height: 59.21vw;
+  /* Dokładnie tyle, ile ma zdjęcie: szerokość razy 1,25 (proporcja 4:5). */
+  min-height: calc(var(--szerokosc-zdjecia) * 1.25);
   flex-direction: column;
 }
 

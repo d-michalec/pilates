@@ -30,12 +30,18 @@
  * okna, razem z paskiem przewijania, na który arkusz globalny rezerwuje
  * miejsce - przy sumie kolumn równej 100vw ostatnia wychodziłaby za krawędź.
  */
+/*
+ * Zdjęcie ma wspólną szerokość z sauną i barem (`--szerokosc-zdjecia`), a pasmo
+ * równe powietrze nad nim i pod nim - wcześniej każda z tych trzech podstron
+ * miała inną szerokość zdjęcia i inne odstępy od krawędzi pasma.
+ */
 .contact-hero {
   display: grid;
-  grid-template-columns: 39vw minmax(0, 1fr);
-  column-gap: 9.6vw;
+  grid-template-columns: var(--szerokosc-zdjecia) minmax(0, 1fr);
+  /* Makieta: kolumna tekstu zaczyna się na x = 926, czyli 130 px za zdjęciem. */
+  column-gap: 7.6vw;
   align-items: start;
-  padding: 6.32vw 7.14vw 8.55vw 5.62vw;
+  padding: var(--powietrze-zdjecia) 7.14vw var(--powietrze-zdjecia) 5.62vw;
   color: var(--baba-white);
 }
 
@@ -77,10 +83,9 @@
  */
 .contact-copy {
   display: flex;
-  min-height: 48.75vw;
+  /* Dokładnie tyle, ile ma zdjęcie: szerokość razy 1,25 (proporcja 4:5). */
+  min-height: calc(var(--szerokosc-zdjecia) * 1.25);
   flex-direction: column;
-  /* Makieta: "KONTAKT" zaczyna się 18 px niżej niż górna krawędź zdjęcia. */
-  padding-top: 1.05vw;
   text-align: left;
 }
 

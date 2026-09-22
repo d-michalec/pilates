@@ -29,12 +29,19 @@
  * Wcześniej sekcja stała na `width: min(100% - 56px, 1280px)` ze środkowaniem,
  * więc przy oknie 1708 px zostawało po 214 px powietrza z obu stron.
  */
+/*
+ * Zdjęcie ma wspólną szerokość z sauną i kontaktem (`--szerokosc-zdjecia`), a
+ * pasmo równe powietrze nad nim i pod nim. Wcześniej było tu 31,67vw, czyli
+ * 541 px przy makietowych 723, i do tego górny padding 9,03vw - zdjęcie było
+ * o czwartą część za małe i nie trzymało jednej linii z sąsiednimi podstronami.
+ */
 .bar-shell {
   display: grid;
-  grid-template-columns: 31.67vw minmax(0, 1fr);
-  column-gap: 16.51vw;
+  grid-template-columns: var(--szerokosc-zdjecia) minmax(0, 1fr);
+  /* Makieta: kolumna tekstu zaczyna się na x = 919, czyli 123 px za zdjęciem. */
+  column-gap: 7.2vw;
   align-items: start;
-  padding: 9.03vw 6.67vw 9.35vw 5.62vw;
+  padding: var(--powietrze-zdjecia) 6.67vw var(--powietrze-zdjecia) 5.62vw;
 }
 
 h2,
@@ -50,7 +57,8 @@ p {
  */
 .bar-text {
   display: flex;
-  min-height: 45.43vw;
+  /* Dokładnie tyle, ile ma zdjęcie: szerokość razy 1,25 (proporcja 4:5). */
+  min-height: calc(var(--szerokosc-zdjecia) * 1.25);
   flex-direction: column;
 }
 
@@ -138,10 +146,6 @@ p {
  * Makieta: zdjęcie zaczyna się 95 px niżej niż etykieta w kolumnie obok
  * (5,55%) - kolumna tekstu wystaje nad fotografię.
  */
-.bar-image-wrapper {
-  margin-top: 5.55vw;
-}
-
 /* Jedna proporcja na barze, saunie i kontakcie - patrz styles.scss. */
 .bar-image-wrapper img,
 .bar-image-placeholder {
@@ -170,10 +174,6 @@ p {
 
   .bar-text {
     min-height: 0;
-  }
-
-  .bar-image-wrapper {
-    margin-top: 0;
   }
 
   .section-label {

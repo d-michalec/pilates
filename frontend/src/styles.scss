@@ -24,6 +24,21 @@
   --proporcja-zdjecia: 4 / 5;
 
   /*
+   * ... i jedna szerokość. W makiecie te trzy zdjęcia mają 714, 723 i 667 px
+   * na eksporcie 1708 px, czyli 41,8%, 42,3% i 39,0% szerokości okna - różnice
+   * wychodziły z rysunku, nie z zamysłu, a na stronie zrobiło się z nich 794,
+   * 541 i 666 px, więc każda podstrona pokazywała zdjęcie innej wielkości.
+   * Jedna wartość dla wszystkich trzech: 41% szerokości okna.
+   *
+   * `--powietrze-zdjecia` to odstęp od krawędzi okna i od góry oraz dołu pasma
+   * (w makiecie 91-96 px, czyli 5,4%). Na tej samej linii co górna krawędź
+   * zdjęcia zaczyna się kolumna tekstu - wcześniej na barze tekst startował
+   * 95 px nad zdjęciem, bo ramka zdjęcia miała własny `margin-top`.
+   */
+  --szerokosc-zdjecia: clamp(260px, 41vw, 760px);
+  --powietrze-zdjecia: 5.4vw;
+
+  /*
    * PODSTAWA SKALI PISMA NA STRONIE PUBLICZNEJ.
    *
    * Makieta jest jednym rysunkiem o stałej szerokości, więc rozmiary liczymy
