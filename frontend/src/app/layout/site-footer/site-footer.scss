@@ -106,9 +106,11 @@
   line-height: 1.42;
 }
 
+/* `pre-line` honoruje łamanie zapisane w treści - patrz komentarz w translations.ts. */
 .footer-newsletter p {
   margin: 0;
   line-height: 1.45;
+  white-space: pre-line;
 }
 
 .footer-brand p a {

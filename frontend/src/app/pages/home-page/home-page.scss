@@ -576,8 +576,14 @@ p {
   line-height: 1.13;
 }
 
+/*
+ * `pre-line` honoruje łamanie wierszy zapisane w treści (patrz komentarz przy
+ * tekstach kart w translations.ts) i zarazem zawija wiersz, gdyby się nie
+ * zmieścił - więc nic nie wystaje z karty.
+ */
 .offer-grid p {
   font-size: calc(var(--skala-tekstu) * 0.589);
+  white-space: pre-line;
 }
 
 /*
@@ -645,11 +651,13 @@ p {
 }
 
 /* Zmierzone 24,4 px na eksporcie, czyli 0,639 podstawy; odstęp linii 31/24,4. */
+/* `pre-line` honoruje łamanie zapisane w treści - patrz komentarz w translations.ts. */
 .questions-lead {
   max-width: 24vw;
   color: var(--baba-red);
   font-size: calc(var(--skala-tekstu) * 0.639);
   line-height: 1.27;
+  white-space: pre-line;
 }
 
 .contact-form {
@@ -922,5 +930,17 @@ p {
 @media (min-width: 721px) and (max-width: 1179px) {
   .gallery-track {
     grid-auto-columns: clamp(210px, 24vw, 280px);
+  }
+}
+
+/*
+ * Poniżej 1080 px `--skala-tekstu` stoi na swoim minimum (24 px), a karta dalej
+ * się zwęża, więc w wiersz wchodzi 11-12 em zamiast 13,3 i łamanie z kompozycji
+ * właścicielki przestaje się mieścić. Tam wracamy do naturalnego zawijania -
+ * zapisane `\n` zwijają się wtedy do zwykłej spacji.
+ */
+@media (max-width: 1080px) {
+  .offer-grid p {
+    white-space: normal;
   }
 }

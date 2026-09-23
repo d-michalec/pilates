@@ -63,32 +63,70 @@ export const TRANSLATIONS = {
     pl: 'Tak powstała BABA. Nie tylko studio pilatesu, lecz miejsce, w którym ruch spotyka się z odprężeniem, skupienie z rozmową, a bezwstydnie dobre ciasto popijamy zdrowym koktajlem. W BABIE nic nie jest na siłę, a dobra rozmowa toczy się sama.',
     en: 'That is how BABA came to be. Not just a pilates studio, but a place where movement meets ease, focus meets conversation, and shamelessly good cake is washed down with a healthy smoothie. Nothing here is forced, and good conversation takes care of itself.'
   },
+  /*
+   * Łamanie wierszy w tekstach kart jest z kompozycji właścicielki - każdy
+   * wiersz kończy się tam, gdzie kończy się myśl, i żaden nie zostawia na końcu
+   * samotnego spójnika. Tego nie da się wyliczyć, więc stoi wprost w treści
+   * jako `\n`, a `.offer-grid p` ma `white-space: pre-line`. Przy oknie węższym
+   * niż 1080 px stopień pisma opiera się o swoje minimum i te wiersze przestają
+   * się mieścić - tam łamanie wraca do naturalnego (patrz home-page.scss).
+   *
+   * Zmieniając te teksty, trzeba przeliczyć łamanie: najdłuższy wiersz ma
+   * 12,8 em, a kolumna tekstu w karcie 13,3 em.
+   */
   /* Forma żeńska - tak jak w tekstach właścicielki. */
   'landing.offer.label': { pl: 'Co przygotowałyśmy?', en: 'What we have prepared' },
   'landing.offer.pilates.title': { pl: 'reformer pilates', en: 'reformer pilates' },
   'landing.offer.pilates.text': {
-    pl: 'Pilates robi dla naszego ciała zaskakująco dużo dobrego. Wzmacnia, poprawia postawę i przynosi ulgę plecom. Może być łagodnym ruchem albo treningiem, po którym odkryjesz mięśnie, o których istnieniu nie miałaś pojęcia.',
+    pl:
+      'Pilates robi dla naszego ciała\n' +
+      'zaskakująco dużo dobrego.\n' +
+      'Wzmacnia, poprawia postawę\n' +
+      'i przynosi ulgę plecom. Może być\n' +
+      'łagodnym ruchem albo treningiem,\n' +
+      'po którym odkryjesz mięśnie,\n' +
+      'o których istnieniu nie miałaś pojęcia.',
     en: 'Pilates does a surprising amount of good for the body. It strengthens, improves posture and brings relief to your back. It can be gentle movement, or a workout that introduces you to muscles you had no idea existed.'
   },
   'landing.offer.sauna.title': { pl: 'sauna', en: 'sauna' },
   'landing.offer.sauna.text': {
-    pl: 'Rozgrzeje Cię, pomoże mięśniom się zregenerować i pozwoli na kilkanaście minut naprawdę nic nie robić. Możesz wejść do niej po treningu albo zupełnie bez okazji. Dla zdrowia, lepszego samopoczucia i czystej przyjemności.',
+    pl:
+      'Rozgrzeje Cię, pomoże mięśniom się\n' +
+      'zregenerować i pozwoli\n' +
+      'na kilkanaście minut naprawdę nic\n' +
+      'nie robić. Możesz wejść do niej\n' +
+      'po treningu albo zupełnie bez okazji.\n' +
+      'Dla zdrowia, lepszego samopoczucia\n' +
+      'i czystej przyjemności.',
     en: 'It warms you up, helps your muscles recover and lets you do absolutely nothing for a good quarter of an hour. Come in after training, or for no reason at all. For your health, your mood and pure pleasure.'
   },
   'landing.offer.coffee.title': { pl: 'kawa', en: 'coffee' },
   'landing.offer.coffee.text': {
-    pl: 'Świeżo palona kawa, coś słodkiego, coś słonego i stolik, przy którym możesz zostać trochę dłużej. Złap coś przed treningiem albo usiądź po nim razem ze swoją BABĄ i na chwilę zapomnij, co miałaś zrobić później.',
+    pl:
+      'Świeżo palona kawa, coś słodkiego,\n' +
+      'coś słonego i stolik, przy którym\n' +
+      'możesz zostać trochę dłużej. Złap coś\n' +
+      'przed treningiem albo usiądź po nim\n' +
+      'razem ze swoją BABĄ i na chwilę\n' +
+      'zapomnij, co miałaś zrobić później.',
     en: 'Freshly roasted coffee, something sweet, something salty and a table you can linger at. Grab something before training, or sit down afterwards with your BABA and forget for a moment what you were supposed to do next.'
   },
   'landing.offer.workshops.title': { pl: 'warsztaty', en: 'workshops' },
   'landing.offer.workshops.text': {
-    pl: 'Dorosłe życie daje nam coraz mniej okazji do poznawania nowych ludzi. Dlatego chcemy stwarzać ich trochę więcej – zdobywać wiedzę, próbować nowych rzeczy i prowadzić rozmowy, które otwierają głowę.',
+    pl:
+      'Dorosłe życie daje nam coraz mniej\n' +
+      'okazji do poznawania nowych ludzi.\n' +
+      'Dlatego chcemy stwarzać ich trochę\n' +
+      'więcej – zdobywać wiedzę, próbować\n' +
+      'nowych rzeczy i prowadzić rozmowy,\n' +
+      'które otwierają głowę.',
     en: 'Adult life gives us fewer and fewer chances to meet new people. So we want to create a few more – to learn, to try new things and to have conversations that open your head.'
   },
   'landing.questions.label': { pl: 'Masz pytania?', en: 'Any questions?' },
+  /* Łamanie po pytaniu - z kompozycji właścicielki (patrz `white-space` w stylach). */
   'landing.questions.heading': {
-    pl: 'A może po prostu wolisz napisać? Śmiało, czekamy po drugiej stronie.',
-    en: 'Or would you rather just write? Go ahead, we are on the other side.'
+    pl: 'A może po prostu wolisz napisać?\nŚmiało, czekamy po drugiej stronie.',
+    en: 'Or would you rather just write?\nGo ahead, we are on the other side.'
   },
   /*
    * W makiecie podkreślony jest wyłącznie skrót "FAQ", nie całe zdanie - stąd
@@ -120,9 +158,10 @@ export const TRANSLATIONS = {
 
   // Newsletter w stopce
   'newsletter.title': { pl: 'Newsletter', en: 'Newsletter' },
+  /* Łamanie po przecinku - z kompozycji właścicielki (patrz `white-space` w stylach). */
   'newsletter.lead': {
-    pl: 'O ruchu, zdrowiu, nowych wydarzeniach i wszystkim, co aktualnie chodzi nam po głowie!',
-    en: 'About movement, health, new events and whatever is on our minds right now!'
+    pl: 'O ruchu, zdrowiu, nowych wydarzeniach i wszystkim,\nco aktualnie chodzi nam po głowie!',
+    en: 'About movement, health, new events\nand whatever is on our minds right now!'
   },
   'newsletter.emailPlaceholder': { pl: 'e-mail', en: 'email' },
   'newsletter.submit': { pl: 'Zapisz się', en: 'Subscribe' },
