@@ -55,10 +55,21 @@ p {
  * dolnej krawędzi, a opis może rosnąć w dół w miarę dodawania zdań - zjada
  * wtedy puste miejsce nad godzinami, zamiast rozpychać całą sekcję.
  */
+/*
+ * Kolumna tekstu jest wysoka jak zdjęcie, ale sam tekst nie zaczyna się przy
+ * jego górnej krawędzi. W makiecie (eksport 1708 px) zdjęcie zajmuje y 283-1190,
+ * a napis "BAR" stoi na 352, czyli 69 px niżej (4,04% szerokości okna); ostatni
+ * wiersz godzin kończy się na 1114, czyli 76 px nad dolną krawędzią zdjęcia
+ * (4,45%). Bez tego wcięcia tekst przyklejał się do góry pasma - właścicielka
+ * zgłosiła to jako "BAR za wysoko".
+ *
+ * Wcięcia są w paddingu, nie w marginesie: `box-sizing: border-box` z
+ * `styles.scss` trzyma je w środku `min-height`, więc pasmo nie rośnie.
+ */
 .bar-text {
   display: flex;
-  /* Dokładnie tyle, ile ma zdjęcie: szerokość razy 1,25 (proporcja 4:5). */
   min-height: calc(var(--szerokosc-zdjecia) * 1.25);
+  padding: 4.04vw 0 4.45vw;
   flex-direction: column;
 }
 

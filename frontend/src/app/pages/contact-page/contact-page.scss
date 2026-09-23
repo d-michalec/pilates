@@ -81,10 +81,16 @@
  * daje 48,75%), żeby adres dał się zepchnąć w dół - w projekcie stoi wyraźnie
  * niżej niż dane kontaktowe, a nie tuż pod nimi.
  */
+/*
+ * Wysokość kolumny jak zdjęcie, a napis "KONTAKT" 25 px niżej niż jego górna
+ * krawędź - tak jest w makiecie (zdjęcie y 298-1130, etykieta na 323), czyli
+ * 1,46% szerokości okna. To wcięcie stało tu wcześniej jako 1,05vw i zniknęło
+ * przy ujednolicaniu zdjęć; wraca w wartości z makiety.
+ */
 .contact-copy {
   display: flex;
-  /* Dokładnie tyle, ile ma zdjęcie: szerokość razy 1,25 (proporcja 4:5). */
   min-height: calc(var(--szerokosc-zdjecia) * 1.25);
+  padding-top: 1.46vw;
   flex-direction: column;
   text-align: left;
 }
