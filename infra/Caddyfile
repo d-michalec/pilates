@@ -69,8 +69,9 @@
 
 	# --- Nagłówki --------------------------------------------------------------
 	header {
-		# Przed premierą trzyma stronę poza wynikami wyszukiwania. Po otwarciu studia
-		# ustaw ROBOTS_TAG na "all" i podmień frontend/public/robots.txt.
+		# Wartość bierze się z ROBOTS_TAG w infra/.env - na produkcji "all".
+		# Domyślne "noindex, nofollow" chroni każde nowe środowisko (podgląd,
+		# maszynę deweloperską), które wstanie bez ustawionej zmiennej.
 		X-Robots-Tag "{$ROBOTS_TAG:noindex, nofollow}"
 
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"

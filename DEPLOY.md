@@ -136,7 +136,7 @@ wykonywać ręcznie.
 ```bash
 curl -I https://baba-studio.pl                 # 200 i nagłówek strict-transport-security
 curl -s https://baba-studio.pl/api/settings    # odpowiedź JSON z backendu
-curl -sI https://baba-studio.pl | grep -i robots   # ma być noindex do dnia premiery
+curl -sI https://baba-studio.pl | grep -i robots   # po otwarciu ma być "all"
 ```
 
 Potem zaloguj się na `/admin/login` i wgraj treści.
@@ -258,19 +258,24 @@ same zasady co bazę produkcyjną:
   usuwa go z kopii. Zniknie stamtąd sam po dwóch tygodniach — i to jest powód,
   żeby tego okna nie wydłużać bez potrzeby.
 
-## W dniu otwarcia studia
+## Otwarcie studia
 
-Do tego czasu strona jest celowo niewidoczna dla wyszukiwarek. Żeby ją otworzyć:
+Strona jest otwarta dla wyszukiwarek. W repozytorium siedzi już wszystko, co
+tego dotyczy: `ROBOTS_TAG=all` w `infra/.env.example`, `frontend/public/robots.txt`
+z `Allow: /` i `frontend/public/sitemap.xml` z dwudziestoma adresami (polskie
+i angielskie, bez dokumentów prawnych - te mają `noindex`).
 
-1. W `infra/.env` ustaw `ROBOTS_TAG=all`.
-2. W `frontend/public/robots.txt` zamień treść na wersję docelową z komentarza.
-3. `docker compose up -d --build web`
+Jedyna rzecz, której git nie przeniesie na serwer, to `infra/.env` - jest
+w `.gitignore`, bo trzyma hasła. Po wgraniu zmian sprawdź tam dwie rzeczy:
 
-Osobno, przed premierą, zostaje do zrobienia:
+1. `ROBOTS_TAG=all`
+2. dane poczty: `CONTACT_TO_EMAIL`, `MAIL_FROM`, `SMTP_USERNAME` = `kontakt@baba-studio.pl`,
+   `SMTP_PASSWORD` = hasło aplikacji tego konta
 
-- prawdziwy numer telefonu zamiast `123 456 789` w `core/contact-details.ts`
-  (bez niego nie ma sensu wstawiać danych strukturalnych `LocalBusiness`),
-- `og:image` i `sitemap.xml`,
+potem `docker compose -f infra/docker-compose.yml up -d --build`.
+
+Zostaje do zrobienia:
+
 - klucz API GetResponse, jeśli newsletter ma faktycznie zbierać adresy,
 - **treść regulaminu.** Podstrona `/regulamin` ma same nagłówki, a każdy pusty
   punkt wyświetla na stronie znacznik „TREŚĆ DO UZUPEŁNIENIA". Treść pisze
@@ -287,9 +292,10 @@ Osobno, przed premierą, zostaje do zrobienia:
   znaku z tym, co jest na stronie kontaktu — rozbieżność szkodzi bardziej niż brak,
 - **Google Search Console.** Weryfikacja domeny i zgłoszenie `sitemap.xml`. Bez
   tego nie wiadomo, co zostało zaindeksowane ani co się zepsuło,
-- **prawdziwe zdjęcie zamiast `frontend/public/og-image.jpg`.** Obecny plik to
-  napis na czerwonym tle, zrobiony po to, żeby udostępniony link nie wyglądał na
-  porzucony. Fotografia ze studia zadziała dużo lepiej — rozmiar 1200×630.
+- **docelowo zdjęcie zamiast napisu w `frontend/public/og-image.jpg`.** Obecny
+  plik to firmowy lockup „bądź BABA" na czerwonym tle - spójny z marką i w pełni
+  wystarczający. Fotografia ze studia zwykle klika się lepiej niż typografia,
+  więc gdy będą zdjęcia wnętrza, warto podmienić. Rozmiar 1200×630.
 
 ## Poczta wychodząca
 

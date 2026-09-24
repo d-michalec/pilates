@@ -7,8 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="preconnect" href="https://app.fitssey.com">
   <link rel="dns-prefetch" href="https://app.fitssey.com">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!--
+    Trzy formaty ikony, bo każdy odbiorca sięga po inny: favicon.ico ma w środku
+    rozmiar 48 px, po który Google idzie do wyników wyszukiwania, plik PNG bierze
+    karta w przeglądarce, a apple-touch-icon - skrót dodany na ekran iPhone'a.
+  -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" type="image/png" href="icon-192.png" sizes="192x192">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Kolor paska adresu na Androidzie - bierze firmową czerwień zamiast szarości. -->
   <meta name="theme-color" content="#942319">
 </head>

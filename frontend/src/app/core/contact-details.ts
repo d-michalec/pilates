@@ -9,12 +9,12 @@
  * osobna rzecz - te dwa adresy nie muszą być takie same.
  */
 export const CONTACT_DETAILS = {
-	email: 'aleksandrakurasik@baba-studio.pl',
+	email: 'kontakt@baba-studio.pl',
 
 	// Makieta przewiduje osobny adres do współpracy i mediów. Póki go nie ma,
 	// obie pozycje prowadzą do tej samej skrzynki - lepiej to niż adres, który
 	// nie istnieje.
-	mediaEmail: 'aleksandrakurasik@baba-studio.pl',
+	mediaEmail: 'kontakt@baba-studio.pl',
 
 	/** Wersja ze stopki - makieta pokazuje tam numer bez kierunkowego. */
 	phone: '695 060 301',

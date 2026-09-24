@@ -56,6 +56,10 @@ services:
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-https://${SITE_DOMAIN}}
 
       MAIL_FROM: ${MAIL_FROM:-}
+      # Nazwa nadawcy widoczna w skrzynce odbiorcy zamiast samego adresu.
+      # Backend czyta tę zmienną (application.yaml: app.contact.from-name),
+      # więc bez przekazania jej tutaj wpis w .env nie miałby żadnego skutku.
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-BABA Studio}
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-587}
       SMTP_USERNAME: ${SMTP_USERNAME:-}

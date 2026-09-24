@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mapa strony BABA Studio. Każdy adres ma odpowiednik w drugim języku,
+     wskazany znacznikiem hreflang - dzięki temu Google pokazuje Polce
+     wersję polską, a obcokrajowczyni angielską. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://baba-studio.pl/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/kadra</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/kadra"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/kadra"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/kadra"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/kadra</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/kadra"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/kadra"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/kadra"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/pilates</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/pilates"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/pilates"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/pilates"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/pilates</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/pilates"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/pilates"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/pilates"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/sauna</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/sauna"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/sauna"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/sauna"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/sauna</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/sauna"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/sauna"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/sauna"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/bar</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/bar"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/bar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/bar"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/bar</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/bar"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/bar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/bar"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/grafik</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/grafik"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/grafik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/grafik"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/grafik</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/grafik"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/grafik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/grafik"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/cennik</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/cennik"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/cennik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/cennik"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/cennik</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/cennik"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/cennik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/cennik"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/faq</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/faq"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/faq"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/faq</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/faq"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/faq"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/kontakt</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/kontakt"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/kontakt</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/kontakt"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/wydarzenia</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/wydarzenia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/wydarzenia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/wydarzenia"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://baba-studio.pl/en/wydarzenia</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://baba-studio.pl/wydarzenia"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://baba-studio.pl/en/wydarzenia"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://baba-studio.pl/wydarzenia"/>
+    <lastmod>2026-09-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
