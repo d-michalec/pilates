@@ -215,11 +215,12 @@ p {
 
 @media (max-width: 900px) {
   /*
-   * Poniżej 900 px kolumny idą jedna pod drugą: najpierw zdjęcie, potem cała
-   * kolumna z tekstem (etykieta jest teraz jej częścią, więc nie da się jej
-   * przestawić nad fotografię osobno). Proporcje z makiety przestają tu
-   * obowiązywać - 39,75% szerokości to na telefonie 150 px, czyli za mało na
-   * akapit, a wysokość kolumny dobiera treść, nie zdjęcie.
+   * Poniżej 900 px kolumny idą jedna pod drugą: najpierw tekst, pod nim
+   * zdjęcie. Wcześniej zdjęcie było przestawiane nad tekst (`order: -1`),
+   * przez co na telefonie pierwszy ekran podstrony był samą fotografią.
+   * Proporcje z makiety przestają tu obowiązywać - 39,75% szerokości to na
+   * telefonie 150 px, czyli za mało na akapit, a wysokość kolumny dobiera
+   * treść, nie zdjęcie.
    */
   .sauna-shell {
     grid-template-columns: minmax(0, 1fr);
@@ -229,10 +230,6 @@ p {
 
   .sauna-text {
     min-height: 0;
-  }
-
-  .sauna-image-wrapper {
-    order: -1;
   }
 
   .section-label {

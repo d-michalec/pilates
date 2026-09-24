@@ -172,10 +172,14 @@ p {
 
 @media (max-width: 900px) {
   /*
-   * Poniżej 900 px kolumny idą jedna pod drugą: najpierw zdjęcie, potem cała
-   * kolumna z tekstem. Proporcje z makiety przestają tu obowiązywać - 39,52%
-   * szerokości to na telefonie 150 px, czyli za mało na akapit, a wysokość
-   * kolumny dobiera treść, nie zdjęcie.
+   * Poniżej 900 px kolumny idą jedna pod drugą: najpierw tekst, pod nim
+   * zdjęcie. W układzie poziomym zdjęcie stoi po lewej, więc w dokumencie jest
+   * przed tekstem - na wąskim ekranie przestawiamy je `order` pod spód, żeby
+   * pierwszy ekran podstrony nie był samą fotografią.
+   *
+   * Proporcje z makiety przestają tu obowiązywać - 39,52% szerokości to na
+   * telefonie 150 px, czyli za mało na akapit, a wysokość kolumny dobiera
+   * treść, nie zdjęcie.
    */
   .bar-shell {
     grid-template-columns: minmax(0, 1fr);
@@ -185,6 +189,10 @@ p {
 
   .bar-text {
     min-height: 0;
+  }
+
+  .bar-image-wrapper {
+    order: 1;
   }
 
   .section-label {

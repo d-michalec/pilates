@@ -442,6 +442,15 @@ h2 {
     overflow-wrap: anywhere;
   }
 
+  /*
+   * Najpierw dane kontaktowe, pod nimi zdjęcie. W układzie poziomym zdjęcie
+   * stoi po lewej, więc w dokumencie jest przed nimi - na wąskim ekranie
+   * przestawiamy je pod spód, żeby pierwszy ekran nie był samą fotografią.
+   */
+  .contact-image {
+    order: 1;
+  }
+
   /* Na wąskim ekranie wyrównanie adresu do prawej jest męczące w czytaniu. */
   address {
     margin-top: 28px;
