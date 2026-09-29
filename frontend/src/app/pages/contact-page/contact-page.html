@@ -16,8 +16,8 @@
       <dl>
         <div>
           <dt>{{ 'contactPage.general' | t }}</dt>
-          <dd><a [href]="'mailto:' + kontakt.email">{{ kontakt.email }}</a></dd>
-          <dd><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phoneDisplay }}</a></dd>
+          <dd><a [href]="'mailto:' + kontakt.email" (click)="zglosKontakt()">{{ kontakt.email }}</a></dd>
+          <dd><a [href]="'tel:' + kontakt.phoneLink" (click)="zglosKontakt()">{{ kontakt.phoneDisplay }}</a></dd>
         </div>
         <!--
           Makieta przewiduje tu drugą pozycję - "współpraca i media" - i ona
@@ -27,7 +27,7 @@
         -->
         <div>
           <dt>{{ 'contactPage.media' | t }}</dt>
-          <dd><a [href]="'mailto:' + kontakt.mediaEmail">{{ kontakt.mediaEmail }}</a></dd>
+          <dd><a [href]="'mailto:' + kontakt.mediaEmail" (click)="zglosKontakt()">{{ kontakt.mediaEmail }}</a></dd>
         </div>
       </dl>
 

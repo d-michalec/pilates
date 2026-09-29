@@ -11,6 +11,7 @@ import { CONTACT_DETAILS } from '../../core/contact-details';
 import { ContactPageContent, ContactService } from '../../core/contact.service';
 import { LanguageService } from '../../core/language.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
+import { MetaPixelService } from '../../core/meta-pixel.service';
 import { TypografiaPipe } from '../../core/typografia.pipe';
 import { SeoService } from '../../core/seo.service';
 import { SiteFooter } from '../../layout/site-footer/site-footer';
@@ -36,6 +37,8 @@ export class ContactPage implements OnInit {
   protected readonly kontakt = CONTACT_DETAILS;
 
   private readonly languageService = inject(LanguageService);
+
+  private readonly pixel = inject(MetaPixelService);
   private readonly contactService = inject(ContactService);
   private readonly seoService = inject(SeoService);
 
@@ -111,10 +114,18 @@ export class ContactPage implements OnInit {
         next: () => {
           this.form.reset();
           this.successMessage.set(this.languageService.translate('contact.success'));
+          // Po potwierdzeniu z backendu, nie na kliknięciu - liczy się wysłana
+          // wiadomość, a nie próba jej wysłania.
+          this.pixel.track('Contact');
         },
         error: (error) => {
           this.errorMessage.set(this.languageService.formError(error, 'contact.failure'));
         }
       });
+  }
+
+  /** Kliknięcie w adres e-mail albo numer telefonu to też nawiązanie kontaktu. */
+  protected zglosKontakt() {
+    this.pixel.track('Contact');
   }
 }

@@ -31,14 +31,23 @@
       </a>
       <p>
         {{ 'footer.contactLabel' | t }}
-        <a [href]="'mailto:' + kontakt.email">{{ kontakt.email }}</a>
+        <!-- Kliknięcie w adres albo numer to realny kontakt, więc zgłaszamy je jako Contact. -->
+        <a [href]="'mailto:' + kontakt.email" (click)="zglosKontakt()">{{ kontakt.email }}</a>
       </p>
-      <p><a [href]="'tel:' + kontakt.phoneLink">{{ kontakt.phone }}</a></p>
+      <p><a [href]="'tel:' + kontakt.phoneLink" (click)="zglosKontakt()">{{ kontakt.phone }}</a></p>
       <p>{{ kontakt.street | typo }}<br />{{ kontakt.city | typo }}</p>
 
       <nav class="footer-legal" [attr.aria-label]="'footer.terms' | t">
         <a [routerLink]="'/regulamin' | localizePath">{{ 'footer.terms' | t }}</a>
         <a [routerLink]="'/polityka-prywatnosci' | localizePath">{{ 'footer.privacy' | t }}</a>
+        <!--
+          Ponowne otwarcie banera zgód. To nie jest podstrona, więc przycisk,
+          a nie odnośnik - ale wygląda tak samo jak sąsiedzi, bo ma być równie
+          łatwy do znalezienia jak sama polityka.
+        -->
+        <button type="button" (click)="otworzUstawieniaPrywatnosci()">
+          {{ 'footer.privacySettings' | t }}
+        </button>
       </nav>
     </div>
   </div>

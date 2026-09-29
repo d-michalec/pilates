@@ -1,0 +1,264 @@
+/*
+ * Pasek zgód. Rozmiary liczone jako procent szerokości okna, tak jak reszta
+ * strony - inaczej na szerokim monitorze baner zostałby w miejscu, a strona
+ * wokół niego urosła.
+ */
+.baner {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 1000;
+
+	background: var(--baba-brown);
+	color: var(--baba-white);
+
+	/* Odstęp od dolnej krawędzi na telefonach z paskiem gestów. */
+	padding: clamp(16px, 1.6vw, 30px) max(20px, 3.75vw) calc(clamp(16px, 1.6vw, 30px) + env(safe-area-inset-bottom));
+
+	box-shadow: 0 -8px 28px rgb(0 0 0 / 22%);
+	animation: baner-wjazd 220ms ease-out;
+}
+
+/* Osobom, które w systemie wyłączyły animacje, baner po prostu się pojawia. */
+@media (prefers-reduced-motion: reduce) {
+	.baner {
+		animation: none;
+	}
+}
+
+@keyframes baner-wjazd {
+	from {
+		transform: translateY(100%);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+
+.baner-tresc {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: clamp(14px, 1.8vw, 34px);
+
+	max-width: 1600px;
+	margin-inline: auto;
+}
+
+.baner-tekst {
+	flex: 1 1 24em;
+	min-width: 0;
+
+	h2 {
+		margin: 0 0 0.25em;
+		font-family: var(--baba-sans);
+		font-size: clamp(11px, 0.83vw, 16px);
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+
+	p {
+		margin: 0;
+		font-family: var(--baba-serif);
+		font-size: clamp(14px, 0.99vw, 19px);
+		line-height: 1.45;
+		text-wrap: pretty;
+	}
+
+	a {
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 0.18em;
+	}
+}
+
+.baner-przyciski {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: clamp(8px, 0.7vw, 14px);
+}
+
+/*
+ * Wszystkie trzy przyciski mają ten sam rozmiar i ten sam ciężar optyczny.
+ * "Akceptuję" jest wypełnione, "Odrzucam" obrysowane - to różnica stylu,
+ * a nie widoczności. Zgoda wymuszona wyglądem nie jest zgodą.
+ */
+.przycisk {
+	appearance: none;
+	cursor: pointer;
+
+	padding: clamp(9px, 0.73vw, 14px) clamp(16px, 1.35vw, 26px);
+	border-radius: var(--baba-radius);
+	border: 1px solid var(--baba-white);
+
+	font-family: var(--baba-sans);
+	font-size: clamp(10px, 0.76vw, 15px);
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	white-space: nowrap;
+
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+.przycisk-glowny {
+	background: var(--baba-white);
+	color: var(--baba-brown);
+
+	&:hover {
+		background: var(--baba-blue);
+	}
+}
+
+.przycisk-poboczny {
+	background: transparent;
+	color: var(--baba-white);
+
+	&:hover {
+		background: rgb(255 255 255 / 14%);
+	}
+}
+
+.przycisk-cichy {
+	background: transparent;
+	color: var(--baba-white);
+	border-color: transparent;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+
+	&:hover {
+		background: rgb(255 255 255 / 10%);
+	}
+}
+
+.przycisk:focus-visible {
+	outline: 2px solid var(--baba-blue);
+	outline-offset: 2px;
+}
+
+/* --- Panel kategorii ------------------------------------------------------ */
+
+.baner-kategorie {
+	flex: 1 1 100%;
+	display: flex;
+	flex-direction: column;
+	gap: clamp(10px, 0.9vw, 18px);
+
+	padding-top: clamp(12px, 1.1vw, 22px);
+	border-top: 1px solid rgb(255 255 255 / 28%);
+}
+
+.kategoria {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: clamp(12px, 1.4vw, 28px);
+}
+
+.kategoria-opis {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15em;
+	min-width: 0;
+}
+
+.kategoria-nazwa {
+	font-family: var(--baba-sans);
+	font-size: clamp(10px, 0.76vw, 15px);
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.kategoria-nota {
+	font-family: var(--baba-serif);
+	font-size: clamp(13px, 0.9vw, 17px);
+	line-height: 1.4;
+	opacity: 0.85;
+	text-wrap: pretty;
+}
+
+.kategoria-stala {
+	flex: none;
+	align-self: center;
+
+	font-family: var(--baba-sans);
+	font-size: clamp(9px, 0.68vw, 13px);
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.7;
+}
+
+.kategoria-przelacznik {
+	flex: none;
+	align-self: center;
+	width: clamp(18px, 1.3vw, 24px);
+	height: clamp(18px, 1.3vw, 24px);
+	accent-color: var(--baba-blue);
+	cursor: pointer;
+}
+
+.baner-kategorie .baner-przyciski {
+	justify-content: flex-end;
+}
+
+/* --- Telefon -------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+	/*
+	 * Na telefonie baner musi zostać paskiem, a nie zająć pół widoku - inaczej
+	 * pierwsze, co widać po wejściu z reklamy, to formularz zgody zamiast studia.
+	 * Stąd ciaśniejsze odstępy, mniejszy tekst i trzy przyciski w jednym rzędzie.
+	 */
+	.baner {
+		padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+	}
+
+	.baner-tresc {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+	}
+
+	/*
+	 * Na szerokim ekranie kolumna tekstu ma bazę 24em, żeby nie zwężała się
+	 * przy przyciskach. Po przełączeniu na kierunek pionowy ta sama baza staje
+	 * się jednak bazą WYSOKOŚCI - i pasek rósł do 457 px, czyli ponad połowy
+	 * ekranu telefonu, mimo że tekst zajmował 85 px.
+	 */
+	.baner-tekst {
+		flex: 0 1 auto;
+	}
+
+	.baner-tekst p {
+		font-size: 13px;
+		line-height: 1.4;
+	}
+
+	.baner-przyciski {
+		gap: 8px;
+		flex-wrap: nowrap;
+
+		.przycisk {
+			flex: 1 1 0;
+			min-width: 0;
+			padding: 10px 6px;
+			font-size: 10px;
+			letter-spacing: 0.04em;
+			text-align: center;
+		}
+	}
+
+	/*
+	 * Na wąskim ekranie pasek nie może zjeść pół widoku. Gdy treść nie mieści
+	 * się w połowie wysokości, panel kategorii dostaje własne przewijanie.
+	 */
+	.baner-kategorie {
+		max-height: 50vh;
+		overflow-y: auto;
+	}
+}

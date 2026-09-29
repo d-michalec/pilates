@@ -19,6 +19,7 @@ import { SiteFooter } from '../../layout/site-footer/site-footer';
 import { SiteHeader } from '../../layout/site-header/site-header';
 import { TranslatePipe } from '../../core/localize.pipe';
 import { LanguageService } from '../../core/language.service';
+import { MetaPixelService } from '../../core/meta-pixel.service';
 
 /**
  * Grafik jest cudzą aplikacją w iframe, więc nie mamy wglądu w jej wewnętrzny stan.
@@ -77,9 +78,12 @@ const WIDOKI: Record<'grafik' | 'cennik', WidokFitssey> = {
 })
 export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
   private readonly languageService = inject(LanguageService);
+  private readonly pixel = inject(MetaPixelService);
   private readonly host: ElementRef<HTMLElement> = inject(ElementRef);
 
   protected readonly widok: WidokFitssey;
+  /** Który z dwóch widoków - potrzebne pikselowi jako nazwa treści. */
+  private readonly widokKlucz: 'grafik' | 'cennik';
   protected readonly scheduleUrl: SafeResourceUrl;
   protected readonly isFrameReady = signal(false);
   protected readonly skeletonRows = [0, 1, 2, 3, 4, 5];
@@ -96,6 +100,8 @@ export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
   private fallbackTimeoutId?: number;
   private wysokoscWymuszona: number | null = null;
   private odsluchWysokosci?: (event: MessageEvent) => void;
+  private odsluchWejscia?: () => void;
+  private zgloszonoWejscie = false;
 
   constructor(
     private readonly fitsseyWarmupService: FitsseyWarmupService,
@@ -104,6 +110,7 @@ export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
     sanitizer: DomSanitizer
   ) {
     const klucz = route.snapshot.data['widok'] === 'cennik' ? 'cennik' : 'grafik';
+    this.widokKlucz = klucz;
     this.widok = WIDOKI[klucz];
 
     // Cennik nie ma własnego elementu widgetu, więc od początku idzie ramką.
@@ -116,6 +123,12 @@ export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
       title: this.languageService.translate(this.widok.seoTytul),
       description: this.languageService.translate(this.widok.seoOpis)
     });
+
+    /*
+     * Ktoś, kto ogląda grafik albo cennik, jest bliżej zapisu niż ktoś czytający
+     * o saunie - i to jest sygnał, na którym Meta potrafi szukać podobnych osób.
+     */
+    this.pixel.track('ViewContent', { content_name: this.widokKlucz });
   }
 
   ngAfterViewInit() {
@@ -124,6 +137,7 @@ export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.zacznijSluchacWysokosci();
+    this.zacznijSluchacWejsciaWRamke();
 
     // Ukryta ramka rozgrzewająca zrobiła swoje - dalej ładuje się już właściwy widok.
     this.fitsseyWarmupService.release();
@@ -159,10 +173,59 @@ export class SchedulePage implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.clearFallbackTimeout();
 
-    if (this.odsluchWysokosci && typeof window !== 'undefined') {
-      window.removeEventListener('message', this.odsluchWysokosci);
-      this.odsluchWysokosci = undefined;
+    if (typeof window !== 'undefined') {
+      if (this.odsluchWysokosci) {
+        window.removeEventListener('message', this.odsluchWysokosci);
+        this.odsluchWysokosci = undefined;
+      }
+
+      if (this.odsluchWejscia) {
+        window.removeEventListener('blur', this.odsluchWejscia);
+        this.odsluchWejscia = undefined;
+      }
     }
+  }
+
+  /**
+   * WEJŚCIE W WIDGET FITSSEY - PRZYBLIŻENIE, NIE POMIAR.
+   *
+   * Grafik stoi na cudzej domenie, więc przeglądarka nie pozwala zobaczyć, w co
+   * ktoś w nim kliknął. Jedyne, co widać z naszej strony, to że nasze okno
+   * straciło fokus, a elementem aktywnym stała się właśnie ta ramka.
+   *
+   * To znaczy "ktoś dotknął widgetu", a nie "ktoś zaczął rezerwację": tak samo
+   * zadziała przewinięcie grafiku czy kliknięcie w pustą przestrzeń. Liczba
+   * nadaje się do obserwowania trendu, ale nie do optymalizacji kampanii -
+   * i Tomasz o tym wie.
+   *
+   * Zgłaszamy najwyżej raz na odsłonę podstrony, żeby jedna osoba klikająca
+   * po grafiku nie wygenerowała kilkunastu zdarzeń.
+   */
+  private zacznijSluchacWejsciaWRamke() {
+    this.odsluchWejscia = () => {
+      if (this.zgloszonoWejscie) {
+        return;
+      }
+
+      const sprawdz = () => {
+        if (this.zgloszonoWejscie) {
+          return;
+        }
+
+        const aktywny = document.activeElement;
+
+        if (aktywny instanceof HTMLIFrameElement && this.host.nativeElement.contains(aktywny)) {
+          this.zgloszonoWejscie = true;
+          this.pixel.track('InitiateCheckout', { content_name: this.widokKlucz });
+        }
+      };
+
+      // Część przeglądarek ustawia aktywny element dopiero po obsłużeniu blur.
+      sprawdz();
+      window.setTimeout(sprawdz, 0);
+    };
+
+    window.addEventListener('blur', this.odsluchWejscia);
   }
 
   /**

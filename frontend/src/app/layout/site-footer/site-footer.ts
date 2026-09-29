@@ -9,9 +9,11 @@ import { finalize } from 'rxjs';
 import { BabaLogo, BabaLogoVariant } from '../baba-logo/baba-logo';
 import { CONTACT_DETAILS } from '../../core/contact-details';
 import { LanguageService } from '../../core/language.service';
+import { MetaPixelService } from '../../core/meta-pixel.service';
 import { NewsletterService } from '../../core/newsletter.service';
 import { SiteSettings } from '../../core/venue';
 import { VenueService } from '../../core/venue.service';
+import { ZgodyService } from '../../core/zgody.service';
 import { LocalizePathPipe, TranslatePipe } from '../../core/localize.pipe';
 import { TypografiaPipe } from '../../core/typografia.pipe';
 
@@ -52,6 +54,8 @@ export class SiteFooter implements OnInit {
 
   private readonly venueService = inject(VenueService);
   private readonly languageService = inject(LanguageService);
+  private readonly zgody = inject(ZgodyService);
+  private readonly pixel = inject(MetaPixelService);
 
   protected readonly isSubscribing = signal(false);
   protected readonly successMessage = signal<string | null>(null);
@@ -111,10 +115,22 @@ export class SiteFooter implements OnInit {
         next: () => {
           this.form.reset({ email: '', name: '', consentAccepted: false, website: '' });
           this.successMessage.set('Dziękujemy za zapis.');
+          // Dopiero tutaj, a nie przy kliknięciu: inaczej liczylibyśmy też próby
+          // zakończone błędem walidacji albo niedostępnym backendem.
+          this.pixel.track('Lead', { content_name: 'newsletter' });
         },
         error: (error) => {
           this.errorMessage.set(this.languageService.formError(error, 'newsletter.failure'));
         }
       });
+  }
+
+  /** Otwiera baner zgód, żeby dało się zmienić wcześniejszą decyzję. */
+  protected otworzUstawieniaPrywatnosci() {
+    this.zgody.otworzPonownie();
+  }
+
+  protected zglosKontakt() {
+    this.pixel.track('Contact');
   }
 }

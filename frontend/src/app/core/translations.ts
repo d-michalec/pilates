@@ -173,6 +173,9 @@ export const TRANSLATIONS = {
   'footer.contactLabel': { pl: 'kontakt:', en: 'contact:' },
   'footer.terms': { pl: 'Regulamin', en: 'Terms' },
   'footer.privacy': { pl: 'Polityka prywatności', en: 'Privacy policy' },
+  // Otwiera baner zgód ponownie. Wycofanie zgody musi być równie łatwe jak
+  // jej udzielenie - stąd stała pozycja w stopce, a nie schowana gdzieś opcja.
+  'footer.privacySettings': { pl: 'Ustawienia prywatności', en: 'Privacy settings' },
 
   // Dokumenty prawne
   'legal.updated': { pl: 'Ostatnia zmiana:', en: 'Last updated:' },
@@ -215,6 +218,36 @@ export const TRANSLATIONS = {
     en: 'We process your data in line with our'
   },
   'consent.privacyLink': { pl: 'polityką prywatności', en: 'privacy policy' },
+
+  // Baner plików cookie. Teksty do zatwierdzenia przez właścicielkę - mają być
+  // zrozumiałe dla osoby, która wchodzi po grafik, a nie dla prawnika.
+  'cookies.aria': { pl: 'Zgoda na pliki cookie', en: 'Cookie consent' },
+  'cookies.heading': { pl: 'Pliki cookie', en: 'Cookies' },
+  'cookies.lead': {
+    pl:
+      'Używamy plików niezbędnych do działania strony. Za Twoją zgodą dołożymy też takie, ' +
+      'które pokazują nam, które reklamy przyprowadzają do nas nowe osoby.',
+    en:
+      'We use files that the website needs to work. With your consent we will also add ones ' +
+      'that show us which ads bring new people to the studio.'
+  },
+  'cookies.accept': { pl: 'Akceptuję', en: 'Accept' },
+  'cookies.reject': { pl: 'Odrzucam', en: 'Decline' },
+  'cookies.settings': { pl: 'Ustawienia', en: 'Settings' },
+  'cookies.save': { pl: 'Zapisz wybór', en: 'Save choice' },
+  'cookies.close': { pl: 'Zamknij', en: 'Close' },
+  'cookies.necessary': { pl: 'Niezbędne', en: 'Necessary' },
+  'cookies.necessaryNote': {
+    pl: 'Pamiętają wybrany język i tę decyzję. Bez nich strona nie zadziała poprawnie.',
+    en: 'They remember your language and this choice. The site will not work properly without them.'
+  },
+  'cookies.always': { pl: 'Zawsze włączone', en: 'Always on' },
+  'cookies.marketing': { pl: 'Marketingowe', en: 'Marketing' },
+  'cookies.marketingNote': {
+    pl: 'Piksel Meta. Pozwala sprawdzić, które reklamy na Facebooku i Instagramie działają.',
+    en: 'The Meta pixel. It lets us check which ads on Facebook and Instagram actually work.'
+  },
+  'cookies.more': { pl: 'Szczegóły w', en: 'Details in our' },
 
   // Rezygnacja z newslettera
   'unsubscribe.title': { pl: 'Rezygnacja', en: 'Unsubscribe' },

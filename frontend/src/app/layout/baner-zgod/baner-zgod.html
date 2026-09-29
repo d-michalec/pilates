@@ -1,0 +1,62 @@
+@if (zgody.banerWidoczny()) {
+  <div class="baner" role="dialog" [attr.aria-label]="'cookies.aria' | t">
+    <div class="baner-tresc">
+      <div class="baner-tekst">
+        <h2>{{ 'cookies.heading' | t }}</h2>
+        <p>
+          {{ 'cookies.lead' | t }}
+          {{ 'cookies.more' | t }}
+          <a [routerLink]="'/polityka-prywatnosci' | localizePath">{{ 'consent.privacyLink' | t }}</a>.
+        </p>
+      </div>
+
+      @if (ustawieniaOtwarte()) {
+        <!--
+          Panel kategorii. "Niezbędne" jest pokazane, ale bez przełącznika -
+          udawanie, że da się je wyłączyć, byłoby wprowadzaniem w błąd.
+        -->
+        <div class="baner-kategorie">
+          <div class="kategoria">
+            <div class="kategoria-opis">
+              <span class="kategoria-nazwa">{{ 'cookies.necessary' | t }}</span>
+              <span class="kategoria-nota">{{ 'cookies.necessaryNote' | t }}</span>
+            </div>
+            <span class="kategoria-stala">{{ 'cookies.always' | t }}</span>
+          </div>
+
+          <div class="kategoria">
+            <label class="kategoria-opis" for="zgoda-marketing">
+              <span class="kategoria-nazwa">{{ 'cookies.marketing' | t }}</span>
+              <span class="kategoria-nota">{{ 'cookies.marketingNote' | t }}</span>
+            </label>
+            <input
+              id="zgoda-marketing"
+              class="kategoria-przelacznik"
+              type="checkbox"
+              [checked]="marketingWybrany()"
+              (change)="przelaczMarketing($any($event.target).checked)"
+            />
+          </div>
+
+          <div class="baner-przyciski">
+            <button type="button" class="przycisk przycisk-glowny" (click)="zapiszWybor()">
+              {{ 'cookies.save' | t }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="baner-przyciski">
+          <button type="button" class="przycisk przycisk-cichy" (click)="otworzUstawienia()">
+            {{ 'cookies.settings' | t }}
+          </button>
+          <button type="button" class="przycisk przycisk-poboczny" (click)="odrzuc()">
+            {{ 'cookies.reject' | t }}
+          </button>
+          <button type="button" class="przycisk przycisk-glowny" (click)="akceptuj()">
+            {{ 'cookies.accept' | t }}
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

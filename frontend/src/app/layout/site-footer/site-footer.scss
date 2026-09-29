@@ -229,7 +229,8 @@
   margin-top: 18px;
 }
 
-.footer-legal a {
+.footer-legal a,
+.footer-legal button {
   color: inherit;
   font-size: 0.82rem;
   letter-spacing: 0.03em;
@@ -238,7 +239,18 @@
   text-underline-offset: 3px;
 }
 
-.footer-legal a:hover {
+.footer-legal button {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.footer-legal a:hover,
+.footer-legal button:hover {
   opacity: 1;
 }
 
