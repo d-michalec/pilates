@@ -248,6 +248,10 @@ export const TRANSLATIONS = {
     en: 'The Meta pixel. It lets us check which ads on Facebook and Instagram actually work.'
   },
   'cookies.more': { pl: 'Szczegóły w', en: 'Details in our' },
+  // Osobny wpis od 'consent.privacyLink', bo tam odnośnik stoi po "zgodnie z"
+  // i wymaga narzędnika ("polityką"), a tutaj po "w" - miejscownika ("polityce").
+  // Angielski ma jedną formę, więc różnicy nie widać - polski widzi ją od razu.
+  'cookies.privacyLink': { pl: 'polityce prywatności', en: 'privacy policy' },
 
   // Rezygnacja z newslettera
   'unsubscribe.title': { pl: 'Rezygnacja', en: 'Unsubscribe' },
