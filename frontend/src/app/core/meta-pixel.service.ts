@@ -21,7 +21,21 @@ import { ZgodyService } from './zgody.service';
  * o Metcie ani o stanie zgody - bez zgody metoda po prostu nic nie robi.
  */
 
-const ID_PIKSELA = '38596773213302223';
+/**
+ * Piksele, do których zgłaszamy zdarzenia.
+ *
+ * Lista, a nie jedna wartość, bo przez jakiś czas mogą działać dwa naraz:
+ * piksel agencji prowadzącej kampanię i piksel należący do samego studia.
+ * Meta obsługuje to wprost - po kilku wywołaniach `init` każde `track` idzie
+ * do wszystkich zainicjowanych pikseli. Dzięki temu przeniesienie pomiaru na
+ * konto studia nie wymaga przerwy w zbieraniu danych: najpierw dokładamy nowy,
+ * potem spokojnie usuwamy stary.
+ */
+const ID_PIKSELI = [
+	// Piksel agencji (Kalski - Jak To Sprzedać), z maila Tomasza.
+	'38596773213302223'
+];
+
 const ADRES_SKRYPTU = 'https://connect.facebook.net/en_US/fbevents.js';
 
 /** Zdarzenia standardowe Mety, których używamy. Nazwy są z ich listy, nie dowolne. */
@@ -120,7 +134,10 @@ export class MetaPixelService {
 		const fbq = this.przygotujKolejke(okno);
 		this.wstrzyknijSkrypt();
 
-		fbq('init', ID_PIKSELA);
+		for (const id of ID_PIKSELI) {
+			fbq('init', id);
+		}
+
 		fbq('consent', 'grant');
 
 		this.zaladowany = true;
