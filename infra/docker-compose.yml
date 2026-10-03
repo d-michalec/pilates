@@ -68,6 +68,15 @@ services:
       GETRESPONSE_API_KEY: ${GETRESPONSE_API_KEY:-}
       GETRESPONSE_CAMPAIGN_ID: ${GETRESPONSE_CAMPAIGN_ID:-}
       NEWSLETTER_CALLBACK_SECRET: ${NEWSLETTER_CALLBACK_SECRET:-}
+
+      # Odbiornik webhookow z Fitssey. Sekret siedzi w sciezce adresu, bo
+      # formularz webhooka w panelu Fitssey przyjmuje sam adres i nie ma gdzie
+      # indziej go wpisac. Pusty sekret = endpoint odpowiada czterysta czterema.
+      #
+      # Klucz uwierzytelniajacy jest osobno: nie wiemy jeszcze, jak Fitssey go
+      # przesyla, wiec na razie tylko go szukamy i maskujemy przed zapisem.
+      FITSSEY_WEBHOOK_SECRET: ${FITSSEY_WEBHOOK_SECRET:-}
+      FITSSEY_WEBHOOK_AUTH_KEY: ${FITSSEY_WEBHOOK_AUTH_KEY:-}
     # Bez tego limitu MaxRAMPercentage w Dockerfile liczy się od pamięci całego
     # serwera: na maszynie z 4 GB maszyna wirtualna Javy sięgnęłaby po 3 GB i przy
     # działającej obok bazie system zaczyna zabijać procesy. Z limitem 1 GB sterta
