@@ -67,6 +67,24 @@ app:
     # dla każdego adresu i każdego z tych dwóch zasobów.
     max-requests: ${RATE_LIMIT_MAX_REQUESTS:5}
     window-minutes: ${RATE_LIMIT_WINDOW_MINUTES:10}
+  fitssey:
+    # Sekret w adresie webhooka. Formularz webhooka w panelu Fitssey przyjmuje
+    # sam adres, więc to jedyne miejsce, w które możemy wstawić własny sekret -
+    # tak samo jak przy callbacku GetResponse. Pusty = endpoint odpowiada
+    # czterysta czterema i nic nie zapisuje, bo inaczej byłby otwartą furtką.
+    #
+    # Pełny adres do wklejenia w Fitssey:
+    #   https://baba-studio.pl/api/webhooks/fitssey/<sekret>
+    webhook-secret: ${FITSSEY_WEBHOOK_SECRET:}
+    # "Klucz uwierzytelniający" generowany przez Fitssey przy tworzeniu webhooka.
+    # Nie wiemy jeszcze, czym go przesyłają - dokumentacji webhooków nie ma.
+    # Dlatego na razie tylko szukamy go w nagłówkach i w treści i zapisujemy,
+    # czy się znalazł. To rozpoznanie, nie ochrona; odrzucanie wywołań bez
+    # klucza włączymy, gdy poznamy mechanizm.
+    webhook-auth-key: ${FITSSEY_WEBHOOK_AUTH_KEY:}
+    # Treść webhooków zawiera dane osobowe klientek, więc nie trzymamy ich bez końca.
+    retention-days: ${FITSSEY_WEBHOOK_RETENTION_DAYS:90}
+    cleanup-cron: ${FITSSEY_WEBHOOK_CLEANUP_CRON:0 50 3 * * *}
   newsletter:
     consent-text: ${NEWSLETTER_CONSENT_TEXT:Wyrażam zgodę na otrzymywanie newslettera BABA Studio i wiem, że mogę wycofać zgodę w każdej chwili.}
     # Po tylu dniach od rezygnacji kasujemy wiersz. Do tego czasu jest dowodem na
